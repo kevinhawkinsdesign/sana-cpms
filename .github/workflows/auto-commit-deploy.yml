@@ -1,0 +1,36 @@
+name: Mark Last Commit
+
+on:
+  push:
+    branches:
+      - develop
+      - production
+
+jobs:
+  mark-last-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Update README with last committer info
+        run: |
+          # Remove any previous auto-update line
+          grep -v "🔁 Auto-updated by KABISA Systems" README.md > temp && mv temp README.md
+          echo "" >> README.md
+          echo "🔁 Auto-updated by KABISA Systems on $(date -u)" >> README.md
+
+      - name: Commit and push changes
+        env:
+          TOKEN: ${{ secrets.PAT }}
+        run: |
+          git config user.name "kabisa-systems"
+          git config user.email "systems@gokabisa.com"
+          git add README.md
+          git commit -m "Auto-update README [skip ci]" || echo "No changes to commit"
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} HEAD:${GITHUB_REF#refs/heads/}

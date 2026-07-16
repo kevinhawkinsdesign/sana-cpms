@@ -1,0 +1,312 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+
+  .section { padding: 24px 0 8px; }
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--color-text-tertiary);
+    margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+
+  /* Hero */
+  .hero {
+    padding: 28px 0 20px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    margin-bottom: 8px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 99px; padding: 3px 10px 3px 6px;
+    font-size: 11px; font-weight: 500; color: var(--color-text-secondary);
+    margin-bottom: 12px;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #FFD400; }
+  .hero h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
+  .hero p { font-size: 13px; color: var(--color-text-secondary); margin-top: 6px; line-height: 1.6; }
+
+  /* Recommendation card */
+  .rec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .rec-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg); padding: 14px 16px;
+    position: relative;
+  }
+  .rec-card.featured { border: 1.5px solid #FFD400; }
+  .rec-badge {
+    position: absolute; top: -1px; right: 12px;
+    background: #FFD400; color: #000;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 2px 8px; border-radius: 0 0 6px 6px;
+  }
+  .rec-icon { font-size: 18px; color: var(--color-text-secondary); margin-bottom: 8px; }
+  .rec-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
+  .rec-sub { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .rec-tag {
+    display: inline-block; margin-top: 8px;
+    font-size: 10px; font-weight: 500; padding: 2px 7px;
+    border-radius: 4px; background: var(--color-background-secondary);
+    color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary);
+  }
+  .rec-tag.green { background: #EAF3DE; color: #3B6D11; border-color: #C0DD97; }
+  .rec-tag.amber { background: #FAEEDA; color: #854F0B; border-color: #FAC775; }
+
+  /* Font showcase */
+  .font-block { margin-bottom: 14px; }
+  .font-role { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .font-sample-geist { font-family: 'Geist', var(--font-sans); font-size: 22px; font-weight: 400; color: var(--color-text-primary); letter-spacing: -0.02em; line-height: 1.2; }
+  .font-sample-inter { font-family: 'Inter', var(--font-sans); font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; margin-top: 2px; }
+  .font-meta { font-size: 11px; color: var(--color-text-tertiary); margin-top: 3px; }
+
+  /* Color swatches */
+  .swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .swatch {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  }
+  .swatch-block { width: 48px; height: 28px; border-radius: 6px; border: 0.5px solid var(--color-border-tertiary); }
+  .swatch-name { font-size: 10px; color: var(--color-text-secondary); white-space: nowrap; }
+  .swatch-hex { font-size: 10px; color: var(--color-text-tertiary); font-family: var(--font-mono); }
+
+  /* Rule list */
+  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rule-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px; font-size: 12px; color: var(--color-text-secondary); line-height: 1.5;
+  }
+  .rule-item i { color: var(--color-text-tertiary); margin-top: 1px; flex-shrink: 0; font-size: 14px; }
+
+  /* Icon showcase */
+  .icon-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .icon-chip {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 6px; padding: 5px 9px;
+    font-size: 12px; color: var(--color-text-secondary);
+  }
+  .icon-chip i { font-size: 14px; }
+
+  /* Component preview */
+  .comp-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #FFD400; color: #000; border: none;
+    font-size: 12px; font-weight: 500; padding: 6px 14px;
+    border-radius: 6px; cursor: pointer; font-family: var(--font-sans);
+  }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--color-background-primary); color: var(--color-text-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    font-size: 12px; font-weight: 400; padding: 6px 14px;
+    border-radius: 6px; cursor: pointer; font-family: var(--font-sans);
+  }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; color: var(--color-text-secondary);
+    border: none; font-size: 12px; padding: 6px 10px;
+    border-radius: 6px; cursor: pointer; font-family: var(--font-sans);
+  }
+  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px; }
+  .badge-green { background: #EAF3DE; color: #3B6D11; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-blue { background: #E6F1FB; color: #185FA5; }
+  .badge-gray { background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
+
+  .input-demo {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 6px; padding: 6px 10px; width: 200px;
+    font-size: 12px; color: var(--color-text-secondary);
+  }
+  .input-demo i { font-size: 14px; }
+
+  /* Verdict */
+  .verdict {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-left: 2.5px solid #FFD400;
+    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    padding: 12px 16px; margin-top: 6px;
+    font-size: 12px; color: var(--color-text-secondary); line-height: 1.7;
+  }
+  .verdict strong { color: var(--color-text-primary); }
+
+  /* Compare table */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .compare-table th { text-align: left; font-weight: 500; color: var(--color-text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .compare-table td { padding: 8px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); vertical-align: top; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table .label { color: var(--color-text-primary); font-weight: 500; }
+  .check { color: #3B6D11; }
+  .cross { color: #993C1D; }
+</style>
+
+<h2 class="sr-only">Kabisa SaaS Design System Recommendations — fonts, icons, component library, and design rules</h2>
+
+<div class="hero">
+  <div class="hero-badge"><span class="dot"></span> Kabisa SaaS Platform</div>
+  <h1>Design System Recommendations</h1>
+  <p>How to build a dashboard that feels like Cloudflare/Vercel, but unmistakably Kabisa.</p>
+</div>
+
+<div class="section">
+  <div class="section-label">Stack recommendation</div>
+  <div class="rec-grid">
+    <div class="rec-card featured">
+      <div class="rec-badge">CORE</div>
+      <div class="rec-icon"><i class="ti ti-components" aria-hidden="true"></i></div>
+      <div class="rec-title">shadcn/ui + Radix UI</div>
+      <div class="rec-sub">Copy-paste components you own. Built on Radix primitives for full accessibility. No locked-in library version.</div>
+      <span class="rec-tag green">✓ Keep your code</span>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon"><i class="ti ti-brush" aria-hidden="true"></i></div>
+      <div class="rec-title">Tailwind CSS v4</div>
+      <div class="rec-sub">Utility-first CSS. Pairs perfectly with shadcn. Define all Kabisa tokens as CSS variables, apply everywhere.</div>
+      <span class="rec-tag green">✓ Recommended</span>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+      <div class="rec-title">Recharts or Tremor</div>
+      <div class="rec-sub">For charger analytics, session data, revenue charts. Tremor's theme tokens are close to Vercel's dashboard look.</div>
+      <span class="rec-tag amber">Choose one</span>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon"><i class="ti ti-table" aria-hidden="true"></i></div>
+      <div class="rec-title">TanStack Table</div>
+      <div class="rec-sub">For OCPP session tables, invoice lists, device inventory. Headless and styled via shadcn's DataTable component.</div>
+      <span class="rec-tag green">✓ Industry standard</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Typography</div>
+  <div class="font-block">
+    <div class="font-role">Display / headings</div>
+    <div class="font-sample-geist">Geist Sans — keep it</div>
+    <div class="font-meta">Vercel's own font. Exactly what gives their dashboard its sharp, technical authority. You already have it — don't change it.</div>
+  </div>
+  <div class="font-block">
+    <div class="font-role">Body / data / UI</div>
+    <div class="font-sample-inter">Inter at 13–14px — pair alongside Geist for dense UI: tables, labels, metadata, sidebars.</div>
+    <div class="font-meta">What Cloudflare uses throughout. Inter at 13px is the de facto standard for professional dashboards.</div>
+  </div>
+  <div class="font-block">
+    <div class="font-role">Monospace (code, IDs, addresses)</div>
+    <div class="font-sample-inter" style="font-family: var(--font-mono); font-size: 13px;">Geist Mono — for OCPP IDs, charge point serials, API keys, hex values.</div>
+    <div class="font-meta">Keeps technical data scannable. Geist Mono is already in your stack.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Icons — replace your custom set</div>
+  <div class="rec-grid" style="margin-bottom: 12px;">
+    <div class="rec-card featured">
+      <div class="rec-badge">PICK THIS</div>
+      <div class="rec-icon"><i class="ti ti-icons" aria-hidden="true"></i></div>
+      <div class="rec-title">Lucide React</div>
+      <div class="rec-sub">Clean stroke-based SVG icons. Default icon set in shadcn/ui. ~1,560 icons, consistent 24px grid, all outline style.</div>
+      <span class="rec-tag green">✓ Pairs with shadcn</span>
+    </div>
+    <div class="rec-card">
+      <div class="rec-icon"><i class="ti ti-sparkles" aria-hidden="true"></i></div>
+      <div class="rec-title">Heroicons (alternative)</div>
+      <div class="rec-sub">By Tailwind Labs. Outline + solid styles. 316 icons — smaller set but extremely deliberate. Cloudflare-adjacent feel.</div>
+      <span class="rec-tag">Optional</span>
+    </div>
+  </div>
+  <div class="icon-row">
+    <div class="icon-chip"><i class="ti ti-bolt" aria-hidden="true"></i> charging</div>
+    <div class="icon-chip"><i class="ti ti-map-pin" aria-hidden="true"></i> location</div>
+    <div class="icon-chip"><i class="ti ti-plug" aria-hidden="true"></i> connector</div>
+    <div class="icon-chip"><i class="ti ti-activity" aria-hidden="true"></i> activity</div>
+    <div class="icon-chip"><i class="ti ti-receipt" aria-hidden="true"></i> billing</div>
+    <div class="icon-chip"><i class="ti ti-settings" aria-hidden="true"></i> settings</div>
+    <div class="icon-chip"><i class="ti ti-car" aria-hidden="true"></i> vehicle</div>
+    <div class="icon-chip"><i class="ti ti-chart-line" aria-hidden="true"></i> analytics</div>
+    <div class="icon-chip"><i class="ti ti-users" aria-hidden="true"></i> operators</div>
+    <div class="icon-chip"><i class="ti ti-wifi" aria-hidden="true"></i> OCPP</div>
+    <div class="icon-chip"><i class="ti ti-alert-triangle" aria-hidden="true"></i> alert</div>
+    <div class="icon-chip"><i class="ti ti-clock" aria-hidden="true"></i> session</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Colour system — token the Forward palette</div>
+  <div class="swatch-row" style="margin-bottom: 8px;">
+    <div class="swatch"><div class="swatch-block" style="background:#000000"></div><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#FFD400; border-color:#ccc"></div><div class="swatch-name">Solar Yellow</div><div class="swatch-hex">#FFD400</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#0E159A"></div><div class="swatch-name">Voltage Blue</div><div class="swatch-hex">#0E159A</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#4561DE"></div><div class="swatch-name">Voltage 3</div><div class="swatch-hex">#4561DE</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#F5F5F4; border-color:#ccc"></div><div class="swatch-name">Surface</div><div class="swatch-hex">#F5F5F4</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#E5E5E4; border-color:#ccc"></div><div class="swatch-name">Border</div><div class="swatch-hex">#E5E5E4</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#22C55E"></div><div class="swatch-name">Success</div><div class="swatch-hex">#22C55E</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#EF4444"></div><div class="swatch-name">Error</div><div class="swatch-hex">#EF4444</div></div>
+    <div class="swatch"><div class="swatch-block" style="background:#F59E0B; border-color:#ccc"></div><div class="swatch-name">Warning</div><div class="swatch-hex">#F59E0B</div></div>
+  </div>
+  <div class="verdict">
+    <strong>Token rule:</strong> Solar Yellow is your primary CTA background — <code>btn-primary { background: #FFD400; color: #000 }</code>. Voltage Blue for active nav items and info states. Black/white for text hierarchy. Semantic greens/reds for charger status, session state, and billing status.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Component samples (Kabisa tokens applied)</div>
+  <div class="comp-row" style="margin-bottom: 12px;">
+    <button class="btn-primary"><i class="ti ti-bolt" aria-hidden="true"></i> Start session</button>
+    <button class="btn-secondary"><i class="ti ti-download" aria-hidden="true"></i> Export CSV</button>
+    <button class="btn-ghost"><i class="ti ti-settings" aria-hidden="true"></i> Settings</button>
+  </div>
+  <div class="comp-row" style="margin-bottom: 12px;">
+    <div class="input-demo"><i class="ti ti-search" aria-hidden="true"></i> Search charge points…</div>
+  </div>
+  <div class="comp-row">
+    <span class="badge badge-green"><i class="ti ti-circle-check" aria-hidden="true"></i> Online</span>
+    <span class="badge badge-amber"><i class="ti ti-clock" aria-hidden="true"></i> Charging</span>
+    <span class="badge badge-gray"><i class="ti ti-minus-circle" aria-hidden="true"></i> Idle</span>
+    <span class="badge badge-blue"><i class="ti ti-wifi" aria-hidden="true"></i> OCPP 2.0.1</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">The 7 rules that separate Cloudflare/Vercel from generic dashboards</div>
+  <div class="rule-grid">
+    <div class="rule-item"><i class="ti ti-border-radius" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">4px corner radius.</strong> Vercel uses 4–6px, never 12+. Rounded = consumer app. Square-ish = infrastructure tool.</span></div>
+    <div class="rule-item"><i class="ti ti-line-height" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">Dense information.</strong> 13px body text, tight leading. Dashboards aren't landing pages — no big whitespace heroes.</span></div>
+    <div class="rule-item"><i class="ti ti-palette" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">Mostly monochrome.</strong> Black, white, grays handle 90% of UI. Solar Yellow and Voltage Blue appear sparingly — not everywhere.</span></div>
+    <div class="rule-item"><i class="ti ti-layers" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">Borders, not shadows.</strong> Cloudflare/Vercel use 0.5–1px solid borders. Drop shadows = old enterprise UI.</span></div>
+    <div class="rule-item"><i class="ti ti-typography" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">Sentence case always.</strong> "Charge point settings", not "Charge Point Settings". See every Vercel label ever.</span></div>
+    <div class="rule-item"><i class="ti ti-layout-sidebar" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">Fixed sidebar, scrollable content.</strong> Left nav with icon + label. Collapsible to icons on mobile. This is the pattern.</span></div>
+    <div class="rule-item"><i class="ti ti-status-change" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">Status as semantic color.</strong> Green/amber/red for charger states — don't use brand colors for status. Reserve yellow for actions only.</span></div>
+    <div class="rule-item"><i class="ti ti-moon" aria-hidden="true"></i><span><strong style="color:var(--color-text-primary)">Dark mode first.</strong> Cloudflare's dashboard is dark by default. Build tokens in CSS variables from day one — not bolted on later.</span></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">What to migrate vs keep</div>
+  <table class="compare-table">
+    <thead><tr><th>Element</th><th>Current</th><th>Recommendation</th></tr></thead>
+    <tbody>
+      <tr><td class="label">Font</td><td class="check">✓ Geist Sans</td><td>Keep. Add Geist Mono for IDs/serials.</td></tr>
+      <tr><td class="label">Icons</td><td class="cross">✗ Custom</td><td>Replace with Lucide React. Consistent 24px stroke grid.</td></tr>
+      <tr><td class="label">Components</td><td class="cross">✗ Custom</td><td>Migrate to shadcn/ui. Theming via CSS vars = Kabisa tokens instantly.</td></tr>
+      <tr><td class="label">Colors</td><td class="check">✓ Forward palette</td><td>Keep. Token them into Tailwind config as CSS variables.</td></tr>
+      <tr><td class="label">Border radius</td><td>Unknown</td><td>Set to 4–6px for dashboard UI. 8px max for cards.</td></tr>
+      <tr><td class="label">Data tables</td><td>Unknown</td><td>TanStack Table + shadcn DataTable. Dense 36px rows.</td></tr>
+      <tr><td class="label">Charts</td><td>Unknown</td><td>Recharts with Kabisa color tokens. Voltage Blue as primary series.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="verdict" style="margin-top: 16px;">
+  <strong>Bottom line:</strong> You're building infrastructure software for EV operators — the aesthetic should feel like you belong next to Cloudflare and Vercel, not Shopify or Notion. <strong>shadcn/ui + Lucide + Geist + Tailwind</strong> is exactly the stack Cloudflare would have built on if they started today. Your Forward palette is strong — the problem is likely border radius too high, shadows where there should be borders, and icons that aren't on the same stroke grid as the rest of the UI.
+</div>

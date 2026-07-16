@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kabisa Interface Bible — UI/UX Guidelines v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────────────────────
+   KABISA DESIGN TOKENS
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --solar:        #FFD400;
+  --solar-dim:    #B39600;
+  --solar-glow:   rgba(255, 212, 0, 0.12);
+  --voltage:      #0E159A;
+  --voltage-2:    #1B39C0;
+  --voltage-3:    #4561DE;
+  --voltage-glow: rgba(69, 97, 222, 0.15);
+
+  /* Neutrals — dark mode */
+  --bg-0:   #0A0A0A;
+  --bg-1:   #111111;
+  --bg-2:   #1A1A1A;
+  --bg-3:   #222222;
+  --bg-4:   #2A2A2A;
+  --line:   rgba(255,255,255,0.07);
+  --line-2: rgba(255,255,255,0.12);
+
+  /* Text */
+  --text-1: #FFFFFF;
+  --text-2: #A0A0A0;
+  --text-3: #606060;
+  --text-4: #3A3A3A;
+
+  /* Semantic */
+  --green:  #22C55E;
+  --red:    #EF4444;
+  --amber:  #F59E0B;
+  --blue:   #3B82F6;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Geist Mono', monospace;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* Radius */
+  --r-sm: 3px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-xl: 16px;
+
+  /* Transitions */
+  --ease-snappy: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RESET + BASE
+   ───────────────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 14px;
+  background: var(--bg-0);
+  color: var(--text-1);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-2);
+  background: var(--bg-0);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: var(--voltage-3); text-decoration: none; }
+a:hover { color: var(--solar); }
+code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg-3);
+  border: 1px solid var(--line-2);
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  color: var(--solar);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LAYOUT
+   ───────────────────────────────────────────────────────────────────────────── */
+.layout {
+  padding-left: 240px; /* Offsets the fixed sidebar */
+  min-height: 100vh;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SIDEBAR
+   ───────────────────────────────────────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 240px;
+  height: 100vh;
+  background: var(--bg-1);
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+  padding: var(--sp-6) 0 var(--sp-7);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  padding: 0 var(--sp-5) var(--sp-5);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--sp-4);
+}
+
+.logo-wordmark {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.logo-fwd {
+  width: 28px; height: 28px;
+  background: var(--solar);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-fwd svg { display: block; }
+
+.logo-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+
+.logo-sub {
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.version-pill {
+  display: inline-block;
+  margin-top: var(--sp-3);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: var(--solar-glow);
+  color: var(--solar);
+  border: 1px solid rgba(255,212,0,0.2);
+  letter-spacing: 0.03em;
+}
+
+.nav-section {
+  padding: var(--sp-2) var(--sp-5) var(--sp-1);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: var(--sp-3);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 6px var(--sp-5);
+  font-size: 13px;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  border-radius: 0;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.nav-link:hover {
+  color: var(--text-1);
+  background: var(--bg-2);
+}
+
+.nav-link.active {
+  color: var(--text-1);
+  background: var(--bg-3);
+  border-right: 2px solid var(--solar);
+}
+
+.nav-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-4);
+  width: 18px;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MAIN CONTENT
+   ───────────────────────────────────────────────────────────────────────────── */
+.main {
+  max-width: 900px;
+  margin: 0 auto; /* Centers the content in the remaining viewport space */
+  padding: var(--sp-8) var(--sp-8) 120px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HERO
+   ───────────────────────────────────────────────────────────────────────────── */
+.hero {
+  padding-bottom: var(--sp-8);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--sp-8);
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-4);
+}
+
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--solar);
+}
+
+.hero h1 {
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: var(--sp-4);
+}
+
+.hero h1 span {
+  color: var(--solar);
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--text-2);
+  line-height: 1.7;
+  max-width: 600px;
+  margin-bottom: var(--sp-6);
+}
+
+.hero-meta {
+  display: flex;
+  gap: var(--sp-5);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  font-size: 12px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.meta-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--solar);
+  display: inline-block;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION STRUCTURE
+   ───────────────────────────────────────────────────────────────────────────── */
+.chapter {
+  margin-bottom: var(--sp-8);
+  scroll-margin-top: var(--sp-6);
+}
+
+.chapter-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.chapter-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--solar);
+  font-weight: 500;
+  padding-top: 5px;
+  flex-shrink: 0;
+}
+
+.chapter-title-block h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: var(--sp-2);
+}
+
+.chapter-title-block p {
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RULES
+   ───────────────────────────────────────────────────────────────────────────── */
+.rule-group {
+  margin-bottom: var(--sp-6);
+}
+
+.rule-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.rule-group-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.rule {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: var(--sp-3);
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--line);
+  align-items: start;
+}
+
+.rule:last-child { border-bottom: none; }
+
+.rule-priority {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.rule-priority.p1 { background: var(--red); }
+.rule-priority.p2 { background: var(--amber); }
+.rule-priority.p3 { background: var(--voltage-3); }
+.rule-priority.pw { background: var(--solar); }
+
+.rule-body {}
+
+.rule-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+  margin-bottom: 3px;
+  line-height: 1.4;
+}
+
+.rule-desc {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+.rule-desc strong { color: var(--text-2); font-weight: 500; }
+
+.rule-tag {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: var(--bg-3);
+  color: var(--text-3);
+  border: 1px solid var(--line-2);
+  font-family: var(--font-mono);
+}
+
+.rule-tag.tag-anim { background: rgba(69,97,222,0.1); color: var(--voltage-3); border-color: rgba(69,97,222,0.2); }
+.rule-tag.tag-perf { background: rgba(34,197,94,0.08); color: var(--green); border-color: rgba(34,197,94,0.2); }
+.rule-tag.tag-wow  { background: var(--solar-glow); color: var(--solar); border-color: rgba(255,212,0,0.2); }
+.rule-tag.tag-a11y { background: rgba(239,68,68,0.08); color: var(--red); border-color: rgba(239,68,68,0.2); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DO / DON'T BLOCKS
+   ───────────────────────────────────────────────────────────────────────────── */
+.do-dont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+  margin: var(--sp-5) 0;
+}
+
+.do-block, .dont-block {
+  border-radius: var(--r-lg);
+  padding: var(--sp-4) var(--sp-5);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.do-block {
+  background: rgba(34,197,94,0.05);
+  border: 1px solid rgba(34,197,94,0.15);
+}
+
+.dont-block {
+  background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.15);
+}
+
+.do-label, .dont-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.do-label { color: var(--green); }
+.dont-label { color: var(--red); }
+
+.do-block p, .dont-block p { color: var(--text-2); font-size: 12px; line-height: 1.6; }
+.do-block code, .dont-block code { font-size: 11px; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CALLOUT BOXES
+   ───────────────────────────────────────────────────────────────────────────── */
+.callout {
+  border-radius: var(--r-lg);
+  padding: var(--sp-4) var(--sp-5);
+  margin: var(--sp-5) 0;
+  font-size: 13px;
+  line-height: 1.7;
+  display: flex;
+  gap: var(--sp-4);
+}
+
+.callout.wow {
+  background: var(--solar-glow);
+  border: 1px solid rgba(255,212,0,0.2);
+  border-left: 3px solid var(--solar);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+
+.callout.info {
+  background: var(--voltage-glow);
+  border: 1px solid rgba(69,97,222,0.2);
+  border-left: 3px solid var(--voltage-3);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+
+.callout.danger {
+  background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-left: 3px solid var(--red);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+}
+
+.callout-icon { font-size: 16px; flex-shrink: 0; padding-top: 1px; }
+.callout p { color: var(--text-2); margin: 0; }
+.callout strong { color: var(--text-1); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOKEN TABLES
+   ───────────────────────────────────────────────────────────────────────────── */
+.token-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--sp-5) 0;
+  font-size: 12px;
+}
+
+.token-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-4);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.token-table td {
+  padding: 10px var(--sp-3);
+  border-bottom: 1px solid var(--line);
+  color: var(--text-2);
+  vertical-align: middle;
+}
+
+.token-table tr:last-child td { border-bottom: none; }
+.token-table .token-name { font-family: var(--font-mono); font-size: 11px; color: var(--solar); }
+.token-table .token-val { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+.token-table .token-use { font-size: 12px; color: var(--text-3); }
+
+.swatch-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.swatch {
+  width: 28px; height: 28px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-2);
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ANIMATION TIMING REFERENCE
+   ───────────────────────────────────────────────────────────────────────────── */
+.timing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+  margin: var(--sp-5) 0;
+}
+
+.timing-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+}
+
+.timing-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--sp-2);
+}
+
+.timing-value {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-1);
+  margin-bottom: var(--sp-1);
+}
+
+.timing-use {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMPONENT DEMOS
+   ───────────────────────────────────────────────────────────────────────────── */
+.demo-frame {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  padding: var(--sp-6);
+  margin: var(--sp-5) 0;
+  position: relative;
+}
+
+.demo-label {
+  position: absolute;
+  top: -1px; left: var(--sp-4);
+  transform: translateY(-50%);
+  background: var(--bg-1);
+  padding: 0 var(--sp-2);
+  font-size: 10px;
+  color: var(--text-4);
+  letter-spacing: 0.05em;
+  font-family: var(--font-mono);
+}
+
+/* Buttons demo */
+.btn-row { display: flex; gap: var(--sp-3); align-items: center; flex-wrap: wrap; margin-bottom: var(--sp-4); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s var(--ease-snappy);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(0.98); }
+
+.btn-primary { background: var(--solar); color: #000; }
+.btn-primary:hover { background: #ffe040; box-shadow: 0 4px 12px rgba(255,212,0,0.25); }
+
+.btn-secondary {
+  background: var(--bg-3);
+  color: var(--text-1);
+  border: 1px solid var(--line-2);
+}
+.btn-secondary:hover { background: var(--bg-4); border-color: rgba(255,255,255,0.2); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid transparent;
+}
+.btn-ghost:hover { background: var(--bg-2); color: var(--text-1); }
+
+.btn-danger { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+.btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+/* Badge demos */
+.badge-row { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  letter-spacing: 0.01em;
+}
+
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+.badge-online  { background: rgba(34,197,94,0.1);  color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+.badge-online .badge-dot  { background: var(--green); }
+.badge-charging { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+.badge-charging .badge-dot { background: var(--amber); animation: pulse-amber 1.5s ease-in-out infinite; }
+.badge-offline { background: var(--bg-3); color: var(--text-3); border: 1px solid var(--line); }
+.badge-offline .badge-dot { background: var(--text-4); }
+.badge-error  { background: rgba(239,68,68,0.1);  color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+.badge-error .badge-dot { background: var(--red); }
+.badge-info   { background: rgba(59,130,246,0.1);  color: var(--blue); border: 1px solid rgba(59,130,246,0.2); }
+
+@keyframes pulse-amber {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Input demo */
+.input-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+
+.k-input {
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  padding: 7px 11px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-1);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 200px;
+}
+
+.k-input::placeholder { color: var(--text-4); }
+.k-input:focus {
+  border-color: var(--voltage-3);
+  box-shadow: 0 0 0 3px rgba(69,97,222,0.15);
+}
+
+/* Stat card */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3); margin-bottom: var(--sp-4); }
+
+.stat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: var(--sp-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: var(--sp-1);
+}
+
+.stat-delta {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.delta-up { color: var(--green); }
+.delta-down { color: var(--red); }
+
+/* Toast demo */
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  background: var(--bg-3);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  padding: var(--sp-3) var(--sp-4);
+  font-size: 13px;
+  max-width: 360px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.toast-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.toast-text { color: var(--text-2); }
+.toast-text strong { color: var(--text-1); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHY SCALE
+   ───────────────────────────────────────────────────────────────────────────── */
+.type-scale { margin: var(--sp-5) 0; }
+
+.type-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 100px;
+  gap: var(--sp-4);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+
+.type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-4); }
+.type-sample { color: var(--text-1); }
+.type-specs { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); text-align: right; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SPACING GUIDE
+   ───────────────────────────────────────────────────────────────────────────── */
+.spacing-guide { display: flex; flex-direction: column; gap: var(--sp-2); margin: var(--sp-5) 0; }
+
+.sp-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.sp-bar-wrap { flex: 1; }
+.sp-bar {
+  background: var(--voltage-3);
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.sp-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--solar);
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.sp-name { font-size: 11px; color: var(--text-3); width: 50px; flex-shrink: 0; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CHARGER STATUS REFERENCE
+   ───────────────────────────────────────────────────────────────────────────── */
+.status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-3); margin: var(--sp-5) 0; }
+
+.status-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+
+.status-indicator {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.status-title { font-size: 13px; font-weight: 500; color: var(--text-1); margin-bottom: 2px; }
+.status-desc  { font-size: 11px; color: var(--text-3); line-height: 1.5; }
+.status-color { font-family: var(--font-mono); font-size: 10px; margin-top: 4px; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SESSION PAGE SPEC
+   ───────────────────────────────────────────────────────────────────────────── */
+.panel-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: var(--sp-3);
+  margin: var(--sp-5) 0;
+  align-items: start;
+}
+
+.panel-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+}
+
+.panel-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.data-row:last-child { border-bottom: none; }
+.data-key { color: var(--text-3); }
+.data-val { color: var(--text-1); font-family: var(--font-mono); font-size: 11px; }
+
+/* Fake spark line */
+.spark-line {
+  height: 40px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(69,97,222,0.08) 30%,
+    rgba(69,97,222,0.08) 70%,
+    transparent 100%
+  );
+  border-radius: var(--r-md);
+  margin: var(--sp-3) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.spark-line svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COPYWRITING RULES
+   ───────────────────────────────────────────────────────────────────────────── */
+.copy-compare {
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr;
+  gap: var(--sp-2);
+  align-items: center;
+  margin: var(--sp-3) 0;
+  font-size: 12px;
+}
+
+.copy-before {
+  background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+  color: var(--text-3);
+  text-decoration: line-through;
+  text-decoration-color: rgba(239,68,68,0.4);
+}
+
+.copy-after {
+  background: rgba(34,197,94,0.05);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+  color: var(--text-1);
+}
+
+.copy-arrow { text-align: center; color: var(--text-4); font-size: 14px; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FOOTER
+   ───────────────────────────────────────────────────────────────────────────── */
+.doc-footer {
+  border-top: 1px solid var(--line);
+  padding-top: var(--sp-6);
+  margin-top: var(--sp-8);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+.footer-mark {
+  font-size: 11px;
+  color: var(--text-4);
+  line-height: 1.7;
+}
+
+.footer-mark strong {
+  color: var(--text-3);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PRINT
+   ───────────────────────────────────────────────────────────────────────────── */
+@media print {
+  html { background: white; color: black; }
+  body { color: #333; }
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SCROLLBAR
+   ───────────────────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-4); }
+
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-wordmark">
+      <div class="logo-fwd">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2 8L7 3L12 8" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 8L10 3L15 8" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Kabisa</div>
+        <div class="logo-sub">Interface Bible</div>
+      </div>
+    </div>
+    <div class="version-pill">v1.0 — June 2026</div>
+  </div>
+
+  <span class="nav-section">Foundations</span>
+  <a class="nav-link" href="#tokens"><span class="nav-num">01</span> Design Tokens</a>
+  <a class="nav-link" href="#typography"><span class="nav-num">02</span> Typography</a>
+  <a class="nav-link" href="#color"><span class="nav-num">03</span> Color</a>
+  <a class="nav-link" href="#spacing"><span class="nav-num">04</span> Spacing &amp; Radius</a>
+  <a class="nav-link" href="#icons"><span class="nav-num">05</span> Icons</a>
+
+  <span class="nav-section">Components</span>
+  <a class="nav-link" href="#buttons"><span class="nav-num">06</span> Buttons</a>
+  <a class="nav-link" href="#inputs"><span class="nav-num">07</span> Forms &amp; Inputs</a>
+  <a class="nav-link" href="#status"><span class="nav-num">08</span> Status &amp; Badges</a>
+  <a class="nav-link" href="#feedback"><span class="nav-num">09</span> Feedback &amp; Toasts</a>
+  <a class="nav-link" href="#tables"><span class="nav-num">10</span> Data Tables</a>
+
+  <span class="nav-section">Experience</span>
+  <a class="nav-link" href="#animation"><span class="nav-num">11</span> Animation</a>
+  <a class="nav-link" href="#interactions"><span class="nav-num">12</span> Interactions</a>
+  <a class="nav-link" href="#sessions"><span class="nav-num">13</span> Sessions Page</a>
+  <a class="nav-link" href="#admin"><span class="nav-num">14</span> Admin Customization</a>
+
+  <span class="nav-section">Content</span>
+  <a class="nav-link" href="#copywriting"><span class="nav-num">15</span> Copywriting</a>
+  <a class="nav-link" href="#accessibility"><span class="nav-num">16</span> Accessibility</a>
+  <a class="nav-link" href="#performance"><span class="nav-num">17</span> Performance</a>
+  <a class="nav-link" href="#standards"><span class="nav-num">18</span> Our Standard</a>
+</aside>
+
+<main class="main">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Kabisa Electric · Platform Design</div>
+    <h1>Interface<br><span>Bible.</span></h1>
+    <p class="hero-desc">
+      Every pixel, interaction, and word in the Kabisa platform obeys these rules.
+      This is not a style guide. It is the standard against which every screen
+      is judged — the difference between software that works and software that
+      people talk about.
+    </p>
+    <div class="hero-meta">
+      <span class="meta-item"><span class="meta-dot"></span> Living document — update on every major release</span>
+      <span class="meta-item"><span class="meta-dot"></span> Applies to dashboard, mobile, and operator portal</span>
+      <span class="meta-item"><span class="meta-dot"></span> Forward Design System v1</span>
+    </div>
+  </div>
+
+  <section class="chapter" id="tokens">
+    <div class="chapter-header">
+      <div class="chapter-num">01</div>
+      <div class="chapter-title-block">
+        <h2>Design Tokens</h2>
+        <p>Every value in the system — color, space, radius, duration — lives as a CSS variable. Nothing is hardcoded. This is what makes dark mode, theming, and future rebranding a one-file job.</p>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Core principle</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Tokens before values</div>
+          <div class="rule-desc">Never write <code>#FFD400</code> in a component. Write <code>var(--solar)</code>. If a token doesn't exist for what you need, add it to the token file first — don't inline it.</div>
+          <span class="rule-tag tag-wow">foundational</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Semantic over literal</div>
+          <div class="rule-desc">Don't use <code>--solar</code> for a warning state just because the color looks right. Create <code>--color-warning</code> that points to <code>--solar</code>. The semantic name is what components consume.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p3"></div>
+        <div class="rule-body">
+          <div class="rule-title">All states in the same token file</div>
+          <div class="rule-desc">Light mode, dark mode, high-contrast mode. Every token has a value for each. The token file is the single source of truth — not Figma, not memory.</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="token-table">
+      <thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td class="token-name">--solar</td><td class="token-val">#FFD400</td><td class="token-use">Primary CTA, highlights, active states, brand accent</td></tr>
+        <tr><td class="token-name">--solar-dim</td><td class="token-val">#B39600</td><td class="token-use">Solar on dark hover, pressed state</td></tr>
+        <tr><td class="token-name">--solar-glow</td><td class="token-val">rgba(255,212,0,0.12)</td><td class="token-use">Focus rings, subtle active backgrounds</td></tr>
+        <tr><td class="token-name">--voltage</td><td class="token-val">#0E159A</td><td class="token-use">Deep brand blue, headings on light bg</td></tr>
+        <tr><td class="token-name">--voltage-3</td><td class="token-val">#4561DE</td><td class="token-use">Info state, links, focus ring stroke</td></tr>
+        <tr><td class="token-name">--bg-0</td><td class="token-val">#0A0A0A</td><td class="token-use">Page background</td></tr>
+        <tr><td class="token-name">--bg-1</td><td class="token-val">#111111</td><td class="token-use">Sidebar, panel backgrounds</td></tr>
+        <tr><td class="token-name">--bg-2</td><td class="token-val">#1A1A1A</td><td class="token-use">Card surfaces</td></tr>
+        <tr><td class="token-name">--bg-3</td><td class="token-val">#222222</td><td class="token-use">Input backgrounds, subtle fills</td></tr>
+        <tr><td class="token-name">--line</td><td class="token-val">rgba(255,255,255,0.07)</td><td class="token-use">All borders, dividers, hairlines</td></tr>
+        <tr><td class="token-name">--text-1</td><td class="token-val">#FFFFFF</td><td class="token-use">Primary headings, high-importance labels</td></tr>
+        <tr><td class="token-name">--text-2</td><td class="token-val">#A0A0A0</td><td class="token-use">Body text, descriptions</td></tr>
+        <tr><td class="token-name">--text-3</td><td class="token-val">#606060</td><td class="token-use">Metadata, timestamps, secondary labels</td></tr>
+        <tr><td class="token-name">--green</td><td class="token-val">#22C55E</td><td class="token-use">Online, success, positive delta</td></tr>
+        <tr><td class="token-name">--red</td><td class="token-val">#EF4444</td><td class="token-use">Error, fault, negative delta, offline</td></tr>
+        <tr><td class="token-name">--amber</td><td class="token-val">#F59E0B</td><td class="token-use">Warning, charging, attention needed</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="chapter" id="typography">
+    <div class="chapter-header">
+      <div class="chapter-num">02</div>
+      <div class="chapter-title-block">
+        <h2>Typography</h2>
+        <p>Three roles. Three faces. Nothing else is permitted on the platform.</p>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Typefaces</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Geist Sans — UI &amp; headings</div>
+          <div class="rule-desc">Everything visible in the dashboard interface. All sizes from dashboard titles down to navigation labels. <strong>Never use bold above 600 weight</strong> — it looks heavy. 400 and 500 only in most contexts.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p3"></div>
+        <div class="rule-body">
+          <div class="rule-title">Inter — dense body &amp; data text</div>
+          <div class="rule-desc">Use Inter at 13px for dense information: table rows, metadata, description text. Its optical correction at small sizes outperforms Geist. Switch rules: table cells below 13px → Inter. Geist for everything ≥ 14px.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p3"></div>
+        <div class="rule-body">
+          <div class="rule-title">Geist Mono — data, IDs, code</div>
+          <div class="rule-desc">Session IDs, charge point serial numbers, OCPP message IDs, API keys, kWh values, voltage readings, currency amounts, timestamps. Any value that benefits from tabular alignment. Set <code>font-variant-numeric: tabular-nums</code> alongside it.</div>
+          <span class="rule-tag">tabular-nums always</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-scale">
+      <div class="type-row">
+        <div class="type-meta">display</div>
+        <div class="type-sample" style="font-size:32px;font-weight:600;letter-spacing:-0.03em;color:#fff">32 kWh charged</div>
+        <div class="type-specs">32 / 600 / -0.03em</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">page-title</div>
+        <div class="type-sample" style="font-size:22px;font-weight:600;letter-spacing:-0.02em;color:#fff">Session overview</div>
+        <div class="type-specs">22 / 600 / -0.02em</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">section</div>
+        <div class="type-sample" style="font-size:16px;font-weight:500;color:#fff">Active charge points</div>
+        <div class="type-specs">16 / 500 / normal</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">body</div>
+        <div class="type-sample" style="font-size:14px;color:#a0a0a0">Charging session started at Kanombe Station 2</div>
+        <div class="type-specs">14 / 400 / 1.6lh</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">small / ui</div>
+        <div class="type-sample" style="font-size:13px;color:#606060">Last updated 3 minutes ago</div>
+        <div class="type-specs">13 / 400 / 1.5lh</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">label / eyebrow</div>
+        <div class="type-sample" style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#606060">Charging status</div>
+        <div class="type-specs">10 / 600 / UC / 0.08em</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">mono / data</div>
+        <div class="type-sample" style="font-size:13px;font-family:'JetBrains Mono',monospace;color:#4561DE">CP-KGL-001 · 7.4 kW · 240 V</div>
+        <div class="type-specs">Geist Mono / 13</div>
+      </div>
+    </div>
+
+    <div class="do-dont">
+      <div class="do-block">
+        <div class="do-label">✓ Do</div>
+        <p>Use sentence case in all UI labels, table headers, navigation, tooltips, toasts, and error messages. <strong>"Charge point settings"</strong> not <strong>"Charge Point Settings"</strong>. Title case is for marketing pages only.</p>
+      </div>
+      <div class="dont-block">
+        <div class="dont-label">✗ Don't</div>
+        <p>Never use font-weight 700 or 800 in the dashboard. Never mix typefaces on the same label — if a number is Mono, its unit is also Mono. Don't exceed 3 distinct text colors on one card.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="color">
+    <div class="chapter-header">
+      <div class="chapter-num">03</div>
+      <div class="chapter-title-block">
+        <h2>Color</h2>
+        <p>Solar Yellow is a weapon. Use it surgically — one action per view. When yellow is everywhere, it means nothing.</p>
+      </div>
+    </div>
+
+    <div class="callout wow">
+      <div class="callout-icon">⚡</div>
+      <p><strong>The Yellow Rule:</strong> Solar Yellow (#FFD400) appears exactly once per viewport as a meaningful signal — the primary CTA button, the active nav item, or a critical alert. Never two yellows competing for attention on the same screen. This is what makes it land like a bolt every time.</p>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Usage rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Status color must never stand alone</div>
+          <div class="rule-desc">A green dot means nothing to someone with deuteranopia. Always pair color with a text label or icon: <span style="color:var(--green)">● Online</span>, not just <span style="color:var(--green)">●</span>. This is a legal requirement in many markets and good engineering everywhere.</div>
+          <span class="rule-tag tag-a11y">a11y required</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Semantic colors are non-negotiable</div>
+          <div class="rule-desc">Green = success / online. Red = error / offline / destructive. Amber = warning / charging / attention. Blue = info / link / focus. <strong>Never repurpose semantic colors for brand decoration.</strong> If Voltage Blue is used as a decorative accent in one place, it loses its meaning as an info signal everywhere else.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Dark mode is default, not an afterthought</div>
+          <div class="rule-desc">The dashboard is dark-first. Light mode is available for operator preference. Every component is designed for dark first, then the light theme is tested. Not the other way. Use CSS <code>color-scheme: dark</code> on <code>html</code>.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">APCA contrast for text</div>
+          <div class="rule-desc">Use APCA (Advanced Perceptual Contrast Algorithm), not WCAG 2 ratio. <code>--text-2</code> (#A0A0A0) on <code>--bg-1</code> (#111) meets APCA Lc 60+. Target Lc 75+ for body text, Lc 45+ for large headings. Check at <code>apcacontrast.com</code>.</div>
+          <span class="rule-tag tag-a11y">APCA Lc 75+</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="status-indicator" style="background:var(--green)"></div>
+        <div>
+          <div class="status-title">Online / Available</div>
+          <div class="status-desc">Charge point connected, ready to accept a session. No animation.</div>
+          <div class="status-color" style="color:var(--green)">#22C55E · --green</div>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="status-indicator" style="background:var(--amber);animation:pulse-amber 1.5s ease-in-out infinite"></div>
+        <div>
+          <div class="status-title">Charging / Active session</div>
+          <div class="status-desc">Session in progress. Amber dot pulses at 1.5s interval — the only animation allowed on status dots.</div>
+          <div class="status-color" style="color:var(--amber)">#F59E0B · --amber · pulse</div>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="status-indicator" style="background:var(--text-4)"></div>
+        <div>
+          <div class="status-title">Idle / Suspended</div>
+          <div class="status-desc">Connected but no session. Idle fee may apply if configured.</div>
+          <div class="status-color" style="color:var(--text-3)">#3A3A3A · --text-4</div>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="status-indicator" style="background:var(--red)"></div>
+        <div>
+          <div class="status-title">Faulted / Offline</div>
+          <div class="status-desc">Error state or no OCPP connection. Requires operator action.</div>
+          <div class="status-color" style="color:var(--red)">#EF4444 · --red</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="spacing">
+    <div class="chapter-header">
+      <div class="chapter-num">04</div>
+      <div class="chapter-title-block">
+        <h2>Spacing &amp; Radius</h2>
+        <p>An 8pt grid. Everything snaps to it. Infrastructure software earns its authority through precision, not decoration.</p>
+      </div>
+    </div>
+
+    <div class="spacing-guide">
+      <div class="sp-row"><div class="sp-name sp-label">--sp-1</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:4px"></div></div><div class="sp-label">4px</div><div class="type-specs" style="width:200px;text-align:left">Icon gaps, tight inline spacing</div></div>
+      <div class="sp-row"><div class="sp-name sp-label">--sp-2</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:8px"></div></div><div class="sp-label">8px</div><div class="type-specs" style="width:200px;text-align:left">Label → value, badge internals</div></div>
+      <div class="sp-row"><div class="sp-name sp-label">--sp-3</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:12px"></div></div><div class="sp-label">12px</div><div class="type-specs" style="width:200px;text-align:left">Card → inner content, compact rows</div></div>
+      <div class="sp-row"><div class="sp-name sp-label">--sp-4</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:16px"></div></div><div class="sp-label">16px</div><div class="type-specs" style="width:200px;text-align:left">Default card padding, form fields</div></div>
+      <div class="sp-row"><div class="sp-name sp-label">--sp-5</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:24px"></div></div><div class="sp-label">24px</div><div class="type-specs" style="width:200px;text-align:left">Section gaps, generous card padding</div></div>
+      <div class="sp-row"><div class="sp-name sp-label">--sp-6</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:32px"></div></div><div class="sp-label">32px</div><div class="type-specs" style="width:200px;text-align:left">Between major sections</div></div>
+      <div class="sp-row"><div class="sp-name sp-label">--sp-7</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:48px"></div></div><div class="sp-label">48px</div><div class="type-specs" style="width:200px;text-align:left">Page-level section rhythm</div></div>
+      <div class="sp-row"><div class="sp-name sp-label">--sp-8</div><div class="sp-bar-wrap"><div class="sp-bar" style="width:64px"></div></div><div class="sp-label">64px</div><div class="type-specs" style="width:200px;text-align:left">Hero padding, top-level page margin</div></div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Border radius</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Radius scale: 3 → 6 → 10 → 16px</div>
+          <div class="rule-desc"><strong>3px (--r-sm):</strong> tags, code pills, badges. <strong>6px (--r-md):</strong> buttons, inputs, small cards. <strong>10px (--r-lg):</strong> main cards, panels, modals. <strong>16px (--r-xl):</strong> floating elements, demo frames. <strong>Never use 24px+</strong> — it reads as consumer/mobile app, not infrastructure tooling.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Nested radii must be concentric</div>
+          <div class="rule-desc">A button inside a card with <code>--r-lg</code> (10px) must use at most <code>--r-md</code> (6px). The inner element's radius is always ≤ outer radius. When a child is at the edge of a parent, their curves must align visually: <code>inner_radius = outer_radius − gap</code>.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="icons">
+    <div class="chapter-header">
+      <div class="chapter-num">05</div>
+      <div class="chapter-title-block">
+        <h2>Icons</h2>
+        <p>Lucide React. One library. One stroke weight. One grid. No exceptions.</p>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Lucide React is the only icon library</div>
+          <div class="rule-desc">All icons from <code>lucide-react</code>. Never mix with FontAwesome, Material Icons, or custom SVGs in the same view. Stroke width is always <code>1.5</code> — Lucide's default. Never override stroke-width per icon.</div>
+          <span class="rule-tag">lucide-react · strokeWidth=1.5</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Icon sizes: 14 / 16 / 20 / 24px only</div>
+          <div class="rule-desc"><strong>14px:</strong> inline with 12px text. <strong>16px:</strong> standard UI icon (buttons, nav labels, table cells). <strong>20px:</strong> section headers, prominent actions. <strong>24px:</strong> hero illustrations, empty states. No other sizes.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Every icon-only button needs aria-label</div>
+          <div class="rule-desc">A button with only an icon and no visible text must have <code>aria-label="Refresh sessions"</code>. No exceptions. Test with a screen reader before shipping.</div>
+          <span class="rule-tag tag-a11y">aria-label required</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Kabisa-specific icon vocabulary</div>
+          <div class="rule-desc">Maintain a documented mapping: <code>Zap</code> → charging/energy, <code>MapPin</code> → station location, <code>Plug</code> → connector/EVSE, <code>Activity</code> → session graph, <code>Receipt</code> → billing, <code>Wifi</code> → OCPP connection, <code>Car</code> → vehicle, <code>AlertTriangle</code> → charger fault. Consistent iconography builds operator muscle memory.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="buttons">
+    <div class="chapter-header">
+      <div class="chapter-num">06</div>
+      <div class="chapter-title-block">
+        <h2>Buttons</h2>
+        <p>Four variants. Each earns its place. One primary action per view — if everything is yellow, nothing is.</p>
+      </div>
+    </div>
+
+    <div class="demo-frame">
+      <div class="demo-label">button variants</div>
+      <div class="btn-row">
+        <button class="btn btn-primary">⚡ Start session</button>
+        <button class="btn btn-secondary">↓ Export CSV</button>
+        <button class="btn btn-ghost">⚙ Settings</button>
+        <button class="btn btn-danger">✕ End session</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" disabled style="opacity:0.4;cursor:not-allowed;transform:none">Saving…</button>
+        <button class="btn btn-secondary" style="position:relative;padding-left:32px">
+          <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:12px;height:12px;border:1.5px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block"></span>
+          Loading…
+        </button>
+      </div>
+    </div>
+
+    <style>@keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }</style>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Exactly one primary button per view</div>
+          <div class="rule-desc">A page or modal may have exactly one <code>.btn-primary</code> (Solar Yellow). If you find yourself wanting two, reconsider the IA — one action should be more important. Use <code>.btn-secondary</code> for the second.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Button labels are specific, not generic</div>
+          <div class="rule-desc">Labels name the exact action and its object. <strong>Not</strong> "Submit", "Confirm", "OK". <strong>Yes:</strong> "Start charging session", "Save connector settings", "Generate invoice". When a dialog opens after clicking, the label ends with "…" (the ellipsis character <code>&amp;hellip;</code>, never three dots).</div>
+          <span class="rule-tag tag-wow">no ambiguity</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Loading state is always shown</div>
+          <div class="rule-desc">Any async action shows a spinner + the verb in progressive form: "Saving…", "Connecting…", "Generating…". Keep the original label visible alongside the spinner — never replace the label with just a spinner. Disable the button during in-flight requests. Min loading state duration: 300ms (prevents flicker on fast networks).</div>
+          <span class="rule-tag tag-perf">300ms min</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Destructive actions require confirmation</div>
+          <div class="rule-desc">Any action that deletes, ends, or cannot be undone: show a confirmation dialog with the exact resource name. "End charging session CP-KGL-001?" with "End session" (danger) and "Keep charging" (secondary). Never just "Yes" / "No".</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Hover lifts, active presses</div>
+          <div class="rule-desc"><code>:hover</code> → <code>translateY(-1px)</code> + subtle shadow (1px only). <code>:active</code> → <code>scale(0.98)</code> + return to base. Duration: 120ms ease-out. This gives buttons physicality without looking like a Material Design throwback.</div>
+          <span class="rule-tag tag-anim">120ms ease-out</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="inputs">
+    <div class="chapter-header">
+      <div class="chapter-num">07</div>
+      <div class="chapter-title-block">
+        <h2>Forms &amp; Inputs</h2>
+        <p>A form is a conversation, not a questionnaire. Every field earns its presence or gets cut.</p>
+      </div>
+    </div>
+
+    <div class="demo-frame">
+      <div class="demo-label">input states</div>
+      <div class="input-row">
+        <input class="k-input" placeholder="Search charge points…" style="width:220px">
+        <input class="k-input" value="CP-KGL-001" style="width:150px">
+        <input class="k-input" style="border-color:var(--red);box-shadow:0 0 0 3px rgba(239,68,68,0.12);width:180px" value="invalid@" placeholder="">
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Every input has a visible label</div>
+          <div class="rule-desc">Placeholder text is not a label. Every <code>&lt;input&gt;</code> has an associated <code>&lt;label&gt;</code> element — either visible above the field or as a floating label. When the placeholder is the only label, screen reader users and users with cognitive impairments are lost the moment they start typing.</div>
+          <span class="rule-tag tag-a11y">label required</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Focus ring: Voltage Blue, 3px offset</div>
+          <div class="rule-desc"><code>box-shadow: 0 0 0 3px rgba(69,97,222,0.2)</code> + <code>border-color: var(--voltage-3)</code>. Never remove outline without replacing it. The focus ring is the keyboard user's cursor — removing it is like blinding a sighted user.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Errors appear inline, never in a toast</div>
+          <div class="rule-desc">Validation errors live immediately below the offending field in <code>--red</code>. On form submission, scroll to and focus the first error automatically. Error message format: what happened + how to fix it. Not "Invalid value." Yes: "Enter a valid South African mobile number starting with +27 or 0."</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Never block paste</div>
+          <div class="rule-desc">Operators will paste charge point IDs, API keys, phone numbers. Blocking paste on any <code>&lt;input&gt;</code> or <code>&lt;textarea&gt;</code> is prohibited. Ever. Including OTP fields — let operators paste the code.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Enter submits the form</div>
+          <div class="rule-desc">When the focused input is the only field, or the last field in a form, pressing Enter submits. In <code>&lt;textarea&gt;</code>, Enter inserts a newline; ⌘/Ctrl+Enter submits. Never make operators reach for a mouse to submit a simple form.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p3"></div>
+        <div class="rule-body">
+          <div class="rule-title">Unsaved changes are warned</div>
+          <div class="rule-desc">If an admin is editing a tariff configuration and clicks away, show a browser-native <code>beforeunload</code> warning or a custom modal: "You have unsaved changes to Tariff T-001. Leave without saving?"</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="status">
+    <div class="chapter-header">
+      <div class="chapter-num">08</div>
+      <div class="chapter-title-block">
+        <h2>Status &amp; Badges</h2>
+        <p>Operators scan status at a glance. Every status is a dot + a text label. Color is never the only signal.</p>
+      </div>
+    </div>
+
+    <div class="demo-frame">
+      <div class="demo-label">badge variants</div>
+      <div class="badge-row">
+        <span class="badge badge-online"><span class="badge-dot"></span>Online</span>
+        <span class="badge badge-charging"><span class="badge-dot"></span>Charging</span>
+        <span class="badge badge-offline"><span class="badge-dot"></span>Offline</span>
+        <span class="badge badge-error"><span class="badge-dot"></span>Faulted</span>
+        <span class="badge badge-info">OCPP 2.0.1</span>
+        <span class="badge" style="background:var(--solar-glow);color:var(--solar);border:1px solid rgba(255,212,0,0.2)">⚡ Peak hour</span>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Charging badge pulses, nothing else does</div>
+          <div class="rule-desc">The amber dot on an active charging session pulses at 1.5s to signal live activity. This is the only animated status indicator in the system. Online, offline, and faulted dots are static — constant presence, no animation.</div>
+          <span class="rule-tag tag-anim">1.5s pulse · amber only</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Badges are pill-shaped (border-radius: 99px)</div>
+          <div class="rule-desc">The only elements in the system with full pill radius. They are categorically different from buttons (6px) and cards (10px). The round shape signals "state label" not "action".</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="feedback">
+    <div class="chapter-header">
+      <div class="chapter-num">09</div>
+      <div class="chapter-title-block">
+        <h2>Feedback &amp; Toasts</h2>
+        <p>Toasts are the voice of the system. They are calm, precise, and never apologize.</p>
+      </div>
+    </div>
+
+    <div class="demo-frame">
+      <div class="demo-label">top-right toast examples</div>
+      <div style="display:flex;flex-direction:column;gap:var(--sp-3)">
+        <div class="toast">
+          <div class="toast-dot" style="background:var(--green)"></div>
+          <div class="toast-text"><strong>Session started</strong> — CP-KGL-002 · 7.4 kW · Token KBC-0042</div>
+        </div>
+        <div class="toast">
+          <div class="toast-dot" style="background:var(--red)"></div>
+          <div class="toast-text"><strong>Connector unreachable</strong> — Check OCPP connection on CP-KGL-005. <a href="#" style="color:var(--voltage-3)">View diagnostics →</a></div>
+        </div>
+        <div class="toast">
+          <div class="toast-dot" style="background:var(--solar)"></div>
+          <div class="toast-text"><strong>Tariff updated</strong> — Weekend rate applied to 4 connectors. <span style="color:var(--text-3);font-size:11px">Undo</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Toasts appear top-right, stack downward</div>
+          <div class="rule-desc">Fixed position, 16px from the right edge, 16px from the top. New toasts appear at the top and push older ones down. Maximum 3 visible at once, older ones fade out. Use <code>Sonner</code> or a similar queue library configured to <code>position="top-right"</code>. Never <code>alert()</code>.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Success and info: 4s auto-dismiss. Errors: persistent</div>
+          <div class="rule-desc">Successes auto-dismiss after 4 seconds. Errors stay until the operator dismisses them — an error that disappears before they can read the fix is worse than no feedback at all. Provide a link to the relevant resource in error toasts.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Toast copy: subject · what happened · action</div>
+          <div class="rule-desc">Format: <strong>[Resource]</strong> — [what happened] — [optional action link]. "Invoice #1042 generated — RWF 12,400 — <a href="#" style="color:var(--voltage-3)">Download PDF →</a>". Never start with "Error:" or "Success:" — the dot color carries that signal.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Optimistic updates for instant feel</div>
+          <div class="rule-desc">When an action is likely to succeed (toggling a tariff, marking idle), update the UI immediately. If the server returns an error, roll back and show the toast. This is the difference between software that feels fast and software that feels like it's asking permission.</div>
+          <span class="rule-tag tag-wow">makes it feel fast</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="tables">
+    <div class="chapter-header">
+      <div class="chapter-num">10</div>
+      <div class="chapter-title-block">
+        <h2>Data Tables</h2>
+        <p>Tables are the core of an EV dashboard. They must be fast, dense, sortable, and keyboard-navigable. TanStack Table is the engine.</p>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">36px row height. Non-negotiable for dense data.</div>
+          <div class="rule-desc">At 36px, an operator can scan 20 sessions without scrolling on a 1080p monitor. Vercel's activity tables, Cloudflare's request logs — all 36–38px rows. Anything taller is a concession to mobile habits in a desktop tool.</div>
+          <span class="rule-tag">height: 36px</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Numeric columns use Geist Mono + tabular-nums + right-align</div>
+          <div class="rule-desc">Energy (kWh), duration, cost, power — all monospace, tabular, right-aligned. This is what makes large numbers scannable vertically. Mixing font styles in a table column is a mistake every generic dashboard makes.</div>
+          <span class="rule-tag">text-align: right</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Virtualize tables over 100 rows</div>
+          <div class="rule-desc">Use <code>virtua</code> or TanStack Virtual for any list that can exceed 100 items. Sessions history, audit logs, billing records. Rendering 2,000 DOM nodes for a session history table is the first thing that will make a station manager call it "slow software".</div>
+          <span class="rule-tag tag-perf">virtua</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Empty state is a next step, not a void</div>
+          <div class="rule-desc">When a table has no rows: show the Kabisa icon + a specific message + one action. "No sessions on Kanombe Station 3 in the last 30 days. <a href="#" style="color:var(--voltage-3)">Check OCPP connection →</a>" Not just "No data available."</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">All filters and sorts live in the URL</div>
+          <div class="rule-desc">Use <code>nuqs</code> to sync table state (filters, sort, pagination, search) to URL params. An operator should be able to share a filtered session view with a colleague by copying the URL. This is table stakes for professional tooling.</div>
+          <span class="rule-tag">nuqs · URL state</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="animation">
+    <div class="chapter-header">
+      <div class="chapter-num">11</div>
+      <div class="chapter-title-block">
+        <h2>Animation</h2>
+        <p>Motion is the language of live systems. The dashboard shows electricity flowing in real time. Every animation earns its place by communicating cause and effect — not by decorating.</p>
+      </div>
+    </div>
+
+    <div class="callout wow">
+      <div class="callout-icon">⚡</div>
+      <p><strong>The Kabisa animation philosophy:</strong> Our platform handles live electrical systems — sessions starting, power spiking, connectors switching state. Animation communicates that this is a live system, not a static report. Every animation should feel like watching actual electricity move. But restraint makes the meaningful animations land harder. One perfectly-timed entrance beats five scattered effects.</p>
+    </div>
+
+    <div class="timing-grid">
+      <div class="timing-card">
+        <div class="timing-label">Micro</div>
+        <div class="timing-value">80–120ms</div>
+        <div class="timing-use">Button press, toggle switch, checkbox check. Must feel instant.</div>
+      </div>
+      <div class="timing-card">
+        <div class="timing-label">Standard</div>
+        <div class="timing-value">150–200ms</div>
+        <div class="timing-use">Hover states, badge transitions, row highlights, tooltip appear.</div>
+      </div>
+      <div class="timing-card">
+        <div class="timing-label">Transition</div>
+        <div class="timing-value">250–300ms</div>
+        <div class="timing-use">Panel open/close, tab switch, modal entrance, page skeleton reveal.</div>
+      </div>
+      <div class="timing-card">
+        <div class="timing-label">Orchestrated</div>
+        <div class="timing-value">400–600ms</div>
+        <div class="timing-use">Chart data load, stat card count-up, session list entrance with stagger.</div>
+      </div>
+      <div class="timing-card">
+        <div class="timing-label">Ambient</div>
+        <div class="timing-value">1.5–2s loop</div>
+        <div class="timing-use">Charging pulse on status dot. Nothing else loops.</div>
+      </div>
+      <div class="timing-card">
+        <div class="timing-label">Never</div>
+        <div class="timing-value">>600ms</div>
+        <div class="timing-use">Anything that makes the user wait to read content. Not animation — delay.</div>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Easing curves</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Snappy for UI state changes</div>
+          <div class="rule-desc"><code>cubic-bezier(0.25, 0.46, 0.45, 0.94)</code> — fast exit, gentle deceleration. For dropdowns, tooltips, badge transitions, tab underlines.</div>
+          <span class="rule-tag tag-anim">--ease-snappy</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Spring for items entering the view</div>
+          <div class="rule-desc"><code>cubic-bezier(0.34, 1.56, 0.64, 1)</code> — slight overshoot gives physical weight. For modal entrance, drawer slide, stat cards appearing. Feels alive, not mechanical.</div>
+          <span class="rule-tag tag-anim">--ease-spring</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Always honor prefers-reduced-motion</div>
+          <div class="rule-desc">Wrap every animation in <code>@media (prefers-reduced-motion: no-preference)</code>. Photosensitive users and users with vestibular disorders experience nausea or seizure from motion. This is not optional. The charging pulse on badges — remove the animation, keep the color.</div>
+          <span class="rule-tag tag-a11y">required · no exceptions</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Only animate transform and opacity</div>
+          <div class="rule-desc">Never animate <code>width</code>, <code>height</code>, <code>top</code>, <code>left</code>, <code>margin</code>, or <code>padding</code>. These trigger browser layout recalculation on every frame — they make 120fps animations run at 20fps on real hardware. Transform and opacity are compositor-only: GPU-accelerated, zero reflow.</div>
+          <span class="rule-tag tag-perf">transform + opacity only</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Stat cards count up on first load</div>
+          <div class="rule-desc">Energy dispensed, total sessions, revenue — numbers count up from 0 to their value over 600ms using an ease-out curve when the dashboard first loads. Once loaded, numbers update instantly (no count-up on live updates). This is the "wow" moment. Use a requestAnimationFrame loop, not CSS — it needs to be interruptible.</div>
+          <span class="rule-tag tag-wow">wow moment</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Live session graph ticks in real time</div>
+          <div class="rule-desc">On the sessions page, the power draw graph appends a new data point every 30 seconds (or on OCPP MeterValues message). The line extends with a 200ms ease-out path animation — the chart visibly breathes. Not a full re-render — an SVG path extension.</div>
+          <span class="rule-tag tag-wow">live electricity</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p3"></div>
+        <div class="rule-body">
+          <div class="rule-title">Stagger list entrances</div>
+          <div class="rule-desc">When a table or card grid loads, stagger the row/card opacity + translateY entrance: 30ms delay between each item, capped at 8 items (items 9+ appear instantly). This creates the sense of a list assembling itself — the dashboard feels alive without being chaotic.</div>
+          <span class="rule-tag tag-anim">30ms stagger · 8 max</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="interactions">
+    <div class="chapter-header">
+      <div class="chapter-num">12</div>
+      <div class="chapter-title-block">
+        <h2>Interactions</h2>
+        <p>Interactions are accessible by default and fast for power users. Core desktop flows work with keyboard navigation, while touch-first mobile flows provide equivalent accessible controls.</p>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Keyboard &amp; Navigation</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Keyboard accessibility for core desktop flows</div>
+          <div class="rule-desc">Core dashboard flows, starting a session remotely, editing a tariff, viewing diagnostics, must be completable with keyboard navigation. Support Tab, Shift+Tab, Arrow keys, Enter, and Escape with visible focus states. Mouse and touch are welcome, but never required for critical desktop work. For map-heavy or mobile-first interactions, provide an equivalent list, control, or accessible fallback.</div>
+          <span class="rule-tag tag-a11y">WAI-ARIA</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">State lives in the URL. Always.</div>
+          <div class="rule-desc">Filters, pagination, selected tab, expanded panel, modal open — if it's a state the operator cares about, it lives in the URL via <code>nuqs</code>. Share, Refresh, Back, Forward must all work exactly as expected. This is what separates Kabisa from local tools with no memory.</div>
+          <span class="rule-tag tag-wow">share / refresh / back</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">⌘K command palette on every page</div>
+          <div class="rule-desc">Cmd/Ctrl+K opens a global command palette (cmdk). Operators can navigate to any station, start a session on a connector, pull up an invoice, or change a tariff without hunting through the sidebar. Index everything: stations, charge points, recent sessions, settings pages. This is the shortcut that makes power users love the product.</div>
+          <span class="rule-tag tag-wow">power user feature</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Focus rings: never hidden, always Voltage Blue</div>
+          <div class="rule-desc">Use <code>:focus-visible</code> (not <code>:focus</code>) to avoid showing rings on mouse click while showing them on keyboard navigation. The ring is <code>box-shadow: 0 0 0 3px rgba(69,97,222,0.25)</code> — visible, not intrusive.</div>
+          <span class="rule-tag tag-a11y">:focus-visible</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Links use &lt;a&gt;, never &lt;div onClick&gt;</div>
+          <div class="rule-desc">Navigation always uses <code>&lt;a href&gt;</code> or Next.js <code>&lt;Link&gt;</code>. This gives Cmd+Click (open in new tab), middle-click, right-click context menu, and screen reader navigation for free. A <code>&lt;div onClick&gt;</code> that navigates is a broken link.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Scroll position persists on Back navigation</div>
+          <div class="rule-desc">If an operator scrolls to the 40th session in a list, clicks into it, then presses Back, they return to where they were — not the top of the list. Implement with <code>ScrollRestoration</code> in the router or manual <code>sessionStorage</code> scroll position tracking.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="sessions">
+    <div class="chapter-header">
+      <div class="chapter-num">13</div>
+      <div class="chapter-title-block">
+        <h2>Sessions Page</h2>
+        <p>This is our showcase screen — the one that makes operators say "I've never seen this in East Africa." It is the most data-rich, most live, most customizable page in the platform.</p>
+      </div>
+    </div>
+
+    <div class="callout wow">
+      <div class="callout-icon">⚡</div>
+      <p><strong>Design goal:</strong> An operator opens a live session and sees electricity moving — power draw graphing in real time, SoC climbing, session cost ticking upward. They feel in control. This screen should feel closer to a Bloomberg terminal than a spreadsheet. Every data point serves a decision.</p>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Data displayed per session</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Live metrics (update every 30s or on MeterValues)</div>
+          <div class="rule-desc">Power draw (kW) · Voltage (V) · Current (A) · Energy dispensed (kWh) · Session cost (RWF) · Duration · State of Charge if reported by vehicle. All values displayed in Geist Mono with tabular-nums. New readings animate in with a 100ms fade.</div>
+          <span class="rule-tag tag-wow">live data</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Power draw graph: always visible, always live</div>
+          <div class="rule-desc">The session detail view always shows a power (kW) over time chart as the primary visual. It uses Recharts with Voltage Blue as the line color and a subtle fill gradient. The chart extends rightward in real time. On hover, a crosshair tooltip shows exact values at that timestamp. This is the WOW moment — operators see electricity as a living signal.</div>
+          <span class="rule-tag tag-wow">signature feature</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Admin-configurable visible columns and panels</div>
+          <div class="rule-desc">Each operator account stores a <code>sessionViewConfig</code> preference: which metric cards are pinned, which graph types are shown (kW, V, A, SoC), whether the OCPP message log is expanded by default. Saved server-side per user. The gear icon top-right opens a "Customize view" panel.</div>
+          <span class="rule-tag tag-wow">admin control</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-layout">
+      <div class="panel-card">
+        <div class="panel-label">Power draw — last 45 min</div>
+        <div class="spark-line">
+          <svg viewBox="0 0 400 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4561DE" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#4561DE" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,35 L30,28 L60,20 L90,15 L120,12 L150,8 L180,10 L210,7 L240,9 L270,11 L300,14 L330,10 L360,8 L390,6 L400,6" fill="none" stroke="#4561DE" stroke-width="1.5"/>
+            <path d="M0,35 L30,28 L60,20 L90,15 L120,12 L150,8 L180,10 L210,7 L240,9 L270,11 L300,14 L330,10 L360,8 L390,6 L400,6 L400,40 L0,40Z" fill="url(#sg)"/>
+          </svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:var(--sp-2)">
+          <span style="font-size:11px;color:var(--text-3)">0 kW</span>
+          <span style="font-size:11px;color:var(--text-3)">Now: <span style="color:var(--voltage-3);font-family:'JetBrains Mono',monospace">7.2 kW</span></span>
+        </div>
+      </div>
+      <div>
+        <div class="panel-card">
+          <div class="panel-label">Session details</div>
+          <div class="data-row"><span class="data-key">Connector</span><span class="data-val">CP-KGL-002 · J1772</span></div>
+          <div class="data-row"><span class="data-key">Started</span><span class="data-val">14:32:09</span></div>
+          <div class="data-row"><span class="data-key">Duration</span><span class="data-val">00:47:22</span></div>
+          <div class="data-row"><span class="data-key">Energy</span><span class="data-val">5.64 kWh</span></div>
+          <div class="data-row"><span class="data-key">Cost</span><span class="data-val">RWF 4,230</span></div>
+          <div class="data-row"><span class="data-key">Voltage</span><span class="data-val">238 V</span></div>
+          <div class="data-row"><span class="data-key">Current</span><span class="data-val">30.1 A</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Additional session views</div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Voltage graph tab</div>
+          <div class="rule-desc">Secondary tab showing voltage over time. Voltage anomalies (drops below 210V, spikes above 250V) are highlighted in amber. Useful for diagnosing infrastructure issues at the station level.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Current graph tab</div>
+          <div class="rule-desc">Amperage over time. Shows negotiated vs actual current. Useful for detecting EVSE or cable limitations.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">OCPP message log (collapsible, admin only)</div>
+          <div class="rule-desc">Real-time stream of OCPP 2.0.1 messages for the session. Expandable JSON, color-coded by message type. For technical operators and diagnostics. Hidden by default, toggled via "Show OCPP log" in the customize panel.</div>
+          <span class="rule-tag">admin only</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p3"></div>
+        <div class="rule-body">
+          <div class="rule-title">State of Charge if available</div>
+          <div class="rule-desc">Some vehicles report SoC via OCPP. When available, show a battery fill indicator alongside the session card. Animate the fill level as it increases. This is the feature that makes operators go "how did you get that?"</div>
+          <span class="rule-tag tag-wow">vehicle SoC display</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="admin">
+    <div class="chapter-header">
+      <div class="chapter-num">14</div>
+      <div class="chapter-title-block">
+        <h2>Admin Customization</h2>
+        <p>Operators own their view. The platform remembers how each operator works and surfaces what matters to them.</p>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">What operators can control</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Dashboard metric cards — pin / unpin / reorder</div>
+          <div class="rule-desc">The top stats row is operator-configurable. Available metrics: Total kWh today, Active sessions, Revenue (RWF), Faulted connectors, Average session duration, Top station by usage. Drag to reorder, click × to unpin, + to add. State saved server-side to their account.</div>
+          <span class="rule-tag tag-wow">drag to customize</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Session detail view — choose visible panels</div>
+          <div class="rule-desc">Each operator saves which panels are visible in session detail: Power graph, Voltage graph, Current graph, SoC display, OCPP log, Cost breakdown. Technical operators see OCPP logs; billing admins see cost breakdown. One interface, multiple personas.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Column visibility in all tables</div>
+          <div class="rule-desc">Every data table has a Columns button that opens a checklist of available columns. The visible set is saved per table per user. Default columns are set per role. When an operator hides a column, it's hidden on their next login too.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Role-based default views</div>
+          <div class="rule-desc">Three role defaults: <strong>Station Manager</strong> (operational focus: uptime, faults, sessions), <strong>Billing Admin</strong> (financial focus: revenue, invoices, payment status), <strong>Technical</strong> (deep focus: OCPP logs, diagnostics, firmware). Roles determine default column sets and dashboard cards — not what they can access.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p3"></div>
+        <div class="rule-body">
+          <div class="rule-title">Time zone and locale preference</div>
+          <div class="rule-desc">Operators in Kigali see CAT (UTC+2). Future operators in Nairobi (EAT, UTC+3) or Kinshasa (WAT, UTC+1) see their local time. Dates use locale-aware formatting via <code>Intl.DateTimeFormat</code>. Currency uses <code>Intl.NumberFormat</code>. No hardcoded "RWF" strings in components.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="copywriting">
+    <div class="chapter-header">
+      <div class="chapter-num">15</div>
+      <div class="chapter-title-block">
+        <h2>Copywriting</h2>
+        <p>Every word is a design decision. Kabisa's voice is confident, specific, and never apologizes. It explains without condescending.</p>
+      </div>
+    </div>
+
+    <div class="copy-compare">
+      <div class="copy-before">The deployment was successful.</div>
+      <div class="copy-arrow">→</div>
+      <div class="copy-after">Session started on CP-KGL-002.</div>
+    </div>
+    <div class="copy-compare">
+      <div class="copy-before">Error occurred. Please try again.</div>
+      <div class="copy-arrow">→</div>
+      <div class="copy-after">CP-KGL-005 didn't respond. Check its OCPP connection in Diagnostics →</div>
+    </div>
+    <div class="copy-compare">
+      <div class="copy-before">Are you sure you want to continue?</div>
+      <div class="copy-arrow">→</div>
+      <div class="copy-after">End this session on CP-KGL-002? The driver will be billed RWF 4,230.</div>
+    </div>
+    <div class="copy-compare">
+      <div class="copy-before">No data available.</div>
+      <div class="copy-arrow">→</div>
+      <div class="copy-after">No sessions at Kanombe Station in the last 7 days. Check if connectors are online →</div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Voice rules</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Sentence case everywhere in the UI</div>
+          <div class="rule-desc">Navigation, buttons, table headers, labels, tooltips, modals, toasts. All sentence case. "Charge point settings" not "Charge Point Settings". Exception: proper nouns (Kabisa, OCPP, MoMo), abbreviations (kWh, RWF, SoC), and page headings on marketing pages.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Errors name the resource and give the fix</div>
+          <div class="rule-desc">Never "Something went wrong." Always: what failed (the resource), why (specific cause if known), how to fix it (link or action). "Invoice #1042 couldn't be generated — the billing period has no sessions. Add sessions or change the period."</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Numbers use numerals, units have a non-breaking space</div>
+          <div class="rule-desc">"8 sessions", not "eight sessions". "7.4&nbsp;kW", not "7.4kW". The space prevents "7.4" and "kW" from splitting across lines. Use <code>&amp;nbsp;</code> or the Unicode non-breaking space <code>\u00A0</code> between number and unit.</div>
+          <span class="rule-tag">7.4&nbsp;kW · 240&nbsp;V</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Active voice for actions, passive for states</div>
+          <div class="rule-desc">Buttons and labels are active: "Start session", "Generate invoice", "Connect charge point". State descriptions are passive: "Session started", "Invoice generated", "Connector online". The verb form signals whether something is happening or has happened.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Brand names are protected from translation</div>
+          <div class="rule-desc">Wrap brand names, OCPP terms, and technical identifiers with <code>translate="no"</code> to prevent browser auto-translate from mangling them. <code>&lt;span translate="no"&gt;OCPP&lt;/span&gt;</code>, <code>&lt;span translate="no"&gt;MoMo&lt;/span&gt;</code>.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="accessibility">
+    <div class="chapter-header">
+      <div class="chapter-num">16</div>
+      <div class="chapter-title-block">
+        <h2>Accessibility</h2>
+        <p>The platform must work for every operator, regardless of how they navigate. This is ethics, not a checkbox.</p>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-icon">⚠</div>
+      <p><strong>Minimum bar:</strong> WCAG 2.1 AA. Target bar: WCAG 2.1 AAA for critical dashboard views. Use APCA for contrast calculations (more accurate than WCAG 2 ratio). Test core desktop flows with keyboard navigation, then with VoiceOver on macOS, before marking any feature complete.</p>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Non-negotiable requirements</div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Semantic HTML before ARIA</div>
+          <div class="rule-desc">Use <code>&lt;button&gt;</code> not <code>&lt;div role="button"&gt;</code>. Use <code>&lt;table&gt;</code> for tabular data not CSS grids with roles. ARIA is a polyfill for when native semantics can't do the job — not a replacement for correct HTML.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">aria-live for async updates</div>
+          <div class="rule-desc">Session status changes, new toast messages, real-time metric updates — all announced via <code>aria-live="polite"</code>. Live charging power values use <code>aria-live="off"</code> (they update too frequently to announce every change).</div>
+          <span class="rule-tag tag-a11y">aria-live="polite"</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Skip to content link</div>
+          <div class="rule-desc">A visually hidden "Skip to main content" link appears on <code>:focus</code> at the top of every page. It jumps focus to <code>&lt;main&gt;</code>. This is the first thing a screen reader user or keyboard user encounters — make it work.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Chart accessibility</div>
+          <div class="rule-desc">Every chart has an accessible table alternative, hidden visually but readable by screen readers. Use <code>role="img"</code> + <code>aria-label</code> on the chart container describing what the chart shows. The power draw chart: <code>aria-label="Power draw over session duration. Current: 7.2 kW."</code></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="performance">
+    <div class="chapter-header">
+      <div class="chapter-num">17</div>
+      <div class="chapter-title-block">
+        <h2>Performance</h2>
+        <p>The dashboard will be used on 4G connections in Rwanda. It must be fast on those connections, not just on a Nairobi office fiber line.</p>
+      </div>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">Budgets &amp; targets</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">Network targets</div>
+          <div class="rule-desc"><strong>POST/PATCH/DELETE:</strong> &lt;500ms. <strong>Dashboard initial load (LCP):</strong> &lt;2.5s on 4G. <strong>Table data fetch:</strong> &lt;800ms for 100 rows. <strong>Real-time updates:</strong> OCPP MeterValues displayed within 200ms of receipt. These are not suggestions — add performance budgets to CI.</div>
+          <span class="rule-tag tag-perf">&lt;500ms / &lt;2.5s LCP</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Skeleton screens, not spinners</div>
+          <div class="rule-desc">Dashboard cards, tables, and charts use skeleton loaders that match the exact layout of the loaded content — preventing layout shift when data arrives. Spinners are for actions (button loading state), not page loads. Minimum skeleton visible time: 300ms to prevent flicker on fast connections.</div>
+          <span class="rule-tag tag-perf">no layout shift</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p1"></div>
+        <div class="rule-body">
+          <div class="rule-title">Virtualize everything over 100 rows</div>
+          <div class="rule-desc">Session history, billing records, audit logs, OCPP message logs. Use <code>virtua</code> (faster than react-window). Rendering 500+ DOM nodes for a session table is the #1 performance killer in operator dashboards. Measure with React Scan before shipping.</div>
+          <span class="rule-tag tag-perf">virtua</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority p2"></div>
+        <div class="rule-body">
+          <div class="rule-title">Font subsetting</div>
+          <div class="rule-desc">Ship only the Unicode ranges in use. Geist Sans: Latin + Latin Extended. Geist Mono: Latin only (no extended characters in data values). Use <code>unicode-range</code> in the <code>@font-face</code> declaration. Unsubsetted Inter is 1.2MB — the subset for this use case is ~80KB.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="standards">
+    <div class="chapter-header">
+      <div class="chapter-num">18</div>
+      <div class="chapter-title-block">
+        <h2>Our Standard</h2>
+        <p>The question we ask before shipping anything.</p>
+      </div>
+    </div>
+
+    <div class="callout wow">
+      <div class="callout-icon">⚡</div>
+      <p><strong>The Kabisa bar:</strong> Would a station manager in Kigali, opening this screen on a 4G connection at 7am before the morning rush, feel in control? Would they see exactly what they need, trust what they're looking at, and know exactly what to do next? If the answer is anything less than an immediate yes — it's not done.</p>
+    </div>
+
+    <div class="rule-group">
+      <div class="rule-group-label">The 5 questions before every ship</div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">1. Can I complete critical desktop flows with a keyboard?</div>
+          <div class="rule-desc">Put the mouse aside for core dashboard tasks. Open the feature, tab through it, trigger actions with Enter, escape dialogs with Escape, and confirm focus is always visible. If a critical desktop task gets stuck, it is not shipped. For mobile or map-heavy tasks, verify the accessible fallback instead.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">2. Is every state designed?</div>
+          <div class="rule-desc">Loading, empty, sparse, dense, error, success. Open the network tab. Add network throttle. Check that every state is explicit and guides the next action.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">3. Does the URL reflect the state?</div>
+          <div class="rule-desc">Apply filters. Sort a table. Open a modal. Copy the URL. Open it in a new tab. Did it restore exactly?</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">4. Is there anything that could surprise or confuse an operator?</div>
+          <div class="rule-desc">Show it to someone unfamiliar with the feature. Watch where they hesitate, misread, or miss the action. Those are the bugs.</div>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="rule-priority pw"></div>
+        <div class="rule-body">
+          <div class="rule-title">5. Would you be proud to show this to Google or Wise?</div>
+          <div class="rule-desc">Not as a startup. As an equal. The Kabisa platform should be the thing that proves East Africa builds world-class infrastructure software. Every screen is a statement.</div>
+          <span class="rule-tag tag-wow">the real standard</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="doc-footer">
+    <div class="footer-mark">
+      <strong>Kabisa Interface Bible v1.0</strong>
+      Kabisa Electric Ltd. · Kigali, Rwanda · June 2026<br>
+      Update this document when the platform evolves. Never let the code outrun the spec.
+    </div>
+    <div style="display:flex;gap:var(--sp-3);align-items:center">
+      <div class="version-pill">Forward Design System</div>
+      <div class="version-pill">OCPP 2.0.1</div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// Active sidebar link tracking
+const chapters = document.querySelectorAll('.chapter');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-link[href="#${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+chapters.forEach(c => observer.observe(c));
+</script>
+
+</body>
+</html>

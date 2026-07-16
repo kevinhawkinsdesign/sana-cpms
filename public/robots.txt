@@ -1,0 +1,8 @@
+# Robots.txt for Kabisa
+# This file will be dynamically generated based on the host
+
+User-agent: *
+Allow: /
+
+# Note: Host-specific rules will be handled in the app via middleware
+# or dynamic generation based on the current domain 
