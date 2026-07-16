@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { Map, Marker, NavigationControl } from 'react-map-gl/mapbox';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { Map, Marker, NavigationControl } from 'react-map-gl/maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { osmRasterStyle } from '@/lib/utils/osmMapStyle';
 import {
     Battery,
     X,
@@ -17,8 +17,6 @@ import Loading from "@/components/shared/AnotherLoading";
 import { useMobileNav } from '@/lib/providers/mobile-nav-provider';
 import { LocalizedLink } from "../shared/LocalizedLink";
 import { useClarity } from '@/lib/hooks/useClarity';
-
-const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
 
 const VALID_KABISA_IDS = [
   "NT308DRK", "DHXS3BZX", "0Z7V3NSC", "AJV03AE0", "BFP89X5Y",
@@ -145,11 +143,10 @@ const ChargermapMinimal: React.FC<{ useDark?: boolean }> = ({ useDark = true }) 
                 {/* Map Container */}
                 <div className="absolute inset-0">
                     <Map
-                        mapboxAccessToken={mapboxAccessToken}
                         initialViewState={viewport}
                         onMove={evt => handleMapViewportChange(evt.viewState)}
                         style={{ width: '100%', height: '100%' }}
-                        mapStyle="mapbox://styles/balinda/cm9v40aew001201r193w23tpd"
+                        mapStyle={osmRasterStyle}
                     >
                         <NavigationControl position="top-right" />
                         

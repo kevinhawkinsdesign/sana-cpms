@@ -54,7 +54,6 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || selfOrigin,
     NEXT_PUBLIC_GA_ID: "G-8BMMWECM3D",
     CLARITY_ID: process.env.CLARITY_ID || "rdtw7rgryb",
-    MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN || "",
     NEXT_PUBLIC_SHOW_EBM_POPUP:
       process.env.NEXT_PUBLIC_SHOW_EBM_POPUP || "false",
   },

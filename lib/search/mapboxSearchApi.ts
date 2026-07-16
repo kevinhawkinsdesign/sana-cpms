@@ -1,38 +1,25 @@
 import { SearchResult } from './searchTypes';
 import { calculateDistance } from './resultBlender';
 
-const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
-const GEOCODING_URL = 'https://api.mapbox.com/geocoding/v5/mapbox.places';
+// Nominatim (OpenStreetMap's free geocoder) — no API key, but usage policy
+// requires a descriptive request (no bulk/automated traffic, be a good
+// citizen). https://operations.osmfoundation.org/policies/nominatim/
+const GEOCODING_URL = 'https://nominatim.openstreetmap.org/search';
 
-interface GeocodingFeature {
-  id: string;
-  type: 'Feature';
-  place_type: string[];
-  relevance: number;
-  properties: {
-    accuracy?: string;
-  };
-  text: string;
-  place_name: string;
-  center: [number, number];
-  geometry: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  context?: Array<{
-    id: string;
-    text: string;
-  }>;
-}
-
-interface GeocodingResponse {
-  type: 'FeatureCollection';
-  query: string[];
-  features: GeocodingFeature[];
+interface NominatimResult {
+  place_id: number;
+  osm_type: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  display_name: string;
+  type: string;
+  importance: number;
+  address?: Record<string, string>;
 }
 
 /**
- * Search Mapbox for places/locations using Geocoding API v5
+ * Search OpenStreetMap (via Nominatim) for places/locations.
  */
 export async function searchMapbox(
   query: string,
@@ -42,68 +29,56 @@ export async function searchMapbox(
   if (!query.trim()) return [];
 
   try {
-    // Build URL - encode the query properly
-    const encodedQuery = encodeURIComponent(query);
     const params = new URLSearchParams({
-      access_token: MAPBOX_TOKEN,
+      q: query,
+      format: 'jsonv2',
+      addressdetails: '1',
       limit: '10',
-      types: 'place,locality,address,poi,neighborhood',
-      language: 'en'
     });
 
+    // Nominatim has no true proximity bias param; a soft viewbox (bounded=0)
+    // around the user's location nudges ranking without excluding results.
     if (proximity) {
-      params.append('proximity', `${proximity[0]},${proximity[1]}`);
+      const [lon, lat] = proximity;
+      const delta = 0.5; // ~50km box
+      params.append('viewbox', `${lon - delta},${lat + delta},${lon + delta},${lat - delta}`);
+      params.append('bounded', '0');
     }
 
-    const url = `${GEOCODING_URL}/${encodedQuery}.json?${params}`;
-    const response = await fetch(url, { signal });
+    const url = `${GEOCODING_URL}?${params}`;
+    const response = await fetch(url, {
+      signal,
+      headers: { Accept: 'application/json' },
+    });
 
     if (!response.ok) {
-      console.error('Mapbox API error:', response.status, await response.text());
+      console.error('Nominatim API error:', response.status, await response.text());
       return [];
     }
 
-    const data: GeocodingResponse = await response.json();
+    const data: NominatimResult[] = await response.json();
 
-    // Convert features to SearchResult format
-    const results: SearchResult[] = data.features.map(feature => {
-      const coords = feature.geometry.coordinates as [number, number];
+    const results: SearchResult[] = data.map((feature) => {
+      const coords: [number, number] = [parseFloat(feature.lon), parseFloat(feature.lat)];
       const distance = proximity ? calculateDistance(proximity, coords) : undefined;
+      const [name, ...rest] = feature.display_name.split(', ');
 
       return {
-        id: feature.id,
-        name: feature.text,
-        address: extractAddress(feature),
+        id: String(feature.place_id),
+        name,
+        address: rest.join(', ') || feature.display_name,
         type: 'location',
         coordinates: coords,
         distance,
         source: 'mapbox',
-        feature_type: feature.place_type[0]
+        feature_type: feature.type,
       };
     });
 
     return results;
   } catch (error: any) {
     if (error.name === 'AbortError') throw error;
-    console.error('Mapbox search error:', error);
+    console.error('Nominatim search error:', error);
     return [];
   }
-}
-
-/**
- * Extract readable address from geocoding feature
- */
-function extractAddress(feature: GeocodingFeature): string {
-  // Use place_name but remove the first part (which is the name itself)
-  const parts = feature.place_name.split(', ');
-  if (parts.length > 1) {
-    return parts.slice(1).join(', ');
-  }
-
-  // Fallback to context
-  if (feature.context && feature.context.length > 0) {
-    return feature.context.map(c => c.text).join(', ');
-  }
-
-  return feature.place_name;
 }

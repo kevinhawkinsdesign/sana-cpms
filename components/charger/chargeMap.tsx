@@ -11,9 +11,10 @@ import {
   Layer,
   Source,
   MapRef
-} from 'react-map-gl/mapbox';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+} from 'react-map-gl/maplibre';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { osmRasterStyle, OSRM_DIRECTIONS_URL } from '@/lib/utils/osmMapStyle';
 import {
   Battery,
   ChevronRight,
@@ -36,7 +37,7 @@ import { MobileSearchExpanded } from '@/components/search/MobileSearchExpanded';
 import { MobileChargerPreview } from '@/components/search/MobileChargerPreview';
 
 // Constants
-const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
+// No token needed — OpenStreetMap tiles + OSRM routing are both free and keyless.
 
 // Icon paths
 const chargerIcons = {
@@ -141,7 +142,7 @@ const Chargermap: React.FC<ChargerMapProps> = () => {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [navigationRoute, setNavigationRoute] = useState<any>(null);
   const [navigationDuration, setNavigationDuration] = useState<number | null>(null);
-  const [routeBounds, setRouteBounds] = useState<mapboxgl.LngLatBounds | null>(null);
+  const [routeBounds, setRouteBounds] = useState<maplibregl.LngLatBounds | null>(null);
   const routeCalculationInProgress = useRef(false);
 
   // Mobile nav state
@@ -216,7 +217,7 @@ const Chargermap: React.FC<ChargerMapProps> = () => {
   };
 
   // Fit map to route bounds
-  const fitMapToRouteBounds = useCallback((bounds: mapboxgl.LngLatBounds) => {
+  const fitMapToRouteBounds = useCallback((bounds: maplibregl.LngLatBounds) => {
     if (!mapRef.current) return;
 
     const currentCenter = mapRef.current.getCenter();
@@ -264,8 +265,8 @@ const Chargermap: React.FC<ChargerMapProps> = () => {
     routeCalculationInProgress.current = true;
     try {
       const res = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/` +
-        `${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxAccessToken}`
+        `${OSRM_DIRECTIONS_URL}/` +
+        `${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson`
       );
       const { routes } = await res.json();
 
@@ -274,7 +275,7 @@ const Chargermap: React.FC<ChargerMapProps> = () => {
         setNavigationRoute(route.geometry); // Always set route (for both mobile and desktop)
         setNavigationDuration(route.duration);
 
-        const b = new mapboxgl.LngLatBounds();
+        const b = new maplibregl.LngLatBounds();
         [start, end].forEach(pt => b.extend(pt));
         route.geometry.coordinates.forEach((c: [number, number]) => b.extend(c));
         setRouteBounds(b);
@@ -888,8 +889,7 @@ bg-blue-600 dark:bg-blue-600 p-2 rounded-l-lg shadow-lg hover:bg-blue-700 dark:h
               ref={mapRef}
               {...viewport}
               style={mapStyle}
-              mapboxAccessToken={mapboxAccessToken}
-              mapStyle="mapbox://styles/balinda/cm9v40aew001201r193w23tpd"
+              mapStyle={osmRasterStyle}
               onMove={evt => handleMapViewportChange(evt.viewState)}
               onLoad={onMapLoad}
             >
