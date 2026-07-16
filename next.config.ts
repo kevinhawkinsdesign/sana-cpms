@@ -24,6 +24,13 @@ const imageHostnames = [
   "cms-assets.gokabisa.com", // Strapi media via Cloudflare R2
 ] as const;
 
+// Demo mode: this repo has no separate backend, so the frontend calls its own
+// Next.js API routes (lib/mock/**) instead of the real gokabisa.com API. This
+// resolves to the app's own origin whether it's running locally or deployed.
+const selfOrigin =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
@@ -44,8 +51,7 @@ const nextConfig: NextConfig = {
     ],
   },
   env: {
-    NEXT_PUBLIC_API_URL:
-      process.env.NEXT_PUBLIC_API_URL || "https://new-api.gokabisa.com",
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || selfOrigin,
     NEXT_PUBLIC_GA_ID: "G-8BMMWECM3D",
     CLARITY_ID: process.env.CLARITY_ID || "rdtw7rgryb",
     MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN || "",

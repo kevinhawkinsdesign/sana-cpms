@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import api from '@/lib/api/api';
+import { db } from '@/lib/mock/db';
 
+// Demo mode: transfers the session directly against the in-memory mock DB.
+// (This used to proxy to the real backend at this same path — now that the
+// frontend's API base URL points at itself, that would recurse forever.)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -14,25 +17,28 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Call the backend API to transfer the session
-    const response = await api().post('/api/charging-sessions/operator/transfer-session', {
-      sessionId,
-      newOperatorId
-    });
+    const session = db.sessions.find((s) => s.sessionId === sessionId || s.id === sessionId);
+    if (!session) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'Session not found',
+        data: null
+      }, { status: 404 });
+    }
+
+    session.operatorId = newOperatorId;
 
     return NextResponse.json({
       status: 'success',
       message: 'Session transferred successfully',
-      data: response.data
+      data: { session }
     });
 
   } catch (error: any) {
-    console.error('Error transferring session:', error);
-    
     return NextResponse.json({
       status: 'error',
-      message: error.response?.data?.message || 'Failed to transfer session',
+      message: error.message || 'Failed to transfer session',
       data: null
-    }, { status: error.response?.status || 500 });
+    }, { status: 500 });
   }
 }

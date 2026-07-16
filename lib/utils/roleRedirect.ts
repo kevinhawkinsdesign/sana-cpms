@@ -8,13 +8,12 @@ export enum UserRole {
 }
 
 /**
- * Outside production we route admins (platform + org) to the SaaS **console**
- * instead of the legacy dashboard, so the team dogfoods it in dev/staging.
- * Operators + customers keep their dashboards (the console is admin-facing).
- * Flip to prod by setting NODE_ENV=production (or removing this gate when the
- * console fully replaces the admin dashboard).
+ * This demo repo always routes admins (platform + org) to the SaaS
+ * **console** — it's the actively-developed admin UI and the one worth
+ * showing off, regardless of how the demo happens to be served (dev server
+ * or a production build).
  */
-const ADMIN_USES_CONSOLE = process.env.NODE_ENV !== 'production';
+const ADMIN_USES_CONSOLE = true;
 
 export const getDashboardPathByRole = (role: string): string => {
   switch (role) {

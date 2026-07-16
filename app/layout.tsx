@@ -7,6 +7,7 @@ import Script from "next/script";
 import { headers } from 'next/headers';
 import ConditionalMailchimp from "@/components/mailchimp/ConditionalMailchimp";
 import LiveChatGate from "@/components/LiveChatGate";
+import DemoModeBadge from "@/components/DemoModeBadge";
 
 export async function generateMetadata() {
   const headersList = await headers();
@@ -361,6 +362,7 @@ export default function RootLayout({
             </Providers>
           </ThemeProvider>
         </MobileNavProvider>
+        <DemoModeBadge />
       </body>
     </html>
   );

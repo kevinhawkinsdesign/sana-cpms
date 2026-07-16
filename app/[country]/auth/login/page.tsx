@@ -65,8 +65,11 @@ function LoginForm() {
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
 
   // callbackUrl wins over the role-based dashboard so deep links survive auth.
+  // Stashed into localStorage.returnUrl right before each login call below —
+  // AuthContext's own post-login redirect reads it from there (and always
+  // has the freshly-returned role, so it can't race a stale value like a
+  // client-computed path captured before login would).
   const callbackUrl = getSearchParam('callbackUrl') || '';
-  const redirectPath = callbackUrl || getDashboardPath() || '/dashboard';
   // Forward `?callbackUrl=...` onto side links (forgot password, signup, etc.)
   // so the user lands back on their original URL after the detour.
   const withCallback = (href: string) =>
@@ -144,11 +147,11 @@ function LoginForm() {
 
   const handleGoogleSignIn = async (response: any) => {
     try {
+      if (callbackUrl) localStorage.setItem('returnUrl', callbackUrl);
       const googleToken = response.credential;
-      const success = await login.withGoogle(googleToken);
-      if (success) {
-        router.push(redirectPath);
-      }
+      // AuthContext's own login flow already redirects (using the role it
+      // just received, so it can't be stale) honoring returnUrl above.
+      await login.withGoogle(googleToken);
     } catch (error) {
       console.error('Google login error:', error);
       toast.error('Google login failed. Please try again.');
@@ -183,10 +186,10 @@ function LoginForm() {
 
     setIsSigningIn(true);
     try {
-      const success = await login.withPassword(formData.email, formData.password);
-      if (success) {
-        router.push(redirectPath);
-      }
+      if (callbackUrl) localStorage.setItem('returnUrl', callbackUrl);
+      // AuthContext's own login flow already redirects (using the role it
+      // just received, so it can't be stale) honoring returnUrl above.
+      await login.withPassword(formData.email, formData.password);
     } finally {
       setIsSigningIn(false);
     }
@@ -235,13 +238,12 @@ function LoginForm() {
 
     setIsVerifyingCode(true);
     try {
-      const success = ssoMethod === 'email'
+      if (callbackUrl) localStorage.setItem('returnUrl', callbackUrl);
+      // AuthContext's own login flow already redirects (using the role it
+      // just received, so it can't be stale) honoring returnUrl above.
+      ssoMethod === 'email'
         ? await login.verifyCode(code, 'EMAIL_CODE', formData.email)
         : await login.verifyCode(code, 'PHONE_CODE', undefined, formData.phone);
-
-      if (success) {
-        router.push(redirectPath);
-      }
     } finally {
       setIsVerifyingCode(false);
     }
