@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/legacy/image";
+import { withBasePath } from '@/lib/utils/assetPath';
 
 const NewsletterSubscription: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ const NewsletterSubscription: React.FC = () => {
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/images/newsletter-bg.jpg"
+          src={withBasePath("/images/newsletter-bg.jpg")}
           alt="Newsletter Background"
           layout="fill"
           objectFit="cover"

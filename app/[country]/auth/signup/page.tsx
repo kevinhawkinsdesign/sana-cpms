@@ -16,6 +16,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { PasswordStrengthIndicator } from '@/components/shared/PasswordStrengthIndicator';
+import { withBasePath } from '@/lib/utils/assetPath';
 
 type AuthMethod = 'password' | 'email' | 'phone' | 'google';
 
@@ -299,7 +300,7 @@ function SignupForm() {
       <div className="text-center mb-6">
         <div className="inline-flex items-center justify-center w-12 h-12 bg-black rounded-xl mb-3 shadow-lg p-2">
           <Image
-            src="/favicon-light.svg"
+            src={withBasePath("/favicon-light.svg")}
             alt="Logo"
             width={32}
             height={32}

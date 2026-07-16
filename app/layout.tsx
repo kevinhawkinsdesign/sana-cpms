@@ -4,52 +4,33 @@ import { Providers } from "@/lib/providers";
 import { ThemeProvider } from "@/lib/providers/theme-provider";
 import { Polyfills } from "@/app/polyfills";
 import Script from "next/script";
-import { headers } from 'next/headers';
+import type { Metadata } from "next";
 import ConditionalMailchimp from "@/components/mailchimp/ConditionalMailchimp";
 import LiveChatGate from "@/components/LiveChatGate";
 import DemoModeBadge from "@/components/DemoModeBadge";
 
-export async function generateMetadata() {
-  const headersList = await headers();
-  const host = headersList.get('host') || '';
-  
-  // Block SEO for test subdomain
-  if (host === 'test.gokabisa.com') {
-    return {
-      robots: {
-        index: false,
-        follow: false,
-        nocache: true,
-        googleBot: {
-          index: false,
-          follow: false,
-          noimageindex: true,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1,
-        },
-      },
-      other: {
-        'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet',
-      },
-    };
-  }
-  
-  // Allow SEO for production domains
-  return {
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
+// Static (not generateMetadata + headers()) since the static-export build has
+// no request to read a host from. This demo shouldn't be indexed anywhere
+// it's hosted, fake-branded content under someone else's name isn't meant
+// to show up in search results.
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
-  };
-}
+  },
+  other: {
+    "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet",
+  },
+};
 
 export default function RootLayout({
   children,

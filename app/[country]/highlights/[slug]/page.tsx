@@ -45,25 +45,14 @@ export async function generateMetadata({ params }: HighlightPageProps): Promise<
     }
 }
 
-// Force dynamic rendering to avoid SSG issues with Strapi data
-export const dynamic = 'force-dynamic';
-
+// The static export build has no reachable Strapi CMS to enumerate real
+// slugs from (and no server to render one on demand afterward), so no real
+// highlight gets pre-rendered — this content is marketing copy unrelated to
+// the CPMS demo itself. A dynamic segment can't resolve to zero static
+// instances under output:'export', so this is a single placeholder slug
+// that 404s via the page's own not-found handling below.
 export async function generateStaticParams() {
-    try {
-        const highlights = await getHighlights();
-        const countries = ['rw', 'ke'];
-
-        return highlights
-            .filter(h => !h.externalUrl)
-            .flatMap((highlight) =>
-                countries.map(country => ({
-                    country,
-                    slug: highlight.slug,
-                }))
-            );
-    } catch {
-        return [];
-    }
+    return [{ slug: '_none' }];
 }
 
 export default async function HighlightPage({ params }: HighlightPageProps) {

@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { withBasePath } from '@/lib/utils/assetPath';
 
 type LoadingSize = 'xs' | 'sm' | 'md' | 'lg';
 
@@ -96,7 +97,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
           style={{ width: dimensions.width, height: dimensions.height }}
         >
           <Image 
-            src="/kabisa_logo.png"
+            src={withBasePath("/kabisa_logo.png")}
             alt="Loading..."
             width={dimensions.width}
             height={dimensions.height}

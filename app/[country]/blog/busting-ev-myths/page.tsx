@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Suspense } from 'react';
 import { LocalizedLink } from "@/components/shared/LocalizedLink";
+import { withBasePath } from '@/lib/utils/assetPath';
 
 function BustingMythsPostContent() {
   return (
@@ -42,7 +43,7 @@ function BustingMythsPostContent() {
         {/* Featured Image */}
         <div className="relative w-full h-[400px] mb-8">
           <Image
-            src="/images/busting.webp"
+            src={withBasePath("/images/busting.webp")}
             alt="Busting EV Myths"
             fill
             priority

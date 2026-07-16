@@ -9,6 +9,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { cn } from '@/lib/utils';
 import { Icon } from '@/components/console/ui';
 import { useOrgs, useSwitchOrg, type ConsoleOrg } from '@/lib/console/orgs';
+import { withBasePath } from '@/lib/utils/assetPath';
 
 function orgInitials(name: string): string {
   return name
@@ -27,7 +28,7 @@ function OrgMark({ org, size = 20 }: Readonly<{ org: ConsoleOrg; size?: number }
   if (org.name.toUpperCase() === 'KABISA') {
     return (
       <img
-        src="/icons/sidebar-toggle.png"
+        src={withBasePath("/icons/sidebar-toggle.png")}
         alt=""
         className="shrink-0 dark:invert"
         style={{ width: size, height: size }}
@@ -69,7 +70,7 @@ export function OrgSwitcher() {
         >
           <OrgMark org={active} />
           {active.name.toUpperCase() === 'KABISA' ? (
-            <img src="/icons/kabisa-wordmark.png" alt="Kabisa" className="h-3.5 w-auto dark:invert" />
+            <img src={withBasePath("/icons/kabisa-wordmark.png")} alt="Kabisa" className="h-3.5 w-auto dark:invert" />
           ) : (
             <span className="max-w-[140px] truncate">{active.name}</span>
           )}
@@ -104,7 +105,7 @@ export function OrgSwitcher() {
             <OrgMark org={o} size={22} />
             <span className="min-w-0 flex-1">
               {o.name.toUpperCase() === 'KABISA' ? (
-                <img src="/icons/kabisa-wordmark.png" alt="Kabisa" className="h-3 w-auto dark:invert" />
+                <img src={withBasePath("/icons/kabisa-wordmark.png")} alt="Kabisa" className="h-3 w-auto dark:invert" />
               ) : (
                 <span className="block truncate font-medium text-gray-900 dark:text-white">
                   {o.name}

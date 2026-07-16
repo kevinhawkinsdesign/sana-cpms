@@ -10,6 +10,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { LocalizedLink } from "../shared/LocalizedLink";
+import { withBasePath } from '@/lib/utils/assetPath';
 
 
 const BustingMythsPost = () => {
@@ -42,7 +43,7 @@ const BustingMythsPost = () => {
         {/* Featured Image */}
         <div className="mb-8 relative w-full h-[400px] rounded-xl overflow-hidden">
           <Image
-            src="/images/busting.webp"
+            src={withBasePath("/images/busting.webp")}
             alt="Busting EV Myths"
             layout="fill"
             objectFit="cover"

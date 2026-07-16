@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { withBasePath } from '@/lib/utils/assetPath';
 
 interface LoadingAnimationProps {
   dimensions: { width: number; height: number }
@@ -28,7 +29,7 @@ const LoadingAnimation = ({ dimensions }: LoadingAnimationProps) => {
         style={{ width: dimensions.width, height: dimensions.height }}
       >
         <Image 
-          src="/kabisa_logo.png"
+          src={withBasePath("/kabisa_logo.png")}
           alt="Loading..."
           width={dimensions.width}
           height={dimensions.height}

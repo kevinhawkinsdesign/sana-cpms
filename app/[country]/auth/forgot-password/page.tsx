@@ -15,6 +15,7 @@ import { AuthLayout } from '@/components/auth/authLayout';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { PasswordStrengthIndicator } from '@/components/shared/PasswordStrengthIndicator';
+import { withBasePath } from '@/lib/utils/assetPath';
 
 function ForgotPasswordForm() {
   const { forgotPassword, resetPassword, isLoading, getDashboardPath } = useAuth();
@@ -111,7 +112,7 @@ function ForgotPasswordForm() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-4 shadow-lg p-3">
           <Image
-            src="/favicon-light.svg"
+            src={withBasePath("/favicon-light.svg")}
             alt="Logo"
             width={40}
             height={40}

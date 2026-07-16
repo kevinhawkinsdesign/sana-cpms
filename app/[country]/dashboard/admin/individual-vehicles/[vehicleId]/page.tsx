@@ -1,35 +1,13 @@
-'use client'
+import { db } from '@/lib/mock/db';
+import IndividualVehicleDetailClient from './IndividualVehicleDetailClient';
 
-import React from 'react'
-import { useParams } from 'next/navigation'
-import { useLocalizedRouter } from '@/lib/hooks/useLocalizedRouter'
-import { IndividualVehicleDetailsPage } from '@/components/dashboard/admin/individual/IndividualVehicleDetailsPage'
+// Static export needs every dynamic path known at build time — this app has
+// no server to render one on demand. IDs come straight from the same seed
+// data the mock backend serves, so this stays in sync automatically.
+export function generateStaticParams() {
+  return db.vehicles.map((v) => ({ vehicleId: v.id }));
+}
 
-export default function IndividualVehicleDetailsRoute() {
-  const params = useParams()
-  const router = useLocalizedRouter()
-  const vehicleId = params.vehicleId as string
-
-  const handleBack = () => {
-    router.push('/dashboard/admin/individual-vehicles')
-  }
-
-  const handleEditVehicle = (vehicle: any) => {
-    // Navigate to edit page or open edit modal
-    console.log('Edit vehicle:', vehicle)
-  }
-
-  const handleDeactivateVehicle = (vehicle: any) => {
-    // Handle deactivation
-    console.log('Deactivate vehicle:', vehicle)
-  }
-
-  return (
-    <IndividualVehicleDetailsPage
-      vehicleId={vehicleId}
-      onBack={handleBack}
-      onEditVehicle={handleEditVehicle}
-      onDeactivateVehicle={handleDeactivateVehicle}
-    />
-  )
+export default function Page() {
+  return <IndividualVehicleDetailClient />;
 }

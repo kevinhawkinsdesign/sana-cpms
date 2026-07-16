@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useAuth } from '@/lib/auth/authContext';
 import { useLocalizedRouter } from '@/lib/hooks/useLocalizedRouter';
 import { useSearchParamsWrapper } from '@/lib/hooks/useSearchParamsWrapper';
@@ -12,7 +12,19 @@ interface ProtectedRouteProps {
   redirectTo?: string;
 }
 
-export function ProtectedRoute({ children, redirectTo = '/auth/login' }: ProtectedRouteProps) {
+// useSearchParams() (via useSearchParamsWrapper) bails a static-export page
+// out of prerendering unless an ancestor Suspense boundary catches it —
+// ProtectedRoute is always the outermost wrapper on the pages that use it,
+// so it provides one itself here.
+export function ProtectedRoute(props: ProtectedRouteProps) {
+  return (
+    <Suspense fallback={<KabisaLoader />}>
+      <ProtectedRouteInner {...props} />
+    </Suspense>
+  );
+}
+
+function ProtectedRouteInner({ children, redirectTo = '/auth/login' }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useLocalizedRouter();
   const { get: getSearchParam } = useSearchParamsWrapper();

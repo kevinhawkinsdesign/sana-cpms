@@ -1,21 +1,12 @@
-'use client';
+import AuthCatchAllClient from './AuthCatchAllClient';
 
-import { AuthForm } from '@/components/auth/AuthForm';
-import { AuthRedirect } from '@/components/shared/AuthRedirect';
-import { SearchParamsWrapper } from '@/lib/hooks/useSearchParamsWrapper';
-import { useParams } from 'next/navigation';
+// Static export needs every dynamic path known at build time — this app has
+// no server to render one on demand. IDs come straight from the same seed
+// data the mock backend serves, so this stays in sync automatically.
+export function generateStaticParams() {
+  return [{ auth: ['login'] }, { auth: ['signup'] }];
+}
 
-export default function AuthenticationPage() {
-  const params = useParams();
-  const page = params.auth?.[0] || 'login';
-
-  const mode = page === 'signup' ? 'signup' : 'login';
-
-  return (
-    <SearchParamsWrapper>
-      <AuthRedirect>
-        <AuthForm mode={mode} />
-      </AuthRedirect>
-    </SearchParamsWrapper>
-  );
-} 
+export default function Page() {
+  return <AuthCatchAllClient />;
+}

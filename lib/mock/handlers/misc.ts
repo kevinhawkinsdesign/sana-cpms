@@ -1,8 +1,10 @@
 import { Route } from '../matcher';
-import { ok, notFound } from '../respond';
+import { ok, notFound, fail } from '../respond';
 import { db, genId, now, paginate } from '../db';
 
-const PLACEHOLDER_PDF = Buffer.from(
+// Uint8Array (not Buffer, which doesn't exist in the browser bundle the
+// static-export build ships) — TextEncoder works identically in Node too.
+const PLACEHOLDER_PDF = new TextEncoder().encode(
   '%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n' +
     '3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 300 150]/Resources<</Font<</F1 4 0 R>>>>/Contents 5 0 R>>endobj\n' +
     '4 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj\n' +
@@ -14,7 +16,62 @@ function pdfResponse() {
   return new Response(PLACEHOLDER_PDF, { status: 200, headers: { 'Content-Type': 'application/pdf' } });
 }
 
+// Same fallback table the real currency-conversion route used when the free
+// exchange-rate API it called was unavailable — reused here so the demo
+// needs no external service at all.
+const FALLBACK_EXCHANGE_RATES: Record<string, number> = {
+  USD: 1, KES: 129.08, RWF: 1448.56, EUR: 0.87, GBP: 0.75,
+};
+
 export const miscRoutes: Route[] = [
+  {
+    method: 'POST',
+    pattern: '/api/currency-conversion',
+    handler: (ctx) => {
+      const { amount, fromCurrency, toCurrency } = ctx.body || {};
+      if (!amount || amount <= 0) return fail('Invalid amount. Must be a positive number.');
+      if (!fromCurrency || !toCurrency) return fail('Both fromCurrency and toCurrency are required.');
+      if (fromCurrency === toCurrency) {
+        return Response.json({ originalAmount: amount, convertedAmount: amount, fromCurrency, toCurrency, exchangeRate: 1, timestamp: now() });
+      }
+      const fromRate = FALLBACK_EXCHANGE_RATES[fromCurrency];
+      const toRate = FALLBACK_EXCHANGE_RATES[toCurrency];
+      if (!fromRate || !toRate) return fail(`Unsupported currency pair: ${fromCurrency} to ${toCurrency}`);
+      const exchangeRate = toRate / fromRate;
+      return Response.json({
+        originalAmount: amount, convertedAmount: Number((amount * exchangeRate).toFixed(2)),
+        fromCurrency, toCurrency, exchangeRate, timestamp: now(),
+      });
+    },
+  },
+  {
+    method: 'POST',
+    pattern: '/api/detect-license-plate',
+    handler: (ctx) => {
+      if (!ctx.body?.image) return fail('No image provided');
+      // No OCR service in this demo — return a plausible plate so the
+      // scanner flow still feels functional end to end.
+      const sample = db.vehicles[Math.floor(Math.random() * db.vehicles.length)];
+      const plate = sample?.licensePlates?.[0]?.licencePlateNumber || 'RAA000A';
+      return Response.json({ success: true, licensePlate: plate, raw: [] });
+    },
+  },
+  {
+    method: 'GET',
+    pattern: '/api/images/direct-upload',
+    handler: () => Response.json({ error: 'Image uploads are not available in this demo.' }, { status: 501 }),
+  },
+  {
+    method: 'GET',
+    pattern: '/api/vehicles/check-license',
+    handler: (ctx) => {
+      const plate = ctx.query.get('plate');
+      if (!plate) return fail('License plate is required', 400, 'VALIDATION_ERROR');
+      const vehicle = db.vehicles.find((v) => v.licensePlates?.some((p: any) => p.licencePlateNumber === plate));
+      return ok({ exists: !!vehicle, vehicle: vehicle || null });
+    },
+  },
+
   // ---------------- KabisaIds ----------------
   { method: 'GET', pattern: '/api/admin/kabisa-ids/assigned', handler: () => ok({ kabisaIds: db.kabisaIds.filter((k) => k.entityId) }) },
   { method: 'GET', pattern: '/api/admin/kabisa-ids/unassigned', handler: () => ok({ kabisaIds: db.kabisaIds.filter((k) => !k.entityId) }) },

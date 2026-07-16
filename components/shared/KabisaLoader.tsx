@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { withBasePath } from '@/lib/utils/assetPath';
 
 type LoaderSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type LoaderVariant = 'fullscreen' | 'block' | 'inline'
@@ -44,7 +45,7 @@ export function KabisaLoader({
       aria-hidden="true"
     >
       <Image
-        src="/Kabisa Symbol Y.png"
+        src={withBasePath("/Kabisa Symbol Y.png")}
         alt=""
         width={px}
         height={px}

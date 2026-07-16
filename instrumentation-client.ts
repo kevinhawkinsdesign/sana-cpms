@@ -3,6 +3,12 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { installMockFetch } from "@/lib/mock/browserIntercept";
+
+// No backend service exists in this deployment — install the fetch patch
+// before anything else on the page can make a request. See
+// lib/mock/browserIntercept.ts.
+installMockFetch();
 
 const integrations: Parameters<typeof Sentry.init>[0]['integrations'] = [];
 

@@ -24,16 +24,25 @@ const imageHostnames = [
   "cms-assets.gokabisa.com", // Strapi media via Cloudflare R2
 ] as const;
 
-// Demo mode: this repo has no separate backend, so the frontend calls its own
-// Next.js API routes (lib/mock/**) instead of the real gokabisa.com API. This
-// resolves to the app's own origin whether it's running locally or deployed.
+// Demo mode: this repo has no separate backend at all — every /api/* call
+// the frontend makes is answered client-side (see lib/mock/browserIntercept.ts)
+// rather than by a real server, so the whole app can be exported as static
+// HTML/JS and hosted on GitHub Pages with no Node server behind it.
+const isStaticExport = process.env.STATIC_EXPORT === "true";
+// GitHub Pages serves a repo (not a user/org) site under a /<repo> subpath.
+const basePath = isStaticExport ? "/sana-cpms" : "";
+
+// Used only as a fallback when nothing intercepts an /api/* call (e.g. a
+// non-static dev/Vercel run); resolves to the app's own origin either way.
 const selfOrigin =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  ...(isStaticExport ? { output: "export" as const, basePath, assetPrefix: basePath } : {}),
   images: {
+    unoptimized: isStaticExport,
     remotePatterns: [
       // HTTPS hostnames
       ...imageHostnames.map((hostname) => ({
@@ -51,7 +60,14 @@ const nextConfig: NextConfig = {
     ],
   },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || selfOrigin,
+    // "" on purpose for the static export: it's served from wherever it's
+    // served (GitHub Pages, a local preview, ...) and can't know that origin
+    // at build time, so every call must resolve relative to whatever origin
+    // it's actually loaded from at runtime instead of a value baked in now.
+    // (The consuming code must use `??`, not `||`, against this — see
+    // lib/api/api.ts / authContext.tsx — since "" is falsy.)
+    NEXT_PUBLIC_API_URL: isStaticExport ? "" : (process.env.NEXT_PUBLIC_API_URL || selfOrigin),
+    NEXT_PUBLIC_BASE_PATH: basePath,
     NEXT_PUBLIC_GA_ID: "G-8BMMWECM3D",
     CLARITY_ID: process.env.CLARITY_ID || "rdtw7rgryb",
     NEXT_PUBLIC_SHOW_EBM_POPUP:
@@ -68,7 +84,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
 
-  redirects: async () => [
+  // Static export has no server to run these on, and Next.js refuses to
+  // build with output:'export' if this is present at all.
+  ...(isStaticExport ? {} : { redirects: async () => [
     {
       source: "/scan",
       destination: "/dashboard/scan",
@@ -162,10 +180,12 @@ const nextConfig: NextConfig = {
       destination: "/rw/contact",
       permanent: true,
     },
-  ],
+  ] }),
 };
 
-export default withSentryConfig(nextConfig, {
+// Sentry's build plugin (source map upload, etc.) assumes a server deploy;
+// skip wrapping entirely for the static export so it can't fail that build.
+export default isStaticExport ? nextConfig : withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
   

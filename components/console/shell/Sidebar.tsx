@@ -11,6 +11,7 @@ import { Icon } from '@/components/console/ui';
 import { useOrgs } from '@/lib/console/orgs';
 import { isNavActive, visibleNavGroups } from './nav';
 import { useSidebar } from './ConsoleShell';
+import { withBasePath } from '@/lib/utils/assetPath';
 
 export function Sidebar({
   open = false,
@@ -61,7 +62,7 @@ export function Sidebar({
       <div className="flex items-center justify-between px-4 pt-6 pb-5">
         {!collapsed && (
           <img
-            src="/icons/kabisa-wordmark.png"
+            src={withBasePath("/icons/kabisa-wordmark.png")}
             alt="Kabisa"
             className="h-4 w-auto pl-1 invert"
           />
@@ -76,7 +77,7 @@ export function Sidebar({
           )}
         >
           <img
-            src="/icons/sidebar-toggle.png"
+            src={withBasePath("/icons/sidebar-toggle.png")}
             alt=""
             className={cn(
               'h-4 w-4 transition-transform duration-200 invert',

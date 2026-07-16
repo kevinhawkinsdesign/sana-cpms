@@ -90,7 +90,10 @@ export interface RegisterData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:3000";
+// Nullish coalescing (not ||) matters here: the static-export build sets
+// this to "" on purpose (same-origin, whatever origin that turns out to be
+// at runtime), and "" is falsy so `||` would silently discard it.
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Safe localStorage helpers that handle sandboxed contexts

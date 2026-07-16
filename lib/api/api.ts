@@ -1,8 +1,14 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { toast } from "sonner";
 import { getToken, removeToken } from '@/lib/auth/authUtils';
+import { mockAxiosAdapter } from '@/lib/mock/browserIntercept';
 
-const baseURL = (process.env.NEXT_PUBLIC_API_URL || 'https://new-api.gokabisa.com').replace(/\/$/, '')
+// Nullish coalescing (not ||) matters here: the static-export build sets
+// this to "" on purpose (meaning "same origin, whatever that turns out to
+// be at runtime" — it can't know in advance since GitHub Pages, a local
+// preview, etc. all differ), and "" is falsy so `||` would silently discard
+// that and fall back to the real API host instead.
+const baseURL = (process.env.NEXT_PUBLIC_API_URL ?? 'https://new-api.gokabisa.com').replace(/\/$/, '')
 const TIMEOUT = 20000;
 
 // Create a safer axios instance creation function
@@ -13,6 +19,11 @@ const createSafeAxiosInstance = (showMessage = false, showError = true) => {
       timeout: TIMEOUT,
       timeoutErrorMessage: "Request timed out",
       validateStatus: () => true,
+      // No backend service exists in this deployment — every request this
+      // instance makes is answered in-browser by lib/mock/**. See
+      // lib/mock/browserIntercept.ts for why this is a custom adapter
+      // rather than a fetch/XHR patch.
+      adapter: mockAxiosAdapter,
     });
   } catch (error) {
     // Fallback for build-time errors

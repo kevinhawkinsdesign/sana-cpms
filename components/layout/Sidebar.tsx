@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { X, ArrowLeft } from "lucide-react";
@@ -10,8 +10,9 @@ import { useMenuItems } from "@/lib/hooks/useMenuItems";
 import type { MenuItem, SidebarProps } from "@/types/sidebar";
 import { MenuItemComponent } from "@/components/layout/MenuItemComponent";
 import { useLocalizedRouter } from "@/lib/hooks/useLocalizedRouter";
+import { withBasePath } from '@/lib/utils/assetPath';
 
-const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
+const SidebarInner = ({ isOpen, setIsOpen }: SidebarProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useLocalizedRouter();
@@ -80,7 +81,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         aria-label="Toggle sidebar"
       >
         <Image
-          src="/favicon.ico"
+          src={withBasePath("/favicon.ico")}
           alt="Kabisa"
           width={20}
           height={20}
@@ -101,7 +102,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         {/* Logo Section */}
         <div className="h-16 flex items-center px-6 border-b">
           <Image
-            src="/kabisaaa.png"
+            src={withBasePath("/kabisaaa.png")}
             alt="Kabisa"
             width={96}
             height={32}
@@ -152,5 +153,14 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     </>
   );
 };
+
+// useSearchParams() bails a static-export page out of prerendering unless an
+// ancestor Suspense boundary catches it — Sidebar is used directly on pages
+// with no such boundary of their own, so it provides one itself here.
+const Sidebar = (props: SidebarProps) => (
+  <Suspense fallback={null}>
+    <SidebarInner {...props} />
+  </Suspense>
+);
 
 export default Sidebar;

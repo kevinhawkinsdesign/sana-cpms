@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils';
 import { formatPhoneNumber } from '@/lib/utils/formatters';
 import { useCountry } from '@/lib/providers/country-provider';
 import Image from 'next/image';
+import { withBasePath } from '@/lib/utils/assetPath';
 
 type SSOMethod = 'email' | 'phone';
 
@@ -395,7 +396,7 @@ function LoginForm() {
               <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl blur opacity-30"></div>
               <div className="relative bg-black rounded-2xl p-2 sm:p-3">
                 <Image
-                  src="/favicon-light.svg"
+                  src={withBasePath("/favicon-light.svg")}
                   alt="Logo"
                   width={40}
                   height={40}

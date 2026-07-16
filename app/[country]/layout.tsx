@@ -11,6 +11,10 @@ interface CountryLayoutProps {
 
 const supportedCountries = ['rw', 'ke']
 
+export function generateStaticParams() {
+  return supportedCountries.map((country) => ({ country }))
+}
+
 export default async function CountryLayout({ children, params }: CountryLayoutProps) {
   const { country: countryParam } = await params
   const country = countryParam.toLowerCase()

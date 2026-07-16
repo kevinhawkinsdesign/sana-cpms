@@ -27,6 +27,7 @@ import { SOCIAL_ICONS } from "../../constants/nav-constants";
 import { useCountry } from "@/lib/providers/country-provider";
 import { LocalizedLink } from "../shared/LocalizedLink";
 import { useLocalizedRouter } from "@/lib/hooks/useLocalizedRouter";
+import { withBasePath } from '@/lib/utils/assetPath';
 
 export default function Navbar() {
   const { isMobileNavOpen, setMobileNavOpen } = useMobileNav();
@@ -80,7 +81,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center mx-auto max-w-screen-xl">
           <LocalizedLink href="/" aria-label="Go to homepage">
             <motion.div whileTap={{ scale: 0.95 }}>
-              <Image src="/kabisa.png" alt="Kabisa Logo" width={160} height={40} className="h-10 w-auto" priority />
+              <Image src={withBasePath("/kabisa.png")} alt="Kabisa Logo" width={160} height={40} className="h-10 w-auto" priority />
             </motion.div>
           </LocalizedLink>
 

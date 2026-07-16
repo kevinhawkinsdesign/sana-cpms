@@ -1,5 +1,6 @@
 // src/components/auth/AuthLayout.tsx
 import Image from 'next/image';
+import { withBasePath } from '@/lib/utils/assetPath';
 
 export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -11,7 +12,7 @@ export const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
       <div className="hidden bg-muted lg:block">
         <Image
-          src="/evhouse.webp" 
+          src={withBasePath("/evhouse.webp")} 
           alt="Authentication Illustration"
           width="1920"
           height="1080"

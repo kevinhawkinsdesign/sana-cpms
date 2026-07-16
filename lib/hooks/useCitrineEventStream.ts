@@ -75,7 +75,7 @@ export function useCitrineEventStream({
         return
       }
 
-      const base = (process.env.NEXT_PUBLIC_API_URL || 'https://new-api.gokabisa.com').replace(/\/$/, '')
+      const base = (process.env.NEXT_PUBLIC_API_URL ?? 'https://new-api.gokabisa.com').replace(/\/$/, '')
       const url = `${base}/api/admin/citrine/events/stream?backfill=${encodeURIComponent(String(backfill))}`
 
       const ac = new AbortController()

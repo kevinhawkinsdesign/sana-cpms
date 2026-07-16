@@ -12,6 +12,7 @@ import { NAV_LINKS, SOCIAL_ICONS } from "../../constants/nav-constants";
 import { User } from "@/lib/auth/authContext";
 import { useCountry } from "@/lib/providers/country-provider";
 import { LocalizedLink } from "../shared/LocalizedLink";
+import { withBasePath } from '@/lib/utils/assetPath';
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -70,7 +71,7 @@ export function MobileNav({ isOpen, onClose, user, onLogoutClick }: MobileNavPro
           {/* === Header === */}
           <div className="flex items-center justify-between p-4 border-b border-[#FFD60A]/20 flex-shrink-0">
             <LocalizedLink href="/" onClick={handleLinkClick} aria-label="Go to homepage">
-              <Image src="/kabisa.png" alt="Kabisa Logo" width={120} height={32} priority />
+              <Image src={withBasePath("/kabisa.png")} alt="Kabisa Logo" width={120} height={32} priority />
             </LocalizedLink>
             <motion.button
               onClick={onClose}

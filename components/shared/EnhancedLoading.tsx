@@ -3,6 +3,7 @@
 import React from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { withBasePath } from '@/lib/utils/assetPath';
 
 interface EnhancedLoadingProps {
   fullScreen?: boolean
@@ -83,7 +84,7 @@ const EnhancedLoading: React.FC<EnhancedLoadingProps> = ({
             }}
           >
             <Image 
-              src="/kabisa.png"
+              src={withBasePath("/kabisa.png")}
               alt="Kabisa"
               width={dimensions.width}
               height={dimensions.height}
