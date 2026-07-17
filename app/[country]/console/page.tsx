@@ -18,11 +18,13 @@ import {
   fmtNumber,
   useOrgDailyRevenue,
   useOrgDashboard,
+  useOrgMap,
   useOrgUptime,
 } from '@/lib/console/dashboard';
 import { useOrgFaultSummary, useOrgStations } from '@/lib/console/stations';
 import { useOrgRevenueByStation } from '@/lib/console/revenue';
 import { useOrgSessions } from '@/lib/console/sessions';
+import { OverviewMap } from '@/components/console/OverviewMap';
 
 interface LiveSession {
   id: string;
@@ -136,6 +138,7 @@ export default function ConsoleOverviewPage() {
   const dashboard = useOrgDashboard(orgId);
   const revenue = useOrgDailyRevenue(orgId, days);
   const uptime = useOrgUptime(orgId);
+  const map = useOrgMap(orgId);
   const faultSummary = useOrgFaultSummary(orgId);
   const stations = useOrgStations(orgId);
   const byStationToday = useOrgRevenueByStation(orgId, 1); // busiest stations today
@@ -219,7 +222,7 @@ export default function ConsoleOverviewPage() {
     setIsRefreshing(true);
     try {
       await Promise.all([
-        dashboard.refetch(), revenue.refetch(), uptime.refetch(),
+        dashboard.refetch(), revenue.refetch(), uptime.refetch(), map.refetch(),
         faultSummary.refetch(), stations.refetch(), byStationToday.refetch(), unpaid.refetch(),
       ]);
     } finally {
@@ -295,6 +298,24 @@ export default function ConsoleOverviewPage() {
         ]}
       />
       )}
+
+      {/* Live map — stations + fleet vehicles */}
+      <Card
+        title="Live map"
+        action={
+          map.data
+            ? <Badge kind="neutral">{map.data.stations.length} stations · {map.data.vehicles.length} vehicles</Badge>
+            : undefined
+        }
+      >
+        {map.isPending ? (
+          <span className="kc-skeleton block h-[360px]" />
+        ) : map.data && map.data.stations.length > 0 ? (
+          <OverviewMap stations={map.data.stations} vehicles={map.data.vehicles} />
+        ) : (
+          <div className="p-6 text-center text-sm text-gray-400">No stations with coordinates yet.</div>
+        )}
+      </Card>
 
       {/* Row 1: Revenue chart (2/3) + Charger donut (1/3) */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr] [&>*]:min-w-0">

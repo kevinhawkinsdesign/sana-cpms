@@ -241,6 +241,59 @@ export const consoleRoutes: Route[] = [
     },
   },
 
+  // ---------------- Live map (stations + fleet vehicles) ----------------
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/map',
+    handler: (ctx) => {
+      const chargers = db.chargers.filter((c) => c.organizationId === ctx.params.orgId);
+      const incidents = orgIncidents(ctx.params.orgId);
+      const criticalOpenChargerIds = new Set(
+        incidents.filter((i) => i.status !== 'resolved' && i.severity === 'critical').map((i) => i.chargerId),
+      );
+      const stations = chargers
+        .filter((c) => c.latitude != null && c.longitude != null)
+        .map((c) => ({
+          id: c.id, name: c.name, latitude: c.latitude, longitude: c.longitude,
+          address: c.address, online: !criticalOpenChargerIds.has(c.id),
+        }));
+
+      // "Fleet" = vehicles that have actually charged at this org, so the
+      // map reflects real usage rather than an arbitrary sample. Scattered a
+      // short, deterministic distance from wherever they last charged —
+      // stable across reloads, no separate vehicle-location tracking exists.
+      const sessions = orgSessions(ctx.params.orgId);
+      const lastSessionByVehicle = new Map<string, AnyObj>();
+      for (const s of sessions) {
+        if (!s.vehicleId) continue;
+        const prev = lastSessionByVehicle.get(s.vehicleId);
+        if (!prev || (s.startTime || '') > (prev.startTime || '')) lastSessionByVehicle.set(s.vehicleId, s);
+      }
+      const activeVehicleIds = new Set(
+        sessions.filter((s) => s.sessionStatus === 'STARTED' || s.sessionStatus === 'PAUSED').map((s) => s.vehicleId),
+      );
+      const vehicles = [...lastSessionByVehicle.entries()].slice(0, 24).map(([vehicleId, session]) => {
+        const v = db.vehicles.find((x) => x.id === vehicleId);
+        const charger = db.chargers.find((c) => c.id === session.chargerId);
+        if (!v || !charger?.latitude || !charger?.longitude) return null;
+        let h = 0;
+        for (const ch of vehicleId) h = (Math.imul(h, 31) + ch.charCodeAt(0)) | 0;
+        h = Math.abs(h);
+        const dLat = (((h % 200) - 100) / 100) * 0.03;
+        const dLng = ((((h >> 8) % 200) - 100) / 100) * 0.03;
+        return {
+          id: v.id, make: v.make, model: v.model,
+          plate: v.licensePlates?.[0]?.licencePlateNumber ?? null,
+          latitude: charger.latitude + dLat, longitude: charger.longitude + dLng,
+          charging: activeVehicleIds.has(vehicleId),
+          lastChargerName: charger.name,
+        };
+      }).filter((v): v is NonNullable<typeof v> => v !== null);
+
+      return ok({ stations, vehicles });
+    },
+  },
+
   // ---------------- Sessions ----------------
   {
     method: 'GET',

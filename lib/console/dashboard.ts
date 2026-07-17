@@ -127,6 +127,46 @@ export function useOrgUptime(orgId: string | null | undefined, opts?: LiveOption
   });
 }
 
+export interface MapStation {
+  id: string;
+  name: string | null;
+  latitude: number;
+  longitude: number;
+  address: string | null;
+  online: boolean;
+}
+
+export interface MapVehicle {
+  id: string;
+  make: string | null;
+  model: string | null;
+  plate: string | null;
+  latitude: number;
+  longitude: number;
+  charging: boolean;
+  lastChargerName: string | null;
+}
+
+export interface OrgMapData {
+  stations: MapStation[];
+  vehicles: MapVehicle[];
+}
+
+/** Station + fleet-vehicle positions for the Overview map. Vehicle positions
+ *  are a demo approximation (see the mock handler) — there's no real-time GPS
+ *  feed, so they're scattered near wherever each vehicle last charged. */
+export function useOrgMap(orgId: string | null | undefined) {
+  return useQuery<OrgMapData>({
+    queryKey: ['console', 'map', orgId],
+    enabled: !!orgId,
+    queryFn: async () => {
+      const res = await api(false, false).get(`/api/orgs/${orgId}/map`);
+      return res.data.data as OrgMapData;
+    },
+    staleTime: 60_000,
+  });
+}
+
 /* ---------- formatting helpers ---------- */
 
 /** 842_400 → "842k", 18_800_000 → "18.8M" — RWF KPI style from the mockup. */
