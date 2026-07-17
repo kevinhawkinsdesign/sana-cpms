@@ -1,6 +1,6 @@
 import { Route, RouteCtx } from '../matcher';
 import { ok, notFound } from '../respond';
-import { db, sessionWithRelations, genId, now, paginate, AnyObj } from '../db';
+import { db, sessionWithRelations, genId, now, paginate, allShiftReports, AnyObj } from '../db';
 import {
   ALL_PERMISSIONS, PERMISSION_META, PERMISSION_GROUPS, ROLE_META, ROLE_PERMISSIONS,
   rolePermissions, type OrgRoleKey,
@@ -52,6 +52,14 @@ function orgReviews(orgId: string) {
 function orgReports(orgId: string) {
   const chargerIds = new Set(orgChargerIds(orgId));
   return db.reports.filter((r) => chargerIds.has(r.chargerId));
+}
+
+/** Org-scoped view of the shared shift-report derivation (see db.ts's
+ *  allShiftReports — also used by the shift-detail page's
+ *  generateStaticParams, so every ID this handler can return is guaranteed
+ *  pre-rendered in the static export). */
+function orgShiftReports(orgId: string) {
+  return allShiftReports().filter((r) => r.operatorShift.charger?.organizationId === orgId);
 }
 
 function elapsedMinutes(iso: string): number {
@@ -500,8 +508,27 @@ export const consoleRoutes: Route[] = [
     method: 'GET',
     pattern: '/api/orgs/:orgId/chargers/:chargerId/state',
     handler: (ctx) => {
+      const charger = db.chargers.find((c) => c.id === ctx.params.chargerId);
       const guns = db.guns.filter((g) => g.chargerId === ctx.params.chargerId);
-      return ok({ chargerId: ctx.params.chargerId, online: true, connectors: guns.map((g) => ({ id: g.id, name: g.name, status: g.chargingStatus })) });
+      const pedestal = db.pedestals.find((p) => p.chargerId === ctx.params.chargerId);
+      const openIncidents = db.incidents.filter((i) => i.chargerId === ctx.params.chargerId && i.status !== 'resolved');
+      const stationId = pedestal?.id ?? ctx.params.chargerId;
+      const connectors = guns.map((g, idx) => ({
+        stationId, connectorId: Number(g.gunNumber) || idx + 1, evseId: Number(g.gunNumber) || idx + 1,
+        status: g.chargingStatus === 'AVAILABLE' ? 'Available' : g.chargingStatus === 'CHARGING' ? 'Charging' : (g.chargingStatus || 'Available'),
+        errorCode: null, vendorErrorCode: null, vendorId: null, info: null, timestamp: now(),
+      }));
+      const latestStatusNotifications = openIncidents.map((i, idx) => ({
+        id: idx, stationId, chargerId: charger?.id ?? null, chargerName: charger?.name ?? null,
+        pedestalId: pedestal?.id ?? null, pedestalName: pedestal?.name ?? null,
+        evseId: i.connectorId, connectorId: i.connectorId, connectorStatus: 'Faulted',
+        errorCode: i.errorCode, vendorErrorCode: null, vendorId: null, info: null,
+        reportedAt: i.openedAt, receivedAt: i.openedAt, effectiveAt: i.openedAt, timestampSkewed: false,
+      }));
+      return ok({
+        chargerId: ctx.params.chargerId, chargerName: charger?.name ?? null,
+        stations: [{ stationId, pedestalId: pedestal?.id ?? null, pedestalName: pedestal?.name ?? null, latestStatusNotifications, connectors }],
+      });
     },
   },
   { method: 'GET', pattern: '/api/orgs/:orgId/chargers/:chargerId/configuration', handler: (ctx) => ok({ chargerId: ctx.params.chargerId, entries: [] }) },
@@ -599,12 +626,30 @@ export const consoleRoutes: Route[] = [
       const o = db.users.find((u) => u.id === ctx.params.operatorId);
       if (!o) return notFound('Operator not found');
       const sessions = db.sessions.filter((s) => s.operatorId === o.id);
+      const shifts = orgShiftReports(ctx.params.orgId).filter((r) => r._operatorId === o.id);
+      const flaggedCount = shifts.filter((s) => s.isFlagged).length;
       return ok({
-        id: o.id, name: `${o.firstName} ${o.lastName}`.trim(), email: o.email, phone: o.phone, imageUrl: o.imageUrl,
-        role: 'OPERATOR', isTrainee: !!o.isTrainee, status: o.isActive ? 'active' : 'inactive', joinedAt: o.createdAt,
-        totalShifts: Math.max(1, Math.round(sessions.length / 15)), totalSessions: sessions.length,
-        totalKwh: Number(sessions.reduce((sum, s) => sum + (s.chargedKwh || 0), 0).toFixed(2)),
-        recentSessions: sessions.slice(0, 10).map((s) => toOrgSessionRow(s)),
+        operator: {
+          id: o.id, name: `${o.firstName} ${o.lastName}`.trim(), email: o.email, phone: o.phone, imageUrl: o.imageUrl,
+          role: 'OPERATOR', isTrainee: !!o.isTrainee, status: o.isActive ? 'active' : 'inactive', joinedAt: o.createdAt,
+        },
+        stats: {
+          totalReports: shifts.length,
+          completedReports: shifts.filter((s) => !!s.checkOutTime).length,
+          approvedReports: shifts.filter((s) => s.isApproved).length,
+          flaggedReports: flaggedCount,
+          totalKwh: Number(sessions.reduce((sum, s) => sum + (s.chargedKwh || 0), 0).toFixed(2)),
+          totalSessions: sessions.length,
+          lastReportAt: shifts[0]?.checkInTime ?? null,
+        },
+        recentShifts: shifts.slice(0, 8).map((s) => ({
+          id: s.id, shiftDate: s._day, startTime: s.checkInTime, endTime: s.checkOutTime,
+          charger: s.operatorShift.charger ? { id: s.operatorShift.charger.name, name: s.operatorShift.charger.name } : null,
+        })),
+        recentReports: shifts.slice(0, 8).map((s) => ({
+          id: s.id, checkInTime: s.checkInTime, checkOutTime: s.checkOutTime,
+          isApproved: s.isApproved, isFlagged: s.isFlagged, kwh: s.kwhSold, sessions: s.chargingSessionCount,
+        })),
       });
     },
   },
@@ -613,9 +658,46 @@ export const consoleRoutes: Route[] = [
   { method: 'GET', pattern: '/api/orgs/:orgId/shifts/calendar', handler: () => ok({ events: [] }) },
   { method: 'GET', pattern: '/api/orgs/:orgId/shifts/export', handler: () => new Response('date,operator,status\n', { status: 200, headers: { 'Content-Type': 'text/csv' } }) },
   { method: 'POST', pattern: '/api/orgs/:orgId/shifts/bulk', handler: (ctx) => ok({ created: (ctx.body?.shifts || []).length }, 'Shifts created') },
-  { method: 'GET', pattern: '/api/orgs/:orgId/shifts', handler: (ctx) => ok({ shifts: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } }) },
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/shifts',
+    handler: (ctx) => {
+      const page = Number(ctx.query.get('page') || 1);
+      const limit = 20;
+      const status = ctx.query.get('status');
+      const search = ctx.query.get('search')?.toLowerCase();
+      const operatorId = ctx.query.get('operatorId');
+      let list = orgShiftReports(ctx.params.orgId);
+      if (status === 'active') list = list.filter((r) => !r.checkOutTime);
+      else if (status === 'completed') list = list.filter((r) => !!r.checkOutTime);
+      if (operatorId) list = list.filter((r) => r.operator?.id === operatorId);
+      if (search) list = list.filter((r) => `${r.operator?.firstName ?? ''} ${r.operator?.lastName ?? ''}`.toLowerCase().includes(search));
+      const all = list;
+      const { items, pagination } = paginate(list, page, limit);
+      return ok({
+        reports: items.map(({ _day, ...r }) => r),
+        pagination: { total: pagination.total, limit: pagination.limit, offset: (page - 1) * limit, page: pagination.page, hasMore: page < pagination.totalPages },
+        totals: {
+          count: all.length,
+          activeCount: all.filter((r) => !r.checkOutTime).length,
+          kwhSum: Number(all.reduce((sum, r) => sum + (r.kwhSold || 0), 0).toFixed(2)),
+          rwfSum: all.reduce((sum, r) => sum + (r.moneyCollectedRwf || 0), 0),
+        },
+      });
+    },
+  },
   { method: 'POST', pattern: '/api/orgs/:orgId/shifts', handler: (ctx) => ok({ shift: { id: genId('shift'), ...ctx.body } }, 'Shift created') },
-  { method: 'GET', pattern: '/api/orgs/:orgId/shifts/:shiftId', handler: () => notFound('Shift not found') },
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/shifts/:shiftId',
+    handler: (ctx) => {
+      const report = orgShiftReports(ctx.params.orgId).find((r) => r.id === ctx.params.shiftId);
+      if (!report) return notFound('Shift not found');
+      const { _day, _operatorId, ...rest } = report;
+      const payments = { momo: Math.round(rest.moneyCollectedRwf * 0.6), momoCode: Math.round(rest.moneyCollectedRwf * 0.25), invoice: Math.round(rest.moneyCollectedRwf * 0.1), free: Math.round(rest.moneyCollectedRwf * 0.05) };
+      return ok({ detail: { report: { ...rest, payments } } });
+    },
+  },
   { method: 'PUT', pattern: '/api/orgs/:orgId/shifts/:shiftId', handler: (ctx) => ok({ shift: { id: ctx.params.shiftId, ...ctx.body } }, 'Shift updated') },
   { method: 'DELETE', pattern: '/api/orgs/:orgId/shifts/:shiftId', handler: () => ok({}, 'Shift deleted') },
   { method: 'POST', pattern: '/api/orgs/:orgId/shifts/:shiftId/approval', handler: () => ok({}, 'Shift approved') },

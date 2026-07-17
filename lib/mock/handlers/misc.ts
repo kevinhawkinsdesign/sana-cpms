@@ -259,8 +259,38 @@ export const miscRoutes: Route[] = [
   } },
   { method: 'GET', pattern: '/api/ebm/vsdc/status', handler: () => ok({ online: true, responseTime: 120 }) },
   { method: 'POST', pattern: '/api/ebm/vsdc/initialize', handler: () => ok({ initialized: true }) },
-  { method: 'GET', pattern: '/api/ebm/codes/current', handler: () => ok({ codes: [] }) },
-  { method: 'POST', pattern: '/api/ebm/codes/sync', handler: () => ok({ synced: true }) },
+  {
+    method: 'GET',
+    pattern: '/api/ebm/codes/current',
+    handler: () => ok({
+      paymentMethods: [
+        { code: '01', name: 'Cash' }, { code: '02', name: 'Mobile Money' },
+        { code: '03', name: 'Card' }, { code: '04', name: 'Invoice / Credit' },
+      ],
+      refundReasons: [
+        { code: '01', name: 'Session cancelled' }, { code: '02', name: 'Charger fault' },
+        { code: '03', name: 'Duplicate charge' }, { code: '04', name: 'Customer request' },
+      ],
+      salesTypes: [
+        { code: 'N', name: 'Normal sale' }, { code: 'C', name: 'Copy' }, { code: 'T', name: 'Training' },
+      ],
+      receiptTypes: [
+        { code: 'S', name: 'Sale' }, { code: 'R', name: 'Refund' }, { code: 'P', name: 'Proforma' },
+      ],
+    }),
+  },
+  // This endpoint's real contract uses {success, message, data} (unlike the
+  // rest of the mock backend's {status, message, data}) — matched exactly so
+  // lib/api/admin.ts's `if (!res.success)` check reads a real success, not an
+  // always-on failure.
+  {
+    method: 'POST',
+    pattern: '/api/ebm/codes/sync',
+    handler: () => Response.json({
+      success: true, message: 'CIS codes synced',
+      data: { classesCreated: 0, classesUpdated: 12, detailsCreated: 0, detailsUpdated: 34, resultDt: now(), errors: [] },
+    }),
+  },
   { method: 'POST', pattern: '/api/ebm/x-report/generate/pdf', handler: () => pdfResponse() },
   { method: 'POST', pattern: '/api/ebm/z-report/generate/pdf', handler: () => pdfResponse() },
   { method: 'GET', pattern: '/api/ebm/daily-reports/:reportId/pdf', handler: () => pdfResponse() },

@@ -261,6 +261,59 @@ const reports: AnyObj[] = REPORT_SEEDS.map((r, i) => {
   };
 });
 
+// ---------------- Shift reports (derived) ----------------
+// Not separately seeded — one synthetic report per operator/day derived from
+// that operator's real sessions that day. Exported (not just computed inside
+// the console mock handler) so the static-export build's generateStaticParams
+// for /console/shifts/:shiftId can pre-render every real shift ID that the
+// Shifts list can actually link to — a page reachable client-side but never
+// pre-rendered 404s under `output: 'export'`.
+const KIGALI_OFFSET_MS_SHIFTS = 2 * 3_600_000;
+function shiftDayKey(iso: string | null | undefined): string {
+  if (!iso) return new Date().toISOString().slice(0, 10);
+  return new Date(new Date(iso).getTime() + KIGALI_OFFSET_MS_SHIFTS).toISOString().slice(0, 10);
+}
+function isPaidSessionStatus(status: string) {
+  return status === 'PAID' || status === 'EBM_ISSUED';
+}
+export function allShiftReports(): AnyObj[] {
+  const sessionsWithOperator = seed.sessions.filter((s) => s.operatorId);
+  const groups = new Map<string, AnyObj[]>();
+  for (const s of sessionsWithOperator) {
+    const key = `${s.operatorId}|${shiftDayKey(s.startTime)}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(s);
+  }
+  const today = shiftDayKey(now());
+  const reportsList = [...groups.entries()].map(([key, sess]) => {
+    const [operatorId, day] = key.split('|');
+    const operator = users.find((u) => u.id === operatorId);
+    const sorted = sess.slice().sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+    const first = sorted[0];
+    const last = sorted[sorted.length - 1];
+    const checkInTime = new Date(new Date(first.startTime).getTime() - 12 * 60_000).toISOString();
+    const isOngoing = day === today;
+    const checkOutTime = isOngoing ? null : new Date(new Date(last.endTime || last.startTime).getTime() + 8 * 60_000).toISOString();
+    const kwh = Number(sess.reduce((sum, s) => sum + (s.chargedKwh || 0), 0).toFixed(2));
+    const rwf = sess.filter((s) => isPaidSessionStatus(s.sessionStatus)).reduce((sum, s) => sum + (s.totalAmount || 0), 0);
+    const chargerCounts = new Map<string, number>();
+    for (const s of sess) chargerCounts.set(s.chargerId, (chargerCounts.get(s.chargerId) || 0) + 1);
+    const topChargerId = [...chargerCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+    const charger = seed.chargers.find((c) => c.id === topChargerId);
+    return {
+      id: `shift_${operatorId}_${day}`,
+      checkInTime, checkOutTime,
+      shiftDurationMinutes: checkOutTime ? Math.round((new Date(checkOutTime).getTime() - new Date(checkInTime).getTime()) / 60_000) : null,
+      chargingSessionCount: sess.length, kwhSold: kwh, moneyCollectedRwf: rwf, meterTotalKwh: kwh,
+      isApproved: !isOngoing, isFlagged: false,
+      operator: operator ? { id: operator.id, firstName: operator.firstName, lastName: operator.lastName, imageUrl: operator.imageUrl } : null,
+      operatorShift: { charger: charger ? { id: charger.id, name: charger.name, organizationId: charger.organizationId } : null },
+      _day: day, _operatorId: operatorId,
+    };
+  });
+  return reportsList.sort((a, b) => b._day.localeCompare(a._day));
+}
+
 export const db = {
   countries: seed.countries,
   organizations: seed.organizations,
