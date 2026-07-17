@@ -2,6 +2,7 @@
  *  Every item is perm-gated against GET /auth/orgs permissions (lib/console/orgs). */
 import type { IconName } from '@/components/console/ui';
 import { hasPerm, type OrgsData } from '@/lib/console/orgs';
+import type { ShellSection } from '@/components/console/SectionShell';
 
 export interface NavItem {
   id: string;
@@ -76,22 +77,10 @@ export const NAV_GROUPS: NavGroup[] = [
     group: 'EBM',
     requireRole: ADMIN_ROLES,
     items: [
-      { id: 'proforma', label: 'Proforma EBM', icon: 'doc', path: '/ebm/proforma', perm: 'view_ebm' },
-      { id: 'missing-ebm', label: 'Missing EBM', icon: 'alert', path: '/ebm/missing', perm: 'view_ebm' },
-      { id: 'failed-ebm', label: 'Failed EBM', icon: 'refresh', path: '/ebm/failed', perm: 'view_ebm' },
-      { id: 'plu-report', label: 'PLU Report', icon: 'doc', path: '/ebm/plu-report', perm: 'view_ebm' },
-      { id: 'xz-reports', label: 'X/Z Reports', icon: 'doc', path: '/ebm/xz-reports', perm: 'view_ebm' },
-      { id: 'sales-report', label: 'Sales Report', icon: 'money', path: '/ebm/sales-report', perm: 'view_ebm' },
-    ],
-  },
-  {
-    group: 'EBM Config',
-    requireRole: ADMIN_ROLES,
-    items: [
-      { id: 'ebm-config', label: 'EBM Configuration', icon: 'settings', path: '/ebm/config', perm: 'manage_ebm' },
-      { id: 'ebm-items', label: 'EBM Items', icon: 'doc', path: '/ebm/items', perm: 'manage_ebm' },
-      { id: 'codes-sync', label: 'CIS / VSDC Codes', icon: 'refresh', path: '/ebm/codes-sync', perm: 'manage_ebm' },
-      { id: 'vsdc-init', label: 'VSDC Initialization', icon: 'settings', path: '/ebm/vsdc-init', perm: 'manage_ebm' },
+      {
+        id: 'ebm', label: 'EBM & Compliance', icon: 'doc', path: '/ebm',
+        perm: 'view_ebm', anyPerm: ['view_ebm', 'manage_ebm'],
+      },
     ],
   },
   {
@@ -132,11 +121,10 @@ export const NAV_GROUPS: NavGroup[] = [
     group: 'Platform Admin',
     requirePlatformAdmin: true,
     items: [
-      { id: 'admin-organizations', label: 'Organizations', icon: 'building', path: '/admin/organizations', perm: 'manage_sub_orgs' },
-      { id: 'admin-countries', label: 'Countries', icon: 'globe', path: '/admin/countries', perm: 'manage_org_settings' },
-      { id: 'admin-users', label: 'Users', icon: 'people', path: '/admin/users', perm: 'manage_members' },
-      { id: 'admin-audit', label: 'Audit Log', icon: 'shield', path: '/admin/audit-logs', perm: 'manage_org_settings' },
-      { id: 'admin-citrine', label: 'Citrine Sync', icon: 'monitor', path: '/admin/citrine', perm: 'view_chargers' },
+      {
+        id: 'admin-hub', label: 'Admin', icon: 'shield', path: '/admin',
+        perm: 'manage_sub_orgs', anyPerm: ['manage_sub_orgs', 'manage_org_settings', 'manage_members', 'view_chargers'],
+      },
     ],
   },
   {
@@ -201,6 +189,37 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
 
 /** Ordered group headings for the settings sub-nav. */
 export const SETTINGS_GROUPS: Array<SettingsSection['group']> = ['Organization', 'Access', 'Finance'];
+
+/** EBM (KAB-…): the 10 previously-separate EBM/EBM Config sidebar entries,
+ *  now sub-nav sections under /console/ebm (see SectionShell). */
+export const EBM_SECTIONS: ShellSection[] = [
+  { id: 'ebm-proforma', label: 'Proforma EBM', group: 'EBM', segment: 'proforma', perm: 'view_ebm' },
+  { id: 'ebm-missing', label: 'Missing EBM', group: 'EBM', segment: 'missing', perm: 'view_ebm' },
+  { id: 'ebm-failed', label: 'Failed EBM', group: 'EBM', segment: 'failed', perm: 'view_ebm' },
+  { id: 'ebm-plu-report', label: 'PLU Report', group: 'EBM', segment: 'plu-report', perm: 'view_ebm' },
+  { id: 'ebm-xz-reports', label: 'X/Z Reports', group: 'EBM', segment: 'xz-reports', perm: 'view_ebm' },
+  { id: 'ebm-sales-report', label: 'Sales Report', group: 'EBM', segment: 'sales-report', perm: 'view_ebm' },
+  { id: 'ebm-config', label: 'EBM Configuration', group: 'EBM Config', segment: 'config', perm: 'manage_ebm' },
+  { id: 'ebm-items', label: 'EBM Items', group: 'EBM Config', segment: 'items', perm: 'manage_ebm' },
+  { id: 'ebm-codes-sync', label: 'CIS / VSDC Codes', group: 'EBM Config', segment: 'codes-sync', perm: 'manage_ebm' },
+  { id: 'ebm-vsdc-init', label: 'VSDC Initialization', group: 'EBM Config', segment: 'vsdc-init', perm: 'manage_ebm' },
+];
+export const EBM_GROUPS: string[] = ['EBM', 'EBM Config'];
+
+/** Platform Admin (KAB-162): the 5 previously-separate sidebar entries, now
+ *  sub-nav sections under /console/admin. Distinct from Fleet, which keeps
+ *  its own separate /admin/* pages untouched (see AdminSectionLayout). */
+export const PLATFORM_ADMIN_SECTIONS: ShellSection[] = [
+  { id: 'padmin-organizations', label: 'Organizations', group: 'Platform Admin', segment: 'organizations', perm: 'manage_sub_orgs' },
+  { id: 'padmin-countries', label: 'Countries', group: 'Platform Admin', segment: 'countries', perm: 'manage_org_settings' },
+  { id: 'padmin-users', label: 'Users', group: 'Platform Admin', segment: 'users', perm: 'manage_members' },
+  { id: 'padmin-audit', label: 'Audit Log', group: 'Platform Admin', segment: 'audit-logs', perm: 'manage_org_settings' },
+  { id: 'padmin-citrine', label: 'Citrine Sync', group: 'Platform Admin', segment: 'citrine', perm: 'view_chargers' },
+];
+export const PLATFORM_ADMIN_GROUPS: string[] = ['Platform Admin'];
+/** Leaf segments under /admin that belong to this merge — everything else
+ *  under /admin (Fleet's pages) passes through the layout unchanged. */
+export const PLATFORM_ADMIN_SEGMENTS = new Set(PLATFORM_ADMIN_SECTIONS.map((s) => s.segment));
 
 /** Active-item test: overview matches the console index only; others match
  *  their subtree (e.g. /stations and /stations/ch-01). */
