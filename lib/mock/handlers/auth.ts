@@ -2,6 +2,7 @@ import { Route, RouteCtx } from '../matcher';
 import { ok, fail } from '../respond';
 import { resolvePersona, issueTokens, userFromToken, publicUser, isPlatformAdmin } from '../auth';
 import { db, findUser, demoPersonaIds } from '../db';
+import { rolePermissions } from '../roles';
 
 function tokenUser(ctx: RouteCtx) {
   const auth = (ctx.request.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
@@ -74,10 +75,15 @@ export const authRoutes: Route[] = [
         plan: 'GROWTH', parentOrgId: null, role: platformAdmin ? 'ORG_ADMIN' : 'OPERATOR',
       }));
       const activeOrgId = user.organizationId || orgs[0]?.id || null;
+      const activeRole = platformAdmin ? 'ORG_ADMIN' : 'OPERATOR';
       return ok({
         orgs, activeOrgId, isPlatformAdmin: platformAdmin,
-        permissions: platformAdmin ? null : ['sessions.view', 'shifts.view'],
-        activeOrg: activeOrgId ? { id: activeOrgId, role: platformAdmin ? 'ORG_ADMIN' : 'OPERATOR' } : null,
+        // Platform admins bypass hasPerm() entirely (see lib/console/orgs.ts),
+        // so `permissions: null` there is intentional — only non-admin personas
+        // (the Operator demo login) actually get gated by this list, and it
+        // must use the same perm-key vocabulary nav.ts declares.
+        permissions: platformAdmin ? null : rolePermissions(activeRole),
+        activeOrg: activeOrgId ? { id: activeOrgId, role: activeRole } : null,
       });
     },
   },

@@ -1,8 +1,29 @@
 import { Route, RouteCtx } from '../matcher';
 import { ok, notFound } from '../respond';
-import { db, sessionWithRelations, genId, now, paginate } from '../db';
+import { db, sessionWithRelations, genId, now, paginate, AnyObj } from '../db';
+import {
+  ALL_PERMISSIONS, PERMISSION_META, PERMISSION_GROUPS, ROLE_META, ROLE_PERMISSIONS,
+  rolePermissions, type OrgRoleKey,
+} from '../roles';
 
 const KIGALI_OFFSET_MS = 2 * 3_600_000;
+
+/** Bucket a seeded user's raw role (or a previously-PATCHed org-role) into one
+ *  of the 5 org roles the Team/Roles UI understands. */
+function memberOrgRole(u: AnyObj | undefined): OrgRoleKey {
+  if (!u) return 'VIEWER';
+  if (u.role === 'ORGANIZATION_ADMIN' || u.role === 'ADMIN' || u.role === 'ORG_ADMIN') return 'ORG_ADMIN';
+  if (u.role === 'ORG_OWNER' || u.role === 'FINANCE' || u.role === 'VIEWER' || u.role === 'OPERATOR') return u.role;
+  return 'VIEWER';
+}
+
+/** Per-member permission overrides (KAB-126 "Manage access"), keyed
+ *  `${orgId}:${userId}`. In-memory only — resets on reload, same as the rest
+ *  of the mock store. `undefined` = no override, follow the role default. */
+const memberPermissionOverrides = new Map<string, string[]>();
+function overrideKey(orgId: string, userId: string): string {
+  return `${orgId}:${userId}`;
+}
 
 function dayKey(iso: string | null | undefined): string {
   if (!iso) return new Date().toISOString().slice(0, 10);
@@ -16,6 +37,38 @@ function orgChargerIds(orgId: string) {
 function orgSessions(orgId: string) {
   const chargerIds = new Set(orgChargerIds(orgId));
   return db.sessions.filter((s) => chargerIds.has(s.chargerId));
+}
+
+function orgIncidents(orgId: string) {
+  const chargerIds = new Set(orgChargerIds(orgId));
+  return db.incidents.filter((i) => chargerIds.has(i.chargerId));
+}
+
+function orgReviews(orgId: string) {
+  const chargerIds = new Set(orgChargerIds(orgId));
+  return db.reviews.filter((r) => chargerIds.has(r.chargerId));
+}
+
+function orgReports(orgId: string) {
+  const chargerIds = new Set(orgChargerIds(orgId));
+  return db.reports.filter((r) => chargerIds.has(r.chargerId));
+}
+
+function elapsedMinutes(iso: string): number {
+  return Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000));
+}
+
+/** DecoratedFault-shaped view of an incident, for the faults feed the
+ *  Station-detail page and Overview's fault widgets already consume. */
+function incidentToFault(i: AnyObj) {
+  return {
+    id: i.id, stationId: i.chargerId, chargerId: i.chargerId, chargerName: i.chargerName,
+    pedestalId: i.pedestalId, pedestalName: i.chargerName ? `${i.chargerName} Pedestal` : null,
+    evseId: i.connectorId, connectorId: i.connectorId,
+    connectorStatus: i.status === 'resolved' ? 'Available' : 'Faulted',
+    errorCode: i.errorCode, vendorErrorCode: null, vendorId: null, info: null,
+    reportedAt: i.openedAt, receivedAt: i.openedAt, effectiveAt: i.openedAt, timestampSkewed: false,
+  };
 }
 
 function isPaidStatus(status: string) {
@@ -73,7 +126,20 @@ export const consoleRoutes: Route[] = [
             };
           }),
         },
-        faults: { open: 0, items: [] },
+        faults: (() => {
+          const openIncidents = orgIncidents(ctx.params.orgId).filter((i) => i.status !== 'resolved');
+          return {
+            open: openIncidents.length,
+            items: openIncidents
+              .slice()
+              .sort((a, b) => new Date(a.openedAt).getTime() - new Date(b.openedAt).getTime())
+              .slice(0, 6)
+              .map((i) => ({
+                stationId: i.chargerId, connectorId: i.connectorId, errorCode: i.errorCode,
+                connectorStatus: 'Faulted', since: i.openedAt,
+              })),
+          };
+        })(),
         degraded: { telemetry: false, faults: false },
       });
     },
@@ -142,16 +208,26 @@ export const consoleRoutes: Route[] = [
     handler: (ctx) => {
       const chargers = db.chargers.filter((c) => c.organizationId === ctx.params.orgId);
       const org = db.organizations.find((o) => o.id === ctx.params.orgId);
+      const incidents = orgIncidents(ctx.params.orgId);
+      // A charger currently carrying an open critical incident reads as
+      // offline/degraded — everything else is healthy, matching the
+      // Incidents page so the two surfaces tell the same story.
+      const criticalOpenChargerIds = new Set(
+        incidents.filter((i) => i.status !== 'resolved' && i.severity === 'critical').map((i) => i.chargerId),
+      );
       return ok({
         orgId: ctx.params.orgId, orgName: org?.name || '',
         range: { from: dayKey(new Date(Date.now() - 29 * 86_400_000).toISOString()), to: dayKey(now()) },
         current: {
           capturedAt: now(), source: 'heartbeat',
-          stations: chargers.map((c) => ({ chargerId: c.id, chargerName: c.name, isOnline: true })),
+          stations: chargers.map((c) => ({ chargerId: c.id, chargerName: c.name, isOnline: !criticalOpenChargerIds.has(c.id) })),
         },
         uptime: {
-          snapshotCount: chargers.length * 30, onlineCount: chargers.length * 29, overallPercent: 98.2,
-          byCharger: chargers.map((c) => ({ chargerId: c.id, chargerName: c.name, uptimePercent: 97 + Math.random() * 3 })),
+          snapshotCount: chargers.length * 30, onlineCount: chargers.filter((c) => !criticalOpenChargerIds.has(c.id)).length * 29, overallPercent: 98.2,
+          byCharger: chargers.map((c) => ({
+            chargerId: c.id, chargerName: c.name,
+            uptimePercent: criticalOpenChargerIds.has(c.id) ? 82 + Math.random() * 6 : 97 + Math.random() * 3,
+          })),
         },
       });
     },
@@ -245,11 +321,168 @@ export const consoleRoutes: Route[] = [
       });
     },
   },
-  { method: 'GET', pattern: '/api/orgs/:orgId/faults/summary', handler: () => ok({ byCharger: [], byErrorCode: [], daily: [], total: 0, truncated: false }) },
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/faults/summary',
+    handler: (ctx) => {
+      const incidents = orgIncidents(ctx.params.orgId);
+      const byChargerMap = new Map<string, { chargerId: string; chargerName: string; count: number; byErrorCode: Record<string, number> }>();
+      const byErrorCodeMap = new Map<string, number>();
+      const byDayMap = new Map<string, { date: string; count: number; byCharger: Record<string, number> }>();
+      for (const i of incidents) {
+        if (!byChargerMap.has(i.chargerId)) byChargerMap.set(i.chargerId, { chargerId: i.chargerId, chargerName: i.chargerName, count: 0, byErrorCode: {} });
+        const row = byChargerMap.get(i.chargerId)!;
+        row.count++;
+        row.byErrorCode[i.errorCode] = (row.byErrorCode[i.errorCode] || 0) + 1;
+        byErrorCodeMap.set(i.errorCode, (byErrorCodeMap.get(i.errorCode) || 0) + 1);
+        const day = dayKey(i.openedAt);
+        if (!byDayMap.has(day)) byDayMap.set(day, { date: day, count: 0, byCharger: {} });
+        const drow = byDayMap.get(day)!;
+        drow.count++;
+        drow.byCharger[i.chargerId] = (drow.byCharger[i.chargerId] || 0) + 1;
+      }
+      return ok({
+        byCharger: [...byChargerMap.values()].sort((a, b) => b.count - a.count),
+        byErrorCode: [...byErrorCodeMap.entries()].map(([errorCode, count]) => ({ errorCode, count })).sort((a, b) => b.count - a.count),
+        daily: [...byDayMap.values()].sort((a, b) => a.date.localeCompare(b.date)),
+        total: incidents.length,
+        truncated: false,
+      });
+    },
+  },
   {
     method: 'GET',
     pattern: '/api/orgs/:orgId/faults',
-    handler: () => ok({ faults: [], total: 0, limit: 10, offset: 0 }),
+    handler: (ctx) => {
+      const limit = Number(ctx.query.get('limit') || 10);
+      const offset = Number(ctx.query.get('offset') || 0);
+      const chargerId = ctx.query.get('chargerId');
+      let list = orgIncidents(ctx.params.orgId).slice().sort((a, b) => new Date(b.openedAt).getTime() - new Date(a.openedAt).getTime());
+      if (chargerId) list = list.filter((i) => i.chargerId === chargerId);
+      const page_ = list.slice(offset, offset + limit);
+      return ok({ faults: page_.map(incidentToFault), total: list.length, limit, offset });
+    },
+  },
+
+  // ---------------- Incidents (uptime + time-sensitive faults) ----------------
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/incidents',
+    handler: (ctx) => {
+      const status = ctx.query.get('status');
+      const severity = ctx.query.get('severity');
+      let list = orgIncidents(ctx.params.orgId);
+      if (status && status !== 'all') list = list.filter((i) => i.status === status);
+      if (severity && severity !== 'all') list = list.filter((i) => i.severity === severity);
+      list = list.slice().sort((a, b) => {
+        // Open first (most time-sensitive), then by most-recently-opened.
+        const rank = (s: string) => (s === 'open' ? 0 : s === 'acknowledged' ? 1 : 2);
+        const r = rank(a.status) - rank(b.status);
+        if (r !== 0) return r;
+        return new Date(b.openedAt).getTime() - new Date(a.openedAt).getTime();
+      });
+      const all = orgIncidents(ctx.params.orgId);
+      return ok({
+        incidents: list.map((i) => ({ ...i, elapsedMinutes: elapsedMinutes(i.status === 'resolved' ? i.resolvedAt : i.openedAt) })),
+        totals: {
+          open: all.filter((i) => i.status === 'open').length,
+          acknowledged: all.filter((i) => i.status === 'acknowledged').length,
+          resolved: all.filter((i) => i.status === 'resolved').length,
+          criticalOpen: all.filter((i) => i.status !== 'resolved' && i.severity === 'critical').length,
+        },
+      });
+    },
+  },
+  {
+    method: 'PATCH',
+    pattern: '/api/orgs/:orgId/incidents/:incidentId',
+    handler: (ctx) => {
+      const incident = db.incidents.find((i) => i.id === ctx.params.incidentId);
+      if (!incident) return notFound('Incident not found');
+      const nextStatus = ctx.body?.status;
+      const actor = ctx.body?.by || 'You';
+      if (nextStatus === 'acknowledged') {
+        incident.status = 'acknowledged';
+        incident.acknowledgedAt = now();
+        incident.acknowledgedBy = actor;
+      } else if (nextStatus === 'resolved') {
+        incident.status = 'resolved';
+        if (!incident.acknowledgedAt) { incident.acknowledgedAt = now(); incident.acknowledgedBy = actor; }
+        incident.resolvedAt = now();
+        incident.resolvedBy = actor;
+      } else if (nextStatus === 'open') {
+        incident.status = 'open';
+        incident.acknowledgedAt = null; incident.acknowledgedBy = null;
+        incident.resolvedAt = null; incident.resolvedBy = null;
+      }
+      return ok({ incident: { ...incident, elapsedMinutes: elapsedMinutes(incident.status === 'resolved' ? incident.resolvedAt : incident.openedAt) } }, 'Incident updated');
+    },
+  },
+
+  // ---------------- Feedback: reviews & reports ----------------
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/feedback/reviews/summary',
+    handler: (ctx) => {
+      const reviews = orgReviews(ctx.params.orgId);
+      const distribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+      let sum = 0;
+      for (const r of reviews) { distribution[r.rating] = (distribution[r.rating] || 0) + 1; sum += r.rating; }
+      return ok({
+        count: reviews.length,
+        average: reviews.length ? Number((sum / reviews.length).toFixed(2)) : null,
+        distribution,
+      });
+    },
+  },
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/feedback/reviews',
+    handler: (ctx) => {
+      const page = Number(ctx.query.get('page') || 1);
+      const limit = Number(ctx.query.get('limit') || 20);
+      const rating = ctx.query.get('rating');
+      const search = ctx.query.get('search')?.toLowerCase();
+      let list = orgReviews(ctx.params.orgId).slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      if (rating && rating !== 'all') list = list.filter((r) => String(r.rating) === rating);
+      if (search) list = list.filter((r) => [r.customerName, r.chargerName, r.comment].filter(Boolean).some((f: string) => f.toLowerCase().includes(search)));
+      const { items, pagination } = paginate(list, page, limit);
+      return ok({ reviews: items, pagination });
+    },
+  },
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/feedback/reports',
+    handler: (ctx) => {
+      const status = ctx.query.get('status');
+      const severity = ctx.query.get('severity');
+      let list = orgReports(ctx.params.orgId).slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      if (status && status !== 'all') list = list.filter((r) => r.status === status);
+      if (severity && severity !== 'all') list = list.filter((r) => r.severity === severity);
+      const all = orgReports(ctx.params.orgId);
+      return ok({
+        reports: list,
+        totals: {
+          open: all.filter((r) => r.status === 'open').length,
+          investigating: all.filter((r) => r.status === 'investigating').length,
+          resolved: all.filter((r) => r.status === 'resolved').length,
+        },
+      });
+    },
+  },
+  {
+    method: 'PATCH',
+    pattern: '/api/orgs/:orgId/feedback/reports/:reportId',
+    handler: (ctx) => {
+      const report = db.reports.find((r) => r.id === ctx.params.reportId);
+      if (!report) return notFound('Report not found');
+      const nextStatus = ctx.body?.status;
+      if (nextStatus === 'open' || nextStatus === 'investigating' || nextStatus === 'resolved') {
+        report.status = nextStatus;
+        report.resolvedAt = nextStatus === 'resolved' ? now() : null;
+      }
+      return ok({ report }, 'Report updated');
+    },
   },
   {
     method: 'GET',
@@ -283,7 +516,7 @@ export const consoleRoutes: Route[] = [
     pattern: '/api/orgs/:orgId/members',
     handler: (ctx) => ok(db.users.filter((u) => u.organizationId === ctx.params.orgId).map((u) => ({
       id: u.id, userId: u.id, name: `${u.firstName} ${u.lastName}`.trim(), email: u.email, phone: u.phone,
-      imageUrl: u.imageUrl, role: u.role === 'ORGANIZATION_ADMIN' ? 'ORG_ADMIN' : u.role === 'OPERATOR' ? 'OPERATOR' : 'VIEWER',
+      imageUrl: u.imageUrl, role: memberOrgRole(u),
       status: u.isActive ? 'ACTIVE' : 'SUSPENDED', joinedAt: u.createdAt, lastActive: now(),
     }))),
   },
@@ -292,7 +525,43 @@ export const consoleRoutes: Route[] = [
     pattern: '/api/orgs/:orgId/members/invite',
     handler: (ctx) => ok({ invitation: { id: genId('invite'), email: ctx.body?.email, role: ctx.body?.role || 'VIEWER', status: 'PENDING', expiresAt: new Date(Date.now() + 7 * 86_400_000).toISOString(), invitedBy: 'You', createdAt: now() } }, 'Invitation sent'),
   },
-  { method: 'GET', pattern: '/api/orgs/:orgId/members/:userId/permissions', handler: () => ok({ permissions: ['sessions.view', 'sessions.manage', 'stations.view', 'stations.manage', 'team.view', 'revenue.view'] }) },
+  {
+    method: 'GET',
+    pattern: '/api/orgs/:orgId/members/:userId/permissions',
+    handler: (ctx) => {
+      const u = db.users.find((x) => x.id === ctx.params.userId);
+      const role = memberOrgRole(u);
+      const override = memberPermissionOverrides.get(overrideKey(ctx.params.orgId, ctx.params.userId));
+      return ok({
+        userId: ctx.params.userId, role, status: u?.isActive ? 'ACTIVE' : 'SUSPENDED',
+        permissions: override ?? rolePermissions(role),
+        customized: override != null,
+        editable: role !== 'ORG_OWNER',
+      });
+    },
+  },
+  {
+    method: 'PATCH',
+    pattern: '/api/orgs/:orgId/members/:userId/permissions',
+    handler: (ctx) => {
+      const u = db.users.find((x) => x.id === ctx.params.userId);
+      const role = memberOrgRole(u);
+      const key = overrideKey(ctx.params.orgId, ctx.params.userId);
+      const requested: string[] | null = ctx.body?.permissions ?? null;
+      // Decrease-only, mirroring the UI: an override can only be a subset of
+      // the role's own defaults, never grant beyond it.
+      const defaults = new Set(rolePermissions(role));
+      const clamped = requested === null ? null : requested.filter((p) => defaults.has(p));
+      if (clamped === null) memberPermissionOverrides.delete(key);
+      else memberPermissionOverrides.set(key, clamped);
+      return ok({
+        userId: ctx.params.userId, role, status: u?.isActive ? 'ACTIVE' : 'SUSPENDED',
+        permissions: clamped ?? rolePermissions(role),
+        customized: clamped != null,
+        editable: role !== 'ORG_OWNER',
+      });
+    },
+  },
   { method: 'PATCH', pattern: '/api/orgs/:orgId/members/:userId', handler: (ctx) => { const u = db.users.find((x) => x.id === ctx.params.userId); if (u && ctx.body?.role) u.role = ctx.body.role; return ok({}, 'Member updated'); } },
   { method: 'DELETE', pattern: '/api/orgs/:orgId/members/:userId', handler: (ctx) => { const u = db.users.find((x) => x.id === ctx.params.userId); if (u) u.organizationId = null; return ok({}, 'Member removed'); } },
   { method: 'GET', pattern: '/api/orgs/:orgId/invitations', handler: () => ok([]) },
@@ -365,14 +634,16 @@ export const consoleRoutes: Route[] = [
     method: 'GET',
     pattern: '/api/orgs/:orgId/roles',
     handler: () => ok({
-      roles: [
-        { key: 'ORG_OWNER', label: 'Owner', permissions: ['*'] },
-        { key: 'ORG_ADMIN', label: 'Admin', permissions: ['sessions.*', 'stations.*', 'team.*', 'revenue.view'] },
-        { key: 'FINANCE', label: 'Finance', permissions: ['revenue.view', 'sessions.view'] },
-        { key: 'OPERATOR', label: 'Operator', permissions: ['sessions.view', 'sessions.manage'] },
-        { key: 'VIEWER', label: 'Viewer', permissions: ['sessions.view', 'stations.view'] },
-      ],
-      permissions: ['sessions.view', 'sessions.manage', 'stations.view', 'stations.manage', 'team.view', 'team.manage', 'revenue.view'],
+      roles: (Object.keys(ROLE_META) as OrgRoleKey[]).map((role) => ({
+        role, label: ROLE_META[role].label, description: ROLE_META[role].description,
+        permissions: ROLE_PERMISSIONS[role], editable: role !== 'ORG_OWNER', customized: false,
+      })),
+      permissions: ALL_PERMISSIONS.map((key) => ({
+        key, label: PERMISSION_META[key].label, group: PERMISSION_META[key].group, ownerOnly: !!PERMISSION_META[key].ownerOnly,
+      })),
+      groups: PERMISSION_GROUPS.map((g) => ({
+        key: g.key, label: g.label, permissions: ALL_PERMISSIONS.filter((p) => PERMISSION_META[p].group === g.key),
+      })),
     }),
   },
 

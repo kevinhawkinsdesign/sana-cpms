@@ -51,6 +51,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'stations', label: 'Stations', icon: 'station', path: '/stations', perm: 'view_chargers' },
       { id: 'sessions', label: 'Sessions', icon: 'bolt', path: '/sessions', perm: 'view_sessions' },
+      { id: 'incidents', label: 'Incidents', icon: 'alert', path: '/incidents', perm: 'view_incidents' },
       { id: 'tags', label: 'Tags', icon: 'tag', path: '/tags', perm: 'manage_tags' },
       { id: 'tariffs', label: 'Tariffs & Rates', icon: 'tariff', path: '/tariffs', perm: 'manage_tariffs' },
     ],
@@ -61,6 +62,14 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'revenue', label: 'Revenue & Billing', icon: 'money', path: '/revenue', perm: 'view_revenue' },
       { id: 'compliance', label: 'Compliance', icon: 'shield', path: '/compliance', perm: 'view_ebm' },
+    ],
+  },
+  {
+    group: 'Feedback',
+    requireRole: ADMIN_ROLES,
+    items: [
+      { id: 'feedback-reviews', label: 'Reviews', icon: 'star', path: '/feedback/reviews', perm: 'view_feedback' },
+      { id: 'feedback-reports', label: 'Reports', icon: 'message', path: '/feedback/reports', perm: 'view_feedback' },
     ],
   },
   {
@@ -139,6 +148,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { id: 'me-shifts', label: 'Check In / Out', icon: 'clock', path: '/me/shifts', perm: 'view_shifts' },
       { id: 'me-charge', label: 'Start / End Session', icon: 'bolt', path: '/me/charge', perm: 'view_sessions' },
       { id: 'me-transfer', label: 'My Sessions', icon: 'refresh', path: '/me/sessions', perm: 'view_sessions' },
+      { id: 'me-incidents', label: 'Incidents', icon: 'alert', path: '/me/incidents', perm: 'view_incidents' },
     ],
   },
 ];

@@ -119,6 +119,148 @@ const kabisaIds: AnyObj[] = [
   ...seed.vehicles.map((v) => ({ id: genId('kid'), kabisaId: v.kabisaId, kabisaIdType: 'VEHICLE', status: 'ACTIVE', entityId: v.id, createdAt: v.createdAt, updatedAt: v.updatedAt })),
 ];
 
+// ---------------- Incidents (synthetic) ----------------
+// Hand-authored so the demo tells a coherent story across real seeded
+// chargers/guns: a couple of genuinely time-sensitive open faults, some
+// already being worked, and a resolved history for trend context.
+const chargerByName = new Map(seed.chargers.map((c) => [c.name, c] as const));
+const gunsByCharger = (chargerName: string) => seed.guns.filter((g) => g.chargerId === chargerByName.get(chargerName)?.id);
+const minsAgo = (m: number) => new Date(Date.now() - m * 60_000).toISOString();
+
+interface IncidentSeed {
+  chargerName: string; gunNumber: string; errorCode: string; severity: 'critical' | 'warning' | 'info';
+  status: 'open' | 'acknowledged' | 'resolved'; openedMinAgo: number; ackedMinAgo?: number; resolvedMinAgo?: number; by?: string;
+}
+const INCIDENT_SEEDS: IncidentSeed[] = [
+  { chargerName: 'EVP Kibagabaga', gunNumber: '2', errorCode: 'PowerMeterFailure', severity: 'critical', status: 'open', openedMinAgo: 4 },
+  { chargerName: 'SP Kanombe', gunNumber: '1', errorCode: 'CommunicationFailure', severity: 'critical', status: 'open', openedMinAgo: 12 },
+  { chargerName: 'EVP Kacyiru', gunNumber: '2', errorCode: 'GroundFailure', severity: 'critical', status: 'open', openedMinAgo: 47 },
+  { chargerName: 'EVP Nyamirambo', gunNumber: '2', errorCode: 'ConnectorLockFailure', severity: 'warning', status: 'open', openedMinAgo: 25 },
+  { chargerName: 'People Kacyiru', gunNumber: '1', errorCode: 'WeakSignal', severity: 'info', status: 'open', openedMinAgo: 55 },
+  { chargerName: 'SP Musanze', gunNumber: '2', errorCode: 'PowerMeterFailure', severity: 'critical', status: 'acknowledged', openedMinAgo: 110, ackedMinAgo: 80, by: 'Aline Rurangirwa' },
+  { chargerName: 'IZI Nyarutarama', gunNumber: '1', errorCode: 'HighTemperature', severity: 'warning', status: 'acknowledged', openedMinAgo: 180, ackedMinAgo: 160, by: 'Bikorima Bosco' },
+  { chargerName: 'EVP Kibagabaga', gunNumber: '1', errorCode: 'OverCurrentFailure', severity: 'critical', status: 'resolved', openedMinAgo: 2940, ackedMinAgo: 2920, resolvedMinAgo: 2895, by: 'Alliah Uwimbabazi' },
+  { chargerName: 'EVP Kacyiru', gunNumber: '1', errorCode: 'EVCommunicationError', severity: 'warning', status: 'resolved', openedMinAgo: 7300, ackedMinAgo: 7280, resolvedMinAgo: 7250, by: 'Celine Cyiza' },
+  { chargerName: 'SP Kanombe', gunNumber: '2', errorCode: 'GroundFailure', severity: 'critical', status: 'resolved', openedMinAgo: 1500, ackedMinAgo: 1480, resolvedMinAgo: 1440, by: 'BIGIRIMANA swaleh' },
+  { chargerName: 'EVP Nyamirambo', gunNumber: '1', errorCode: 'HighTemperature', severity: 'warning', status: 'resolved', openedMinAgo: 4200, ackedMinAgo: 4180, resolvedMinAgo: 4140, by: 'Bamurange Faith' },
+  { chargerName: 'IZI Nyarutarama', gunNumber: '2', errorCode: 'CommunicationFailure', severity: 'info', status: 'resolved', openedMinAgo: 8600, ackedMinAgo: 8580, resolvedMinAgo: 8550, by: 'Aline Rurangirwa' },
+  { chargerName: 'People Kacyiru', gunNumber: '2', errorCode: 'WeakSignal', severity: 'info', status: 'resolved', openedMinAgo: 5760, ackedMinAgo: 5740, resolvedMinAgo: 5700, by: 'Celine Cyiza' },
+  { chargerName: 'SP Musanze', gunNumber: '1', errorCode: 'ConnectorLockFailure', severity: 'warning', status: 'resolved', openedMinAgo: 10080, ackedMinAgo: 10060, resolvedMinAgo: 10020, by: 'Bikorima Bosco' },
+];
+const incidents: AnyObj[] = INCIDENT_SEEDS.map((s, i) => {
+  const charger = chargerByName.get(s.chargerName);
+  const gun = gunsByCharger(s.chargerName).find((g) => g.gunNumber === s.gunNumber);
+  return {
+    id: `incident_${i + 1}`,
+    chargerId: charger?.id ?? null,
+    chargerName: s.chargerName,
+    pedestalId: charger?.pedestalId ?? null,
+    gunId: gun?.id ?? null,
+    connectorId: Number(s.gunNumber),
+    errorCode: s.errorCode,
+    severity: s.severity,
+    status: s.status,
+    openedAt: minsAgo(s.openedMinAgo),
+    acknowledgedAt: s.ackedMinAgo !== undefined ? minsAgo(s.ackedMinAgo) : null,
+    acknowledgedBy: s.status !== 'open' ? s.by ?? null : null,
+    resolvedAt: s.resolvedMinAgo !== undefined ? minsAgo(s.resolvedMinAgo) : null,
+    resolvedBy: s.status === 'resolved' ? s.by ?? null : null,
+  };
+});
+
+// ---------------- Feedback: reviews & reports (synthetic) ----------------
+function hashStr(str: string): number {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(h, 31) + str.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+function ratingForSeed(seed: string): number {
+  const r = hashStr(seed) % 100;
+  if (r < 52) return 5;
+  if (r < 78) return 4;
+  if (r < 91) return 3;
+  if (r < 97) return 2;
+  return 1;
+}
+const REVIEW_COMMENTS: Record<number, string[]> = {
+  5: [
+    'Fast, reliable charging every time — my go-to station.',
+    'Spotless site, worked first try, app total matched the price exactly.',
+    'Charged from 20% to 90% faster than I expected. Great spot.',
+    'Staff on site were quick to help when I had a payment question.',
+  ],
+  4: [
+    'Good charger, just a short wait during peak hours.',
+    'Worked well — would love more shade over the bays.',
+    'Reliable so far, the app’s live session tracking is handy.',
+  ],
+  3: [
+    'Charging was fine but the app took a while to start the session.',
+    'One of the two guns was out of service when I arrived.',
+    'Average experience — power dipped for a minute mid-session.',
+  ],
+  2: [
+    'Card reader didn’t work, had to switch to mobile money.',
+    'Charger ran noticeably slower than the listed rating during my visit.',
+  ],
+  1: [
+    'Gun was completely unresponsive — had to drive to another station.',
+    'Session didn’t end automatically and I was billed for extra time.',
+  ],
+};
+const reviewableSessions = seed.sessions.filter(
+  (s, i) => i % 71 === 5 && ['PAID', 'COMPLETED', 'EBM_ISSUED'].includes(s.sessionStatus),
+);
+const reviews: AnyObj[] = reviewableSessions.map((s) => {
+  const rating = ratingForSeed(s.id);
+  const pool = REVIEW_COMMENTS[rating];
+  const comment = pool[hashStr(s.id + 'comment') % pool.length];
+  const charger = seed.chargers.find((c) => c.id === s.chargerId);
+  return {
+    id: genId('review'),
+    sessionId: s.id,
+    chargerId: s.chargerId,
+    chargerName: charger?.name ?? 'Unknown station',
+    customerId: s.customerId,
+    customerName: s.customerName || 'Anonymous driver',
+    rating,
+    comment,
+    createdAt: s.endTime || s.startTime,
+  };
+});
+
+interface ReportSeed {
+  chargerName: string; category: string; severity: 'high' | 'medium' | 'low';
+  status: 'open' | 'investigating' | 'resolved'; description: string; reporterName: string; reporterType: 'customer' | 'operator';
+  createdMinAgo: number; resolvedMinAgo?: number;
+}
+const REPORT_SEEDS: ReportSeed[] = [
+  { chargerName: 'EVP Kibagabaga', category: 'Safety concern', severity: 'high', status: 'open', description: 'Exposed cable insulation on Gun 2 — flagged before use.', reporterName: 'Jean Bosco N.', reporterType: 'customer', createdMinAgo: 18 },
+  { chargerName: 'SP Kanombe', category: 'Card reader', severity: 'medium', status: 'open', description: 'Card reader rejects all cards, only mobile money works.', reporterName: 'MTN Rwanda (fleet)', reporterType: 'customer', createdMinAgo: 90 },
+  { chargerName: 'EVP Nyamirambo', category: 'Plug damage', severity: 'high', status: 'investigating', description: 'CCS2 connector latch feels loose, doesn’t click fully.', reporterName: 'Aline Rurangirwa', reporterType: 'operator', createdMinAgo: 420 },
+  { chargerName: 'IZI Nyarutarama', category: 'Slow charging', severity: 'low', status: 'investigating', description: 'Consistently charging at ~40kW instead of the rated 60kW.', reporterName: 'GreenRide Africa', reporterType: 'customer', createdMinAgo: 1200 },
+  { chargerName: 'People Kacyiru', category: 'App/billing', severity: 'medium', status: 'open', description: 'Charged twice for the same session — needs a refund.', reporterName: 'Diane U.', reporterType: 'customer', createdMinAgo: 260 },
+  { chargerName: 'SP Musanze', category: 'Other', severity: 'low', status: 'resolved', description: 'Requested better lighting for evening charging.', reporterName: 'Bikorima Bosco', reporterType: 'operator', createdMinAgo: 8640, resolvedMinAgo: 8000 },
+  { chargerName: 'EVP Kacyiru', category: 'Plug damage', severity: 'medium', status: 'resolved', description: 'Gun 1 handle cracked, replaced under warranty.', reporterName: 'Solid Africa', reporterType: 'customer', createdMinAgo: 12000, resolvedMinAgo: 11500 },
+  { chargerName: 'EVP Kibagabaga', category: 'Card reader', severity: 'low', status: 'resolved', description: 'Card reader firmware updated after intermittent failures.', reporterName: 'Celine Cyiza', reporterType: 'operator', createdMinAgo: 15840, resolvedMinAgo: 15700 },
+];
+const reports: AnyObj[] = REPORT_SEEDS.map((r, i) => {
+  const charger = chargerByName.get(r.chargerName);
+  return {
+    id: `report_${i + 1}`,
+    chargerId: charger?.id ?? null,
+    chargerName: r.chargerName,
+    category: r.category,
+    severity: r.severity,
+    status: r.status,
+    description: r.description,
+    reporterName: r.reporterName,
+    reporterType: r.reporterType,
+    createdAt: minsAgo(r.createdMinAgo),
+    resolvedAt: r.resolvedMinAgo !== undefined ? minsAgo(r.resolvedMinAgo) : null,
+  };
+});
+
 export const db = {
   countries: seed.countries,
   organizations: seed.organizations,
@@ -136,6 +278,9 @@ export const db = {
   businessVehicles,
   businessContracts,
   kabisaIds,
+  incidents,
+  reviews,
+  reports,
 };
 
 export const demoPersonaIds = {

@@ -54,6 +54,7 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Square,
+  Star,
   Tag,
   Trash2,
   TriangleAlert,
@@ -122,6 +123,7 @@ const LUCIDE_ICONS = {
   cloudDownload: CloudDownload,
   trash: Trash2,
   gitCompare: GitCompare,
+  star: Star,
 } as const satisfies Record<string, LucideIcon>;
 
 /** EV charging station — no lucide equivalent; ported from the mockup. */
