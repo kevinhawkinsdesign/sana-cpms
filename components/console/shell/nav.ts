@@ -58,14 +58,6 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    group: 'Business',
-    requireRole: ADMIN_ROLES,
-    items: [
-      { id: 'revenue', label: 'Revenue & Billing', icon: 'money', path: '/revenue', perm: 'view_revenue' },
-      { id: 'compliance', label: 'Compliance', icon: 'shield', path: '/compliance', perm: 'view_ebm' },
-    ],
-  },
-  {
     group: 'Feedback',
     requireRole: ADMIN_ROLES,
     items: [
@@ -74,12 +66,12 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    group: 'EBM',
+    group: 'Finance',
     requireRole: ADMIN_ROLES,
     items: [
       {
-        id: 'ebm', label: 'EBM & Compliance', icon: 'doc', path: '/ebm',
-        perm: 'view_ebm', anyPerm: ['view_ebm', 'manage_ebm'],
+        id: 'ebm', label: 'Finance & EBM', icon: 'money', path: '/ebm',
+        perm: 'view_ebm', anyPerm: ['view_ebm', 'manage_ebm', 'view_revenue'],
       },
     ],
   },
@@ -190,9 +182,14 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
 /** Ordered group headings for the settings sub-nav. */
 export const SETTINGS_GROUPS: Array<SettingsSection['group']> = ['Organization', 'Access', 'Finance'];
 
-/** EBM (KAB-…): the 10 previously-separate EBM/EBM Config sidebar entries,
- *  now sub-nav sections under /console/ebm (see SectionShell). */
+/** Finance + EBM (KAB-…): Revenue & Billing and Compliance (previously their
+ *  own top-level "Business" sidebar group) plus the 10 previously-separate
+ *  EBM/EBM Config sidebar entries — all merged into one hub's sub-nav under
+ *  /console/ebm (see SectionShell), matching the reference design's
+ *  contiguous FINANCE / EBM / EBM CONFIG grouping. */
 export const EBM_SECTIONS: ShellSection[] = [
+  { id: 'ebm-revenue', label: 'Revenue & Billing', group: 'Finance', segment: 'revenue', perm: 'view_revenue' },
+  { id: 'ebm-compliance', label: 'Compliance', group: 'Finance', segment: 'compliance', perm: 'view_ebm' },
   { id: 'ebm-proforma', label: 'Proforma EBM', group: 'EBM', segment: 'proforma', perm: 'view_ebm' },
   { id: 'ebm-missing', label: 'Missing EBM', group: 'EBM', segment: 'missing', perm: 'view_ebm' },
   { id: 'ebm-failed', label: 'Failed EBM', group: 'EBM', segment: 'failed', perm: 'view_ebm' },
@@ -204,7 +201,7 @@ export const EBM_SECTIONS: ShellSection[] = [
   { id: 'ebm-codes-sync', label: 'CIS / VSDC Codes', group: 'EBM Config', segment: 'codes-sync', perm: 'manage_ebm' },
   { id: 'ebm-vsdc-init', label: 'VSDC Initialization', group: 'EBM Config', segment: 'vsdc-init', perm: 'manage_ebm' },
 ];
-export const EBM_GROUPS: string[] = ['EBM', 'EBM Config'];
+export const EBM_GROUPS: string[] = ['Finance', 'EBM', 'EBM Config'];
 
 /** Platform Admin (KAB-162): the 5 previously-separate sidebar entries, now
  *  sub-nav sections under /console/admin. Distinct from Fleet, which keeps

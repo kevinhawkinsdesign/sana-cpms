@@ -66,7 +66,7 @@ export default function SettingsLayout({ children }: Readonly<{ children: React.
                   className={cn(
                     'rounded-lg px-3 py-2 text-sm font-medium no-underline transition-colors',
                     s.id === active.id
-                      ? 'bg-[#0B4F42]/10 text-[#0B4F42] dark:bg-[#0B4F42]/[0.12] dark:text-[#4561de]'
+                      ? 'bg-[#0B4F42]/10 text-[#0B4F42] dark:bg-[#00C2A8]/[0.12] dark:text-[#00C2A8]'
                       : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5',
                   )}
                 >

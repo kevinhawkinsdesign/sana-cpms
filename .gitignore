@@ -45,3 +45,6 @@ next-env.d.ts
 # Sentry Config File
 .env.sentry-build-plugin
 /docs
+# Local GitHub-Pages simulation server (scratch tooling, not part of the app)
+/pages-sim/
+/ghpages_server.py
