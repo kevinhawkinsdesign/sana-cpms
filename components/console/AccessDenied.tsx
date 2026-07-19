@@ -41,7 +41,7 @@ export function AccessDenied({
             gap: 6,
             fontSize: 13,
             fontWeight: 600,
-            color: 'var(--accent, #08294f)',
+            color: 'var(--accent, #0B4F42)',
             textDecoration: 'none',
           }}
         >

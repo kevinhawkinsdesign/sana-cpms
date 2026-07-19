@@ -313,7 +313,7 @@ function EditAndRetryModal({ ebm, onClose, onRetried }: EditAndRetryModalProps) 
                     className={cn(
                       'px-3 py-1.5 rounded-md text-xs font-medium border transition-colors',
                       salesType === v
-                        ? 'bg-[#08294f] border-[#08294f] text-white'
+                        ? 'bg-[#0B4F42] border-[#0B4F42] text-white'
                         : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-[#1A1A1A] dark:border-gray-600 dark:text-gray-300 dark:hover:bg-white/5'
                     )}
                   >

@@ -361,7 +361,7 @@ function BulkAssignModal({
           <div>
             <div className="mb-1 flex items-center justify-between text-xs font-medium text-[var(--text3)]">
               <span>Operators ({opIds.length} selected)</span>
-              <button type="button" className="text-[var(--brand,#08294f)]" onClick={() => setOpIds(opIds.length === operators.length ? [] : operators.map((o) => o.id))}>
+              <button type="button" className="text-[var(--brand,#0B4F42)]" onClick={() => setOpIds(opIds.length === operators.length ? [] : operators.map((o) => o.id))}>
                 {opIds.length === operators.length ? 'Clear' : 'Select all'}
               </button>
             </div>
@@ -382,7 +382,7 @@ function BulkAssignModal({
                 return (
                   <button key={d.value} type="button"
                     onClick={() => setDays((p) => (on ? p.filter((x) => x !== d.value) : [...p, d.value]))}
-                    className={`h-8 w-10 rounded-md border text-xs font-medium transition ${on ? 'border-[#08294f] bg-[#08294f] text-white' : 'border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-300'}`}>
+                    className={`h-8 w-10 rounded-md border text-xs font-medium transition ${on ? 'border-[#0B4F42] bg-[#0B4F42] text-white' : 'border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-300'}`}>
                     {d.label}
                   </button>
                 );
@@ -553,7 +553,7 @@ function ShiftModal({
                           key={d.value}
                           type="button"
                           onClick={() => setDraft({ ...draft, days: on ? draft.days.filter((x) => x !== d.value) : [...draft.days, d.value] })}
-                          className={`h-8 w-10 rounded-md border text-xs font-medium transition ${on ? 'border-[#08294f] bg-[#08294f] text-white' : 'border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-300'}`}
+                          className={`h-8 w-10 rounded-md border text-xs font-medium transition ${on ? 'border-[#0B4F42] bg-[#0B4F42] text-white' : 'border-gray-300 text-gray-600 dark:border-gray-700 dark:text-gray-300'}`}
                         >
                           {d.label}
                         </button>
@@ -667,7 +667,7 @@ function SwapsPanel({ orgId, canManage, onClose }: Readonly<{ orgId: string | nu
 }
 
 const INPUT_CLS =
-  'h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#08294f] focus:outline-none dark:border-gray-700 dark:text-white/90';
+  'h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#0B4F42] focus:outline-none dark:border-gray-700 dark:text-white/90';
 
 function Field({ label, children }: Readonly<{ label: string; children: React.ReactNode }>) {
   return (

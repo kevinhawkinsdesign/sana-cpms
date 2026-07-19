@@ -89,7 +89,7 @@ export function RosterGrid({
                 <th
                   key={k}
                   ref={k === todayKey ? todayRef : undefined}
-                  className={`sticky top-0 z-20 min-w-[120px] border-b px-2 py-2 text-center text-xs font-medium ${weekend ? 'bg-[var(--sunken,#f3f4f6)]' : 'bg-[var(--surface,#fff)]'} ${k === todayKey ? 'text-[var(--brand,#08294f)]' : 'text-[var(--text3)]'}`}
+                  className={`sticky top-0 z-20 min-w-[120px] border-b px-2 py-2 text-center text-xs font-medium ${weekend ? 'bg-[var(--sunken,#f3f4f6)]' : 'bg-[var(--surface,#fff)]'} ${k === todayKey ? 'text-[var(--brand,#0B4F42)]' : 'text-[var(--text3)]'}`}
                 >
                   <div>{d.toLocaleDateString('en-GB', { weekday: 'short' })}</div>
                   <div className="text-[13px] font-semibold text-[var(--text)]">{d.getDate()}</div>

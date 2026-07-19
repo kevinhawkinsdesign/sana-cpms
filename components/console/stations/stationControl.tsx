@@ -117,7 +117,7 @@ function CommandModal({
                   placeholder={p.placeholder}
                   value={values[p.name] ?? ''}
                   onChange={(e) => setValues((s) => ({ ...s, [p.name]: e.target.value }))}
-                  className="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#08294f] focus:outline-none focus:ring-3 focus:ring-[#08294f]/10 dark:border-gray-700 dark:text-white/90"
+                  className="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#0B4F42] focus:outline-none focus:ring-3 focus:ring-[#0B4F42]/10 dark:border-gray-700 dark:text-white/90"
                 />
               )}
             </label>
@@ -150,7 +150,7 @@ function prettyAction(a: string): string {
 }
 
 function statusCls(status: string): string {
-  if (status === 'Accepted') return 'bg-emerald-500/20 text-emerald-400';
+  if (status === 'Accepted') return 'bg-[#10b981]/20 text-[#34d399]';
   if (status === 'Rejected') return 'bg-red-500/20 text-red-400';
   if (status === 'Pending') return 'bg-amber-500/20 text-amber-400';
   return 'bg-white/10 text-white/50';
@@ -171,7 +171,7 @@ function JsonBlock({ label, data, defaultOpen }: Readonly<{ label: string; data:
       </button>
       {open && (
         <div className="relative mt-1">
-          <pre className="overflow-auto whitespace-pre-wrap break-all rounded bg-black/30 px-3 py-2 pr-9 text-[11px] leading-relaxed text-emerald-300 max-h-48">
+          <pre className="overflow-auto whitespace-pre-wrap break-all rounded bg-black/30 px-3 py-2 pr-9 text-[11px] leading-relaxed text-[#6ee7b7] max-h-48">
             {json}
           </pre>
           <button
@@ -200,7 +200,7 @@ function ResponseConsole({ orgId, chargerId, stationId }: Readonly<{ orgId: stri
     <div className="overflow-hidden rounded-[10px] bg-[#0f1729] text-white flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
         <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="h-2 w-2 rounded-full bg-[#34d399] animate-pulse" />
           <span className="text-sm font-semibold text-white/90">Live response console</span>
         </div>
         <div className="flex items-center gap-2 text-[11px] font-mono text-white/40">
@@ -331,7 +331,7 @@ export function ControlTab({ chargerId, stationId }: Readonly<{ chargerId: strin
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Run a command…"
-            className="h-10 w-full rounded-lg border border-gray-300 bg-transparent pl-9 pr-3 text-sm text-gray-800 focus:border-[#08294f] focus:outline-none focus:ring-3 focus:ring-[#08294f]/10 dark:border-gray-700 dark:text-white/90"
+            className="h-10 w-full rounded-lg border border-gray-300 bg-transparent pl-9 pr-3 text-sm text-gray-800 focus:border-[#0B4F42] focus:outline-none focus:ring-3 focus:ring-[#0B4F42]/10 dark:border-gray-700 dark:text-white/90"
           />
         </div>
 
@@ -531,7 +531,7 @@ function ConfigEditModal({
             value={value}
             onChange={(e) => setValue(e.target.value)}
             autoFocus
-            className="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#08294f] focus:outline-none focus:ring-3 focus:ring-[#08294f]/10 dark:border-gray-700 dark:text-white/90"
+            className="h-10 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#0B4F42] focus:outline-none focus:ring-3 focus:ring-[#0B4F42]/10 dark:border-gray-700 dark:text-white/90"
           />
         </label>
         <DialogFooter>
@@ -602,7 +602,7 @@ export function ChargerConfigTab({ chargerId, defaultVersion, stationId }: Reado
                   type="button"
                   onClick={() => { setVersion(v); setPage(1); setSearch(''); setDebounced(''); }}
                   className={`rounded-md px-2.5 py-1 text-xs font-semibold ${
-                    version === v ? 'bg-[#08294f] text-white' : 'text-gray-500 hover:text-gray-800 dark:text-gray-400'
+                    version === v ? 'bg-[#0B4F42] text-white' : 'text-gray-500 hover:text-gray-800 dark:text-gray-400'
                   }`}
                 >
                   OCPP {v}
@@ -625,7 +625,7 @@ export function ChargerConfigTab({ chargerId, defaultVersion, stationId }: Reado
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={is201 ? 'Search component / variable…' : 'Search key…'}
-              className="h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-9 pr-3 text-sm text-gray-800 focus:border-[#08294f] focus:outline-none dark:border-gray-700 dark:text-white/90"
+              className="h-9 w-full rounded-lg border border-gray-300 bg-transparent pl-9 pr-3 text-sm text-gray-800 focus:border-[#0B4F42] focus:outline-none dark:border-gray-700 dark:text-white/90"
             />
           </div>
         </div>

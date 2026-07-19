@@ -223,7 +223,7 @@ function ConsoleOperatorOverviewBody() {
     if (sessionAlerts.unpaidToday > 0)
       tiles.push({ key: 'unpaid-today', count: sessionAlerts.unpaidToday, label: 'Unpaid today', icon: <CalendarClock className="h-4 w-4 text-orange-600 dark:text-orange-400" />, cls: 'border-orange-200 bg-orange-50 hover:bg-orange-100 text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/10 dark:hover:bg-orange-500/20 dark:text-orange-300' });
     if (sessionAlerts.needsInfoTotal > 0)
-      tiles.push({ key: 'needs-info', count: sessionAlerts.needsInfoTotal, label: 'Needs info all', icon: <UserPlus className="h-4 w-4 text-gray-900" />, cls: 'border-[#FFD400] bg-[#FFD400] hover:bg-[#FFD400]/90 text-gray-900 dark:border-[#FFD400] dark:bg-[#FFD400] dark:hover:bg-[#FFD400]/90 dark:text-gray-900' });
+      tiles.push({ key: 'needs-info', count: sessionAlerts.needsInfoTotal, label: 'Needs info all', icon: <UserPlus className="h-4 w-4 text-gray-900" />, cls: 'border-[#00C2A8] bg-[#00C2A8] hover:bg-[#00C2A8]/90 text-gray-900 dark:border-[#00C2A8] dark:bg-[#00C2A8] dark:hover:bg-[#00C2A8]/90 dark:text-gray-900' });
     if (sessionAlerts.needsInfoToday > 0)
       tiles.push({ key: 'needs-info-today', count: sessionAlerts.needsInfoToday, label: 'Needs info today', icon: <UserPlus className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />, cls: 'border-yellow-200 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/10 dark:hover:bg-yellow-500/20 dark:text-yellow-300' });
     return tiles;

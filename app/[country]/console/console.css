@@ -1,31 +1,33 @@
-/* Kabisa Console — operator-console identity (navy + solar).
-   Light-first (soft grey page, white cards, navy sidebar). Dark mode preserved.
-   Brand: Solar Yellow #FFD400 (primary action), Navy #08294f (accent + sidebar).
+/* Sana Console — operator-console identity (ink + signal teal).
+   Light-first (paper page, white cards, ink sidebar). Dark mode preserved.
+   Brand: Signal Teal #00C2A8 (primary action), Ink #0C1B18 (accent + sidebar),
+   Grid Green #0B4F42 (secondary accent / text-on-light), Paper #F5F8F7 (light bg),
+   Mist #DCE7E4 (borders).
    TailAdmin layout patterns, animations preserved.
    Mobile responsive shell rules (KAB-118) merged. */
 
 .kc-root {
-  /* Kabisa brand — navy + solar (operator-console identity) */
-  --brand: #4561de;       /* dark-mode accent (legible on black); light overrides to navy */
-  --brand-hover: #2f49c9;
-  --brand-light: #4561de;
-  --navy: #08294f;        /* deep navy — sidebar + dark surfaces */
-  --solar: #FFD400;       /* Solar Yellow — primary action */
-  --solar-dim: #b39600;
-  --solar-ink: #08294f;   /* text on solar */
+  /* Sana brand — ink + signal teal (operator-console identity) */
+  --brand: #00C2A8;        /* dark-mode accent (legible on black); light overrides to grid green */
+  --brand-hover: #00a58f;
+  --brand-light: #00C2A8;
+  --navy: #0C1B18;         /* Ink — sidebar + dark surfaces */
+  --solar: #00C2A8;        /* Signal Teal — primary action */
+  --solar-dim: #00806e;
+  --solar-ink: #0C1B18;    /* text on solar/teal */
   --radius: 10px;
-  --focus-ring: rgba(69, 97, 222, 0.35);
+  --focus-ring: rgba(0, 194, 168, 0.35);
 
-  /* Font stack: Outfit (TailAdmin primary) */
-  font-family: var(--font-outfit), 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Font stack: Space Grotesk (Sana primary) */
+  font-family: var(--font-space-grotesk), 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 
   /* Chart vars (SVG charts reference these) */
-  --chart-line: #4561de;
-  --chart-fill: rgba(69, 97, 222, 0.14);
+  --chart-line: #00C2A8;
+  --chart-fill: rgba(0, 194, 168, 0.14);
   --chart-grid: rgba(255, 255, 255, 0.05);
 
   /* Semantic colors for inline style references */
@@ -34,69 +36,69 @@
   --text3: #606060;
   --border: #2A2A2A;
   --border-strong: #333333;
-  --surface: #1A1A1A;
-  --sunken: #222222;
-  --page: #000000;
+  --surface: #12211d;
+  --sunken: #172a25;
+  --page: #0C1B18;
   --ok: #23a35a;
   --err: #e0533d;
   --warn: #e0a800;
   --charge: #e0a800;
-  --info: #4561de;
-  --accent: #FFD400;
-  --accent-soft: rgba(255, 212, 0, 0.12);
-  --accent-ink: #221d00;
-  --link: #6f8fce;
+  --info: #00C2A8;
+  --accent: #00C2A8;
+  --accent-soft: rgba(0, 194, 168, 0.12);
+  --accent-ink: #06231d;
+  --link: #5fd6c4;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
-  --sidebar-bg: #08294f;
+  --sidebar-bg: #0C1B18;
   --sidebar-border: rgba(255, 255, 255, 0.07);
-  --bg-0: #000000;
-  --bg-1: #0a0a0a;
-  --bg-2: #1A1A1A;
-  --bg-3: #222222;
+  --bg-0: #0C1B18;
+  --bg-1: #101f1b;
+  --bg-2: #12211d;
+  --bg-3: #172a25;
 
   /* Dark default */
-  background: #000000;
+  background: #0C1B18;
   color: rgba(255, 255, 255, 0.9);
   color-scheme: dark;
 }
 
-/* Light theme — mockup identity: navy + solar on a soft-grey page, white cards */
+/* Light theme — Sana identity: grid green + signal teal on a paper page, white cards */
 .kc-root[data-kc-theme='light'] {
-  background: #f4f6f9;
-  color: #172033;
+  background: #F5F8F7;
+  color: #0C1B18;
   color-scheme: light;
-  /* navy is the light-mode brand accent (tabs/links/focus/secondary) */
-  --brand: #08294f;
-  --brand-hover: #061e3c;
-  --brand-light: #1f4f8f;
-  --focus-ring: rgba(8, 41, 79, 0.22);
-  --chart-line: #08294f;
-  --chart-grid: #eef1f6;
-  --chart-fill: rgba(8, 41, 79, 0.10);
-  --text: #172033;
-  --text2: #3a4a63;
-  --text3: #8696ac;
-  --border: #e6ebf2;
-  --border-strong: #d6deea;
+  /* grid green is the light-mode brand accent (tabs/links/focus/secondary) */
+  --brand: #0B4F42;
+  --brand-hover: #083b32;
+  --brand-light: #0f6b59;
+  --focus-ring: rgba(11, 79, 66, 0.22);
+  --chart-line: #0B4F42;
+  --chart-grid: #eaf1ee;
+  --chart-fill: rgba(11, 79, 66, 0.10);
+  --text: #0C1B18;
+  --text2: #3d4f4a;
+  --text3: #839a93;
+  --border: #DCE7E4;
+  --border-strong: #c7d8d3;
   --surface: #ffffff;
-  --sunken: #eef1f6;
-  --page: #f4f6f9;
+  --sunken: #eaf1ee;
+  --page: #F5F8F7;
   --ok: #1f7a45;
   --err: #d0432c;
   --warn: #8a6f00;
   --charge: #8a6f00;
-  --info: #1f4f8f;
-  --link: #1f4f8f;
-  --accent-soft: rgba(255, 212, 0, 0.16);
-  --shadow: 0 1px 2px rgba(16, 29, 49, 0.04);
-  --shadow-lg: 0 12px 32px -8px rgba(16, 29, 49, 0.16);
-  --sidebar-bg: #08294f;
+  --info: #0B4F42;
+  --link: #0B4F42;
+  --accent-soft: rgba(0, 194, 168, 0.16);
+  --shadow: 0 1px 2px rgba(12, 27, 24, 0.04);
+  --shadow-lg: 0 12px 32px -8px rgba(12, 27, 24, 0.16);
+  --sidebar-bg: #0C1B18;
   --sidebar-border: rgba(255, 255, 255, 0.07);
-  --bg-0: #f4f6f9;
+  --bg-0: #F5F8F7;
   --bg-1: #ffffff;
   --bg-2: #ffffff;
-  --bg-3: #eef1f6;
+  --bg-3: #eaf1ee;
 }
 
 /* Density control */
@@ -114,7 +116,7 @@
 }
 .kc-root a { color: inherit; text-decoration: none; }
 .kc-root button { font-family: inherit; }
-.kc-root ::selection { background: #FFD400; color: #000000; }
+.kc-root ::selection { background: #00C2A8; color: #0C1B18; }
 
 /* Focus ring — brand (navy in light, blue in dark) */
 .kc-root *:focus-visible {
@@ -132,7 +134,7 @@
 /* Skip link (a11y) */
 .kc-skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 200;
-  background: #FFD400; color: #000000;
+  background: #00C2A8; color: #0C1B18;
   padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px;
 }
 .kc-skip-link:focus-visible { left: 12px; top: 12px; }
@@ -141,7 +143,7 @@
 .kc-table {
   width: 100%;
   border-collapse: collapse;
-  font-family: var(--font-inter), 'Inter', var(--font-outfit), sans-serif;
+  font-family: var(--font-inter), 'Inter', var(--font-space-grotesk), sans-serif;
   font-size: var(--fs-table, 14px);
 }
 .kc-table th {
@@ -359,6 +361,6 @@
 /* Fully clickable table rows (KAB UX) — whole row navigates. */
 .kc-table tbody tr.kc-row-clickable { cursor: pointer; }
 .kc-table tbody tr.kc-row-clickable:focus-visible {
-  outline: 2px solid var(--brand, #08294f);
+  outline: 2px solid var(--brand, #0B4F42);
   outline-offset: -2px;
 }

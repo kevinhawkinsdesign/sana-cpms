@@ -96,7 +96,7 @@ export function UserOrgEditor({ user, editable = true }: Readonly<{ user: User; 
               type="button"
               disabled={busy}
               aria-label="Add organization"
-              className="inline-flex items-center gap-0.5 rounded-md border border-dashed border-gray-300 px-1.5 py-0.5 text-xs font-medium text-[var(--text3)] transition hover:border-[#08294f] hover:text-[#08294f] disabled:opacity-40 dark:border-gray-700 dark:hover:border-white/40 dark:hover:text-white"
+              className="inline-flex items-center gap-0.5 rounded-md border border-dashed border-gray-300 px-1.5 py-0.5 text-xs font-medium text-[var(--text3)] transition hover:border-[#0B4F42] hover:text-[#0B4F42] disabled:opacity-40 dark:border-gray-700 dark:hover:border-white/40 dark:hover:text-white"
             >
               <Icon name="plus" size={12} /> Add
             </button>

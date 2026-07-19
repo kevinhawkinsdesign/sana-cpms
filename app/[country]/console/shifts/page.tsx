@@ -219,4 +219,4 @@ export default function ConsoleShiftsPage() {
 }
 
 const DATE_CLS =
-  'h-11 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#08294f] focus:outline-none dark:border-gray-700 dark:text-white/90';
+  'h-11 rounded-lg border border-gray-300 bg-transparent px-3 text-sm text-gray-800 focus:border-[#0B4F42] focus:outline-none dark:border-gray-700 dark:text-white/90';

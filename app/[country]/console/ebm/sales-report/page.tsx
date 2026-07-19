@@ -21,7 +21,7 @@ import { useReportPage, formatCurrency } from '@/lib/hooks/useReportPage';
 import dayjs from 'dayjs';
 
 const INPUT_CLASS =
-  'h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90';
+  'h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90';
 
 type SalesTypeFilter = 'ALL' | 'NORMAL' | 'TRAINING';
 type DistributionFilter = 'ALL' | 'DISTRIBUTED' | 'NOT_DISTRIBUTED';
@@ -51,7 +51,7 @@ function FilterPills<T extends string>({
               className={cn(
                 'px-3 py-1.5 text-xs font-medium transition-colors',
                 active
-                  ? 'bg-[#08294f] text-white'
+                  ? 'bg-[#0B4F42] text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-50 dark:bg-black dark:text-gray-300 dark:hover:bg-white/5',
               )}
             >
@@ -107,7 +107,7 @@ function DistributionCell({
           type="button"
           onClick={handleRedistribute}
           disabled={isPending}
-          className="text-[10px] text-[#08294f] hover:underline disabled:opacity-50"
+          className="text-[10px] text-[#0B4F42] hover:underline disabled:opacity-50"
         >
           Redistribute
         </button>
@@ -121,7 +121,7 @@ function DistributionCell({
         type="button"
         onClick={handleRedistribute}
         disabled={isPending}
-        className="text-[10px] text-[#08294f] hover:underline disabled:opacity-50"
+        className="text-[10px] text-[#0B4F42] hover:underline disabled:opacity-50"
       >
         Redistribute
       </button>

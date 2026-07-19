@@ -267,7 +267,7 @@ function SessionEditDialog({
 }
 
 const INPUT_CLS =
-  'h-9 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm focus:border-[#08294f] focus:outline-none focus:ring-2 focus:ring-[#08294f]/15 dark:border-gray-700 dark:bg-black dark:text-white/90';
+  'h-9 w-full rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm focus:border-[#0B4F42] focus:outline-none focus:ring-2 focus:ring-[#0B4F42]/15 dark:border-gray-700 dark:bg-black dark:text-white/90';
 
 function Field({ label, children, full }: Readonly<{ label: string; children: React.ReactNode; full?: boolean }>) {
   return (
@@ -282,7 +282,7 @@ function Field({ label, children, full }: Readonly<{ label: string; children: Re
  * Custom Radix AlertDialog wrapper that keeps the modal card neutral (white,
  * no full-card red/orange tint like the shared ConfirmDialog) and only puts
  * intent colour on the icon + action button. Matches the rest of the console
- * design language (rounded-2xl, subtle shadow, Outfit font from globals). */
+ * design language (rounded-2xl, subtle shadow, Space Grotesk font from globals). */
 
 export type ConsoleConfirmIntent = 'default' | 'info' | 'warning' | 'destructive';
 
@@ -301,8 +301,8 @@ const INTENT_BADGE: Record<ConsoleConfirmIntent, string> = {
 };
 
 const INTENT_BTN: Record<ConsoleConfirmIntent, string> = {
-  default: 'bg-[#08294f] text-white hover:bg-[#0a106e]',
-  info: 'bg-[#08294f] text-white hover:bg-[#0a106e]',
+  default: 'bg-[#0B4F42] text-white hover:bg-[#083b32]',
+  info: 'bg-[#0B4F42] text-white hover:bg-[#083b32]',
   warning: 'bg-orange-600 text-white hover:bg-orange-700',
   destructive: 'bg-red-600 text-white hover:bg-red-700',
 };
@@ -889,11 +889,11 @@ function SessionPayDialog({
         {/* ---- Completed ---- */}
         {phase === 'completed' ? (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3">
+            <div className="flex items-center gap-3 rounded-lg border border-[#a7f3d0] bg-[#ecfdf5] px-4 py-3">
               <Icon name="check" size={20} />
               <div>
-                <p className="font-semibold text-emerald-900">Payment completed</p>
-                <p className="text-sm text-emerald-700">{message?.text}</p>
+                <p className="font-semibold text-[#064e3b]">Payment completed</p>
+                <p className="text-sm text-[#047857]">{message?.text}</p>
               </div>
             </div>
             <DialogFooter>
@@ -973,7 +973,7 @@ function SessionPayDialog({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="07XXXXXXXX"
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-[#10b981] focus:outline-none focus:ring-1 focus:ring-[#10b981]"
                   />
                   <p className="text-xs text-slate-500">
                     An STK push will be sent to this number. They have 3 minutes to approve.
@@ -992,7 +992,7 @@ function SessionPayDialog({
                       type="checkbox"
                       checked={momoCodeConfirmed}
                       onChange={(e) => setMomoCodeConfirmed(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#08294f] focus:ring-[#08294f] cursor-pointer"
+                      className="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#0B4F42] focus:ring-[#0B4F42] cursor-pointer"
                     />
                     <span className="text-sm text-slate-800 leading-snug">
                       I confirm the MoMo code payment was received.
@@ -1018,7 +1018,7 @@ function SessionPayDialog({
                     placeholder="e.g. Paid in cash at the station"
                     maxLength={500}
                     rows={3}
-                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-[#10b981] focus:outline-none focus:ring-1 focus:ring-[#10b981]"
                   />
                 </div>
               ) : null}

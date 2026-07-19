@@ -238,7 +238,7 @@ export function UserMembershipsSection({
               <button
                 type="button"
                 disabled={busy}
-                className="inline-flex items-center gap-1 rounded-md border border-dashed border-gray-300 px-2 py-1 text-xs font-medium text-[var(--text3)] transition hover:border-[#08294f] hover:text-[#08294f] disabled:opacity-40 dark:border-gray-700 dark:hover:border-white/40 dark:hover:text-white"
+                className="inline-flex items-center gap-1 rounded-md border border-dashed border-gray-300 px-2 py-1 text-xs font-medium text-[var(--text3)] transition hover:border-[#0B4F42] hover:text-[#0B4F42] disabled:opacity-40 dark:border-gray-700 dark:hover:border-white/40 dark:hover:text-white"
               >
                 <Icon name="plus" size={13} /> Add membership
               </button>

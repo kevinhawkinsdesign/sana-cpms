@@ -29,7 +29,7 @@ const RANGES = [
   { id: '90d', label: '90d', days: 90 },
 ] as const;
 
-const MIX_COLORS = ['#08294f', '#12b76a', '#0ba5ec', '#f79009', '#98a2b3'];
+const MIX_COLORS = ['#0B4F42', '#12b76a', '#0ba5ec', '#f79009', '#98a2b3'];
 
 interface RangeTotals {
   gross: number;

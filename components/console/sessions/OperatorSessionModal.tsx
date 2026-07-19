@@ -198,7 +198,7 @@ export function OperatorSessionModal({ open, session, onClose }: Readonly<Operat
           <Section title="Payment">
             <InfoRow label="Status">
               {session.isPaid
-                ? <span className="text-emerald-600 font-medium">Paid</span>
+                ? <span className="text-[#059669] font-medium">Paid</span>
                 : <span className="text-amber-600 font-medium">Unpaid</span>}
             </InfoRow>
             {session.paymentMethodName ? <InfoRow label="Method">{session.paymentMethodName}</InfoRow> : null}

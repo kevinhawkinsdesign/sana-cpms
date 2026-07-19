@@ -43,7 +43,7 @@ export function ChargerPills({
             onClick={() => onSelect(p.stationId)}
             className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12.5px] font-semibold transition-colors ${
               active
-                ? 'border-[#08294f] bg-[#08294f] text-white'
+                ? 'border-[#0B4F42] bg-[#0B4F42] text-white'
                 : 'border-[#e6ebf2] bg-white text-gray-600 hover:border-[#c7d2e0] dark:border-[#2A2A2A] dark:bg-transparent dark:text-gray-300'
             }`}
           >

@@ -363,7 +363,7 @@ export default function ConsoleOverviewPage() {
                       <span className="mono text-gray-500 dark:text-gray-400">{fmtCompact(s.grossRwf)}</span>
                     </div>
                     <div className="h-[5px] overflow-hidden rounded-full bg-gray-100 dark:bg-white/5">
-                      <div className="h-full rounded-full bg-[#FFD400]" style={{ width: `${(s.grossRwf / top) * 100}%` }} />
+                      <div className="h-full rounded-full bg-[#00C2A8]" style={{ width: `${(s.grossRwf / top) * 100}%` }} />
                     </div>
                   </div>
                 );

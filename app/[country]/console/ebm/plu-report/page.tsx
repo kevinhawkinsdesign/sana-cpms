@@ -15,7 +15,7 @@ import { useReportPage, formatCurrency, formatNumber } from '@/lib/hooks/useRepo
 import dayjs from 'dayjs';
 
 const INPUT_CLASS =
-  'h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90';
+  'h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90';
 
 export default function ConsolePluReportPage() {
   const report = useReportPage({

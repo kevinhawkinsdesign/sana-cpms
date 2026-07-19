@@ -87,7 +87,7 @@ export function SectionShell({
                   className={cn(
                     'rounded-lg px-3 py-2 text-sm font-medium no-underline transition-colors',
                     s.id === active.id
-                      ? 'bg-[#08294f]/10 text-[#08294f] dark:bg-[#08294f]/[0.12] dark:text-[#4561de]'
+                      ? 'bg-[#0B4F42]/10 text-[#0B4F42] dark:bg-[#0B4F42]/[0.12] dark:text-[#4561de]'
                       : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5',
                   )}
                 >

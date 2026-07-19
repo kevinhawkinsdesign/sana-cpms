@@ -71,7 +71,7 @@ export function TopBar({
           className="kc-hide-sm relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/5"
         >
           <Icon name="bell" size={16} />
-          <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-[#FFD400] ring-2 ring-white dark:ring-black" />
+          <span className="absolute right-2.5 top-2.5 h-1.5 w-1.5 rounded-full bg-[#00C2A8] ring-2 ring-white dark:ring-black" />
         </button>
 
         {/* Phone overflow menu */}

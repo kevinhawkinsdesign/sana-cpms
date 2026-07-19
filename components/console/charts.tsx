@@ -57,9 +57,9 @@ function ChartSkeleton({ h }: { h: number }) {
 
 /* --------- constants --------- */
 
-const PRIMARY = '#08294f';
-const SECONDARY = '#4561de';
-const FONT = 'Outfit, sans-serif';
+const PRIMARY = '#0B4F42';
+const SECONDARY = '#00C2A8';
+const FONT = '"Space Grotesk", sans-serif';
 
 /* ========================================================================= */
 /*  AreaChart                                                                 */

@@ -34,6 +34,29 @@ function orgChargerIds(orgId: string) {
   return db.chargers.filter((c) => c.organizationId === orgId).map((c) => c.id);
 }
 
+/** Settings → General/Billing/Tax read a richer OrgProfile shape than the raw
+ *  seed org record carries (slug, plan, tax/EBM config, fee split, …) — fill
+ *  in demo-plausible defaults for fields the seed doesn't have. */
+function orgProfileShape(org: AnyObj) {
+  return {
+    id: org.id,
+    name: org.name,
+    slug: org.id.replace('org_', ''),
+    logo: org.logo ?? null,
+    tin: org.tin ?? '123456789',
+    taxRate: org.taxRate ?? 18,
+    ebmEnabled: org.ebmEnabled ?? true,
+    ebmBhfId: org.ebmBhfId ?? '000',
+    plan: org.plan ?? 'GROWTH',
+    status: org.isActive === false ? 'suspended' : 'active',
+    platformFeePercent: org.platformFeePercent ?? 5,
+    ownFeePercent: org.ownFeePercent ?? null,
+    payoutVerified: org.payoutVerified ?? true,
+    parentOrg: org.parentOrg ?? null,
+    memberCount: db.users.filter((u) => u.organizationId === org.id).length,
+  };
+}
+
 function orgSessions(orgId: string) {
   const chargerIds = new Set(orgChargerIds(orgId));
   return db.sessions.filter((s) => chargerIds.has(s.chargerId));
@@ -789,7 +812,7 @@ export const consoleRoutes: Route[] = [
     handler: (ctx) => {
       const org = db.organizations.find((o) => o.id === ctx.params.orgId);
       if (!org) return notFound('Organization not found');
-      return ok(org);
+      return ok({ organization: orgProfileShape(org) });
     },
   },
   {
@@ -799,7 +822,7 @@ export const consoleRoutes: Route[] = [
       const org = db.organizations.find((o) => o.id === ctx.params.orgId);
       if (!org) return notFound('Organization not found');
       Object.assign(org, ctx.body, { updatedAt: now() });
-      return ok(org, 'Organization updated');
+      return ok({ organization: orgProfileShape(org) }, 'Organization updated');
     },
   },
 

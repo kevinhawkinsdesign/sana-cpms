@@ -36,7 +36,7 @@ const CisSyncSinceForm = ({ isSyncing, onSyncSince }: CisSyncSinceFormProps) => 
       <p className="text-sm font-medium text-gray-800 dark:text-white/90">Sync since specific date</p>
       <div className="mt-1 flex flex-col gap-2">
         <input
-          className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
+          className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
           placeholder="e.g. 20000128214014"
           value={since}
           onChange={(e) => setSince(e.target.value)}

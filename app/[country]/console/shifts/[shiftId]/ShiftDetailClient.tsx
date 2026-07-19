@@ -24,7 +24,7 @@ function fmtDate(iso: string | null | undefined): string {
 
 const BUCKETS: Array<{ key: 'momo' | 'momoCode' | 'invoice' | 'free'; label: string; colorClass: string }> = [
   { key: 'momo', label: 'MoMo', colorClass: 'bg-blue-500' },
-  { key: 'momoCode', label: 'MoMo code', colorClass: 'bg-green-500' },
+  { key: 'momoCode', label: 'MoMo code', colorClass: 'bg-[#22c55e]' },
   { key: 'invoice', label: 'Invoice', colorClass: 'bg-sky-500' },
   { key: 'free', label: 'Free', colorClass: 'bg-gray-400' },
 ];

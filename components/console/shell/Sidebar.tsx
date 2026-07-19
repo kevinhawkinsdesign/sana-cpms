@@ -40,7 +40,7 @@ export function Sidebar({
         /* The kc-sidebar class is kept for the mobile @media drawer rules in console.css */
         'kc-sidebar',
         'fixed left-0 top-0 z-[9999] flex h-screen flex-col',
-        'border-r border-white/[0.07] bg-[#08294f] text-[#cdd9e8]',
+        'border-r border-white/[0.07] bg-[#0C1B18] text-[#cdd9e8]',
         'transition-[width,transform] duration-200 ease-out',
         'lg:relative',
         collapsed ? 'w-20' : 'w-[290px]',
@@ -61,11 +61,9 @@ export function Sidebar({
       {/* Logo + collapse toggle */}
       <div className="flex items-center justify-between px-4 pt-6 pb-5">
         {!collapsed && (
-          <img
-            src={withBasePath("/icons/kabisa-wordmark.png")}
-            alt="Kabisa"
-            className="h-4 w-auto pl-1 invert"
-          />
+          <span className="pl-1 text-lg font-bold tracking-tight text-white">
+            sana<span className="text-[#00C2A8]">.</span>
+          </span>
         )}
         <button
           onClick={toggle}
@@ -119,7 +117,7 @@ export function Sidebar({
                     'group flex items-center rounded-lg text-sm font-medium no-underline transition-colors',
                     collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5',
                     on
-                      ? 'bg-[#FFD400] font-semibold !text-[#1a1a1a]'
+                      ? 'bg-[#00C2A8] font-semibold !text-[#0C1B18]'
                       : 'text-[#a3b6cf] hover:bg-white/5 hover:text-white',
                   )}
                 >

@@ -274,12 +274,12 @@ export function StatusBadge({ status, pulse }: Readonly<{ status: string; pulse?
 const BTN_VARIANT_CLASSES = {
   default:
     'bg-white text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]',
-  // Primary action = Solar Yellow on navy text (mockup CTA: Export / Add).
+  // Primary action = Signal Teal on ink text (mockup CTA: Export / Add).
   primary:
-    'bg-[#FFD400] text-[#08294f] shadow-sm hover:bg-[#ebc400] border-transparent',
-  // Navy secondary action (mockup: Reboot / Configure).
+    'bg-[#00C2A8] text-[#0C1B18] shadow-sm hover:bg-[#00a58f] border-transparent',
+  // Ink secondary action (mockup: Reboot / Configure).
   secondary:
-    'bg-[#08294f] text-white shadow-sm hover:bg-[#061e3c] border-transparent',
+    'bg-[#0C1B18] text-white shadow-sm hover:bg-[#08130f] border-transparent',
   ghost:
     'text-gray-700 hover:bg-gray-100 border-transparent shadow-none dark:text-gray-300 dark:hover:bg-white/5',
   danger:
@@ -583,7 +583,7 @@ export function Tabs({
             className={cn(
               '-mb-px flex cursor-pointer items-center gap-1.5 border-b-2 bg-transparent px-4 py-2.5 text-sm font-medium transition-colors',
               on
-                ? 'border-[#08294f] text-[#08294f]'
+                ? 'border-[#0B4F42] text-[#0B4F42]'
                 : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200',
             )}
           >
@@ -593,7 +593,7 @@ export function Tabs({
                 className={cn(
                   'ml-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
                   on
-                    ? 'bg-[#08294f] text-white'
+                    ? 'bg-[#0B4F42] text-white'
                     : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
                 )}
               >
@@ -627,7 +627,7 @@ export function SearchBox({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-10 pr-4 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
+        className="h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-10 pr-4 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
       />
     </div>
   );
@@ -648,7 +648,7 @@ export function Select({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-transparent bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222.5%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
+      className="h-11 w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-transparent bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2210%22%20height%3D%2210%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222.5%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat py-2.5 pl-4 pr-11 text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
       style={style}
     >
       {options.map((o) => (
@@ -765,7 +765,7 @@ export function Pagination({
   const btnInactive =
     'border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-[#1A1A1A] dark:border dark:border-[#2A2A2A] dark:text-gray-300 dark:hover:bg-white/5';
   const btnActive =
-    'border-[#08294f] bg-[#08294f] text-white dark:border-[#4561de] dark:bg-[#4561de]';
+    'border-[#0B4F42] bg-[#0B4F42] text-white dark:border-[#00C2A8] dark:bg-[#00C2A8]';
   const btnDisabled = 'border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed dark:border-gray-800 dark:bg-black dark:text-gray-600';
 
   return (
@@ -858,7 +858,7 @@ export function TableCard({
                 onChange={(e) => onSearchChange(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && onSearchSubmit) { e.preventDefault(); onSearchSubmit(); } }}
                 placeholder="Search…"
-                className="h-10 w-48 rounded-lg border border-gray-300 bg-transparent py-2 pl-9 pr-3 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
+                className="h-10 w-48 rounded-lg border border-gray-300 bg-transparent py-2 pl-9 pr-3 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
               />
             </div>
           )}

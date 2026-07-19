@@ -152,7 +152,7 @@ export default function VsdcInitPage() {
                 TIN (Tax Identification Number)
               </label>
               <input
-                className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
+                className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
                 placeholder="123456789"
                 maxLength={9}
                 {...form.register('tin')}
@@ -170,7 +170,7 @@ export default function VsdcInitPage() {
                 Branch ID (bhfId)
               </label>
               <input
-                className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
+                className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
                 placeholder="00"
                 maxLength={2}
                 {...form.register('bhfId')}
@@ -189,7 +189,7 @@ export default function VsdcInitPage() {
               Device Serial Number (dvcSrlNo)
             </label>
             <input
-              className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#08294f] focus:ring-3 focus:ring-[#08294f]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
+              className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-[#0B4F42] focus:ring-3 focus:ring-[#0B4F42]/10 focus:outline-none dark:border-gray-700 dark:bg-black dark:text-white/90"
               placeholder="e.g. SN1234567890"
               maxLength={100}
               {...form.register('dvcSrlNo')}
@@ -216,14 +216,14 @@ export default function VsdcInitPage() {
           <div
             className={`mt-4 rounded-xl border p-4 ${
               initResponse.success
-                ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20'
+                ? 'border-[#bbf7d0] bg-[#f0fdf4] dark:border-[#166534] dark:bg-[#14532d]/20'
                 : 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20'
             }`}
           >
             <p
               className={`text-sm font-semibold ${
                 initResponse.success
-                  ? 'text-green-800 dark:text-green-200'
+                  ? 'text-[#166534] dark:text-[#bbf7d0]'
                   : 'text-red-800 dark:text-red-200'
               }`}
             >
@@ -232,7 +232,7 @@ export default function VsdcInitPage() {
             <p
               className={`mt-1 text-sm ${
                 initResponse.success
-                  ? 'text-green-700 dark:text-green-300'
+                  ? 'text-[#15803d] dark:text-[#86efac]'
                   : 'text-red-700 dark:text-red-300'
               }`}
             >

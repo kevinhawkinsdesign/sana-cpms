@@ -50,7 +50,7 @@ export default function KitPage() {
       <PageHead
         title="Console kit"
         sub="FE-1 design system gallery — every primitive and chart, both themes"
-        crumb="Kabisa Console · internal"
+        crumb="Sana Console · internal"
         actions={
           <>
             <Btn icon="refresh" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>

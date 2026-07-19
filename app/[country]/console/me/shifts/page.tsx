@@ -420,8 +420,8 @@ export default function ConsoleOperatorShiftsPage() {
           </DialogHeader>
 
           {pendingCheckInDist !== null && (
-            <div className="mb-2 flex items-center gap-1 rounded-md border border-green-200 bg-green-50 px-2 py-1 text-xs text-green-800 dark:border-green-500/30 dark:bg-green-500/10 dark:text-green-300">
-              <CheckCircle className="h-3 w-3 text-green-600 dark:text-green-400" />
+            <div className="mb-2 flex items-center gap-1 rounded-md border border-[#bbf7d0] bg-[#f0fdf4] px-2 py-1 text-xs text-[#166534] dark:border-[#22c55e]/30 dark:bg-[#22c55e]/10 dark:text-[#86efac]">
+              <CheckCircle className="h-3 w-3 text-[#16a34a] dark:text-[#4ade80]" />
               ✓ {formatKm(pendingCheckInDist)} from charger
             </div>
           )}
@@ -453,7 +453,7 @@ export default function ConsoleOperatorShiftsPage() {
                     pattern="[0-9.,]*"
                     value={checkInMeterReading}
                     onChange={(e) => setCheckInMeterReading(sanitizeMeterReadingInput(e.target.value))}
-                    className="w-full rounded-md border border-gray-300 bg-transparent px-2 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-[#08294f] focus:ring-1 focus:ring-[#08294f] dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
+                    className="w-full rounded-md border border-gray-300 bg-transparent px-2 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-[#0B4F42] focus:ring-1 focus:ring-[#0B4F42] dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
                     placeholder="Enter meter reading"
                   />
                 </div>
@@ -482,7 +482,7 @@ export default function ConsoleOperatorShiftsPage() {
                         pattern="[0-9.,]*"
                         value={checkInMeterReading2}
                         onChange={(e) => setCheckInMeterReading2(sanitizeMeterReadingInput(e.target.value))}
-                        className="w-full rounded-md border border-gray-300 bg-transparent px-2 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-[#08294f] focus:ring-1 focus:ring-[#08294f] dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
+                        className="w-full rounded-md border border-gray-300 bg-transparent px-2 py-1.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-[#0B4F42] focus:ring-1 focus:ring-[#0B4F42] dark:border-gray-700 dark:bg-black dark:text-white/90 dark:placeholder:text-white/30"
                         placeholder="Enter meter 2 reading"
                       />
                     </div>

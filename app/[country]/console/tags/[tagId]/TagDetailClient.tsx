@@ -102,7 +102,7 @@ export default function ConsoleTagDetailPage() {
           <Card title="Assignment" action={<Btn variant="default" size="xs" onClick={() => setShowEdit(true)}>Change</Btn>}>
             {tag.assignee ? (
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#08294f] font-bold text-[#FFD400]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#0B4F42] font-bold text-[#00C2A8]">
                   {tag.assignee.name.split(' ').map((p) => p[0]).slice(0, 2).join('')}
                 </span>
                 <div>
