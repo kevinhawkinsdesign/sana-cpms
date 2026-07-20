@@ -5,7 +5,7 @@
  *  the customer-facing counterpart to Incidents' automated fault feed.
  *  Gated behind `view_feedback`; status changes further behind `manage_feedback`. */
 import React from 'react';
-import { Badge, Btn, Card, Icon, Select, SummaryStrip, Tabs } from '@/components/console/ui';
+import { Badge, Btn, Card, Icon, PageHead, Select, SummaryStrip, Tabs } from '@/components/console/ui';
 import { AccessDenied } from '@/components/console/AccessDenied';
 import { hasPerm, useOrgs } from '@/lib/console/orgs';
 import { useUrlState } from '@/lib/console/useUrlState';
@@ -47,7 +47,8 @@ export default function ConsoleFeedbackReportsPage() {
   const totals = data?.totals;
 
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4">
+      <PageHead title="Reports" sub="Issue reports raised by drivers or operators" />
       {!totals ? (
         <span className="kc-skeleton block h-24" />
       ) : (

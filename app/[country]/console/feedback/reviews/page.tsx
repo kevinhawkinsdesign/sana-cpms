@@ -4,7 +4,7 @@
  *  read-only sentiment (no workflow, unlike Reports). Summary card up top,
  *  filterable list below. Gated behind `view_feedback`. */
 import React from 'react';
-import { Badge, Card, Icon, Select, TableCard } from '@/components/console/ui';
+import { Badge, Card, Icon, PageHead, Select, TableCard } from '@/components/console/ui';
 import { AccessDenied } from '@/components/console/AccessDenied';
 import { hasPerm, useOrgs } from '@/lib/console/orgs';
 import { useUrlState } from '@/lib/console/useUrlState';
@@ -44,7 +44,8 @@ export default function ConsoleFeedbackReviewsPage() {
   const maxCount = Math.max(1, ...[5, 4, 3, 2, 1].map((n) => dist[String(n)] ?? 0));
 
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4">
+      <PageHead title="Reviews" sub="Post-session ratings and comments from drivers" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_2fr]">
         <Card title="Average rating">
           {summary.isPending ? (

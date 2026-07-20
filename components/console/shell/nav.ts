@@ -61,8 +61,7 @@ export const NAV_GROUPS: NavGroup[] = [
     group: 'Feedback',
     requireRole: ADMIN_ROLES,
     items: [
-      { id: 'feedback-reviews', label: 'Reviews', icon: 'star', path: '/feedback/reviews', perm: 'view_feedback' },
-      { id: 'feedback-reports', label: 'Reports', icon: 'message', path: '/feedback/reports', perm: 'view_feedback' },
+      { id: 'feedback-hub', label: 'Feedback', icon: 'star', path: '/feedback', perm: 'view_feedback' },
     ],
   },
   {
@@ -79,20 +78,17 @@ export const NAV_GROUPS: NavGroup[] = [
     group: 'People & Shifts',
     requireRole: ADMIN_ROLES,
     items: [
-      { id: 'operators', label: 'Operators', icon: 'people', path: '/operators', perm: 'view_shifts' },
-      { id: 'schedule', label: 'Schedule', icon: 'clock', path: '/schedule', perm: 'view_shifts' },
-      { id: 'shifts', label: 'Shift Reports', icon: 'doc', path: '/shifts', perm: 'view_shifts' },
+      { id: 'operators-hub', label: 'People & Shifts', icon: 'people', path: '/operators', perm: 'view_shifts' },
     ],
   },
   {
     group: 'Fleet',
     requirePlatformAdmin: true,
     items: [
-      { id: 'admin-vehicles', label: 'Vehicles', icon: 'car', path: '/admin/vehicles', perm: 'manage_fleets' },
-      { id: 'admin-shop-vehicles', label: 'Shop Vehicles', icon: 'tag', path: '/admin/shop-vehicles', perm: 'manage_fleets' },
-      { id: 'admin-shop-orders', label: 'Shop Orders', icon: 'doc', path: '/admin/shop-orders', perm: 'view_customers' },
-      { id: 'admin-vehicles-debt', label: 'Vehicles with Debt', icon: 'money', path: '/admin/vehicles-with-debt', perm: 'view_customers' },
-      { id: 'admin-businesses', label: 'Businesses', icon: 'building', path: '/admin/businesses', perm: 'manage_fleets' },
+      {
+        id: 'admin-hub', label: 'Fleet', icon: 'car', path: '/admin',
+        perm: 'manage_fleets', anyPerm: ['manage_fleets', 'view_customers'],
+      },
     ],
   },
   {
@@ -207,6 +203,40 @@ export const EBM_SECTIONS: ShellSection[] = [
   { id: 'ebm-vsdc-init', label: 'VSDC Initialization', group: 'EBM Config', segment: 'vsdc-init', perm: 'manage_ebm' },
 ];
 export const EBM_GROUPS: string[] = ['Finance', 'EBM', 'EBM Config'];
+
+/** Feedback: Reviews and Reports merged into one hub under /console/feedback
+ *  (both already shared that URL prefix, so no page moves were needed). */
+export const FEEDBACK_SECTIONS: ShellSection[] = [
+  { id: 'feedback-reviews', label: 'Reviews', group: 'Feedback', segment: 'reviews', perm: 'view_feedback' },
+  { id: 'feedback-reports', label: 'Reports', group: 'Feedback', segment: 'reports', perm: 'view_feedback' },
+];
+export const FEEDBACK_GROUPS: string[] = ['Feedback'];
+
+/** People & Shifts: Operators, Schedule, and Shift Reports merged into one
+ *  hub under /console/operators (Schedule and Shift Reports moved there from
+ *  their old top-level /schedule and /shifts paths). Operators itself is the
+ *  '' segment — the hub's index. */
+export const PEOPLE_SECTIONS: ShellSection[] = [
+  { id: 'operators', label: 'Operators', group: 'People & Shifts', segment: '', perm: 'view_shifts' },
+  { id: 'schedule', label: 'Schedule', group: 'People & Shifts', segment: 'schedule', perm: 'view_shifts' },
+  { id: 'shifts', label: 'Shift Reports', group: 'People & Shifts', segment: 'shifts', perm: 'view_shifts' },
+];
+export const PEOPLE_GROUPS: string[] = ['People & Shifts'];
+
+/** Fleet: the 5 previously-separate sidebar entries merged into one hub under
+ *  /console/admin (Fleet's existing prefix — no page moves needed here either,
+ *  since Platform Admin already moved out to /settings/*). Every section is
+ *  platform-admin-only: manage_fleets and view_customers are both granted to
+ *  ORG_OWNER/ORG_ADMIN in ALL_PERMISSIONS, so without requirePlatformAdmin a
+ *  regular (non-platform) org admin could reach cross-org fleet data. */
+export const FLEET_SECTIONS: ShellSection[] = [
+  { id: 'admin-vehicles', label: 'Vehicles', group: 'Fleet', segment: 'vehicles', perm: 'manage_fleets', requirePlatformAdmin: true },
+  { id: 'admin-shop-vehicles', label: 'Shop Vehicles', group: 'Fleet', segment: 'shop-vehicles', perm: 'manage_fleets', requirePlatformAdmin: true },
+  { id: 'admin-shop-orders', label: 'Shop Orders', group: 'Fleet', segment: 'shop-orders', perm: 'view_customers', requirePlatformAdmin: true },
+  { id: 'admin-vehicles-debt', label: 'Vehicles with Debt', group: 'Fleet', segment: 'vehicles-with-debt', perm: 'view_customers', requirePlatformAdmin: true },
+  { id: 'admin-businesses', label: 'Businesses', group: 'Fleet', segment: 'businesses', perm: 'manage_fleets', requirePlatformAdmin: true },
+];
+export const FLEET_GROUPS: string[] = ['Fleet'];
 
 /** Active-item test: overview matches the console index only; others match
  *  their subtree (e.g. /stations and /stations/ch-01). */

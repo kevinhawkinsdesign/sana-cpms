@@ -177,7 +177,7 @@ export default function ConsoleOperatorProfilePage() {
                   {recentReports.map((r) => (
                     <tr key={r.id}>
                       <td>
-                        <Link href={`${base}/shifts/${r.id}`} className="text-gray-800 dark:text-white/90">
+                        <Link href={`${base}/operators/shifts/${r.id}`} className="text-gray-800 dark:text-white/90">
                           {fmtDateTime(r.checkInTime)}
                         </Link>
                       </td>

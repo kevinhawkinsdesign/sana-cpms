@@ -185,7 +185,7 @@ export default function ConsoleShiftsPage() {
             </thead>
             <tbody>
               {data?.reports.map((r) => (
-                <tr key={r.id} {...rowNav(() => navigate(`${base}/shifts/${r.id}`))}>
+                <tr key={r.id} {...rowNav(() => navigate(`${base}/operators/shifts/${r.id}`))}>
                   <td>
                     <span className="font-medium text-gray-800 dark:text-white/90">{operatorName(r.operator)}</span>
                   </td>

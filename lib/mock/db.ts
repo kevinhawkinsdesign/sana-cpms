@@ -265,7 +265,7 @@ const reports: AnyObj[] = REPORT_SEEDS.map((r, i) => {
 // Not separately seeded — one synthetic report per operator/day derived from
 // that operator's real sessions that day. Exported (not just computed inside
 // the console mock handler) so the static-export build's generateStaticParams
-// for /console/shifts/:shiftId can pre-render every real shift ID that the
+// for /console/operators/shifts/:shiftId can pre-render every real shift ID that the
 // Shifts list can actually link to — a page reachable client-side but never
 // pre-rendered 404s under `output: 'export'`.
 const KIGALI_OFFSET_MS_SHIFTS = 2 * 3_600_000;

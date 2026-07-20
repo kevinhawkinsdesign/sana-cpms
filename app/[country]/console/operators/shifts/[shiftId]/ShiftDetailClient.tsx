@@ -58,7 +58,7 @@ export default function ConsoleShiftDetailPage() {
         <PageHead
           title="Shift not found"
           crumb={
-            <Link href={`${base}/shifts`} className="text-gray-400">
+            <Link href={`${base}/operators/shifts`} className="text-gray-400">
               People &amp; Shifts
             </Link>
           }
@@ -101,7 +101,7 @@ export default function ConsoleShiftDetailPage() {
           </span>
         }
         crumb={
-          <Link href={`${base}/shifts`} className="text-gray-400">
+          <Link href={`${base}/operators/shifts`} className="text-gray-400">
             People &amp; Shifts
           </Link>
         }
