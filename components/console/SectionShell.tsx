@@ -5,13 +5,14 @@
  *  a grouped sidebar over nested routes, each section gated by its own
  *  permission, the whole subtree gated at the RouteGuard level by the single
  *  sidebar item that points at `basePath`. When `title` is omitted, no header
- *  row is rendered at all — used by merges (EBM, Platform Admin) whose
- *  individual pages already carry their own specific PageHead, so this only
- *  adds the sub-nav chrome around them instead of stacking a second header. */
+ *  row is rendered at all — used by merges (Settings & Admin, Finance & EBM)
+ *  whose individual pages already carry their own specific PageHead, so this
+ *  only adds the sub-nav chrome around them instead of stacking a second
+ *  header. */
 import React, { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import { PageHead } from '@/components/console/ui';
+import { PageHead, type IconName } from '@/components/console/ui';
 import { AccessDenied } from '@/components/console/AccessDenied';
 import { cn } from '@/lib/utils';
 import { hasPerm, useOrgs } from '@/lib/console/orgs';
@@ -24,6 +25,15 @@ export interface ShellSection {
   segment: string;
   perm: string;
   anyPerm?: string[];
+  /** Only used by CommandPalette's Settings deep-links today — SectionShell's
+   *  own sub-nav rendering doesn't show icons. */
+  icon?: IconName;
+  /** When true, the section is reachable only by platform admins
+   *  (data.isPlatformAdmin) — an AND on top of the perm check, not a bypass,
+   *  so an org-scoped perm string that happens to overlap (e.g.
+   *  manage_org_settings) can't leak a platform-only section to a regular
+   *  org admin. */
+  requirePlatformAdmin?: boolean;
 }
 
 export function SectionShell({
@@ -54,7 +64,10 @@ export function SectionShell({
   const active = sections.find((s) => s.segment === segment) ?? sections[0];
 
   const checkAllowed = useMemo(
-    () => (s: ShellSection) => (s.anyPerm ? s.anyPerm.some((p) => hasPerm(data, p)) : hasPerm(data, s.perm)),
+    () => (s: ShellSection) => {
+      if (s.requirePlatformAdmin && !data?.isPlatformAdmin) return false;
+      return s.anyPerm ? s.anyPerm.some((p) => hasPerm(data, p)) : hasPerm(data, s.perm);
+    },
     [data],
   );
   const allowed = useMemo(() => sections.filter(checkAllowed), [sections, checkAllowed]);

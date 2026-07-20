@@ -122,7 +122,7 @@ export default function ConsoleAdminOrganizationsPage() {
           </thead>
           <tbody>
             {data?.organizations.map((o) => (
-              <tr key={o.id} {...rowNav(() => navigate(`${base}/admin/organizations/${o.id}`))}>
+              <tr key={o.id} {...rowNav(() => navigate(`${base}/settings/organizations/${o.id}`))}>
                 <td>
                   <span className="flex items-center gap-2.5">
                     {o.logo ? (
@@ -202,7 +202,7 @@ export default function ConsoleAdminOrganizationsPage() {
         <OrgFormModal
           mode="create"
           onClose={() => setCreating(false)}
-          onCreated={(o) => navigate(`${base}/admin/organizations/${o.id}`)}
+          onCreated={(o) => navigate(`${base}/settings/organizations/${o.id}`)}
         />
       )}
     </div>

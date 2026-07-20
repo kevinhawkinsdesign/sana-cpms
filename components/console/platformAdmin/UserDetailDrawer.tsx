@@ -65,7 +65,7 @@ export function UserDetailDrawer({
 
   const openOrg = (orgId: string) => {
     onClose();
-    router.push(`/${params.country}/console/admin/organizations/${orgId}`);
+    router.push(`/${params.country}/console/settings/organizations/${orgId}`);
   };
 
   return (

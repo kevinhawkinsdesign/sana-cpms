@@ -91,7 +91,7 @@ export default function ConsoleAdminOrgDetailPage() {
       }
       crumb={<>Organizations</>}
       back
-      onBack={() => router.push(`${base}/admin/organizations`)}
+      onBack={() => router.push(`${base}/settings/organizations`)}
       actions={extra}
     />
   );
@@ -147,7 +147,7 @@ export default function ConsoleAdminOrgDetailPage() {
           {
             label: 'Members',
             value: fmtNumber(org._count.users),
-            onClick: () => router.push(`${base}/admin/users?org=${encodeURIComponent(org.name)}`),
+            onClick: () => router.push(`${base}/settings/users?org=${encodeURIComponent(org.name)}`),
           },
           {
             label: 'Chargers',
@@ -164,7 +164,7 @@ export default function ConsoleAdminOrgDetailPage() {
           {
             label: 'Sub-orgs',
             value: fmtNumber(org._count.subOrgs),
-            onClick: () => router.push(`${base}/admin/organizations?parent=${id}`),
+            onClick: () => router.push(`${base}/settings/organizations?parent=${id}`),
           },
         ]}
       />
@@ -245,7 +245,7 @@ export default function ConsoleAdminOrgDetailPage() {
           onCancel={() => setConfirmArchive(false)}
           onConfirm={() =>
             archiveOrg.mutate(id, {
-              onSuccess: () => router.push(`${base}/admin/organizations`),
+              onSuccess: () => router.push(`${base}/settings/organizations`),
               onSettled: () => setConfirmArchive(false),
             })
           }

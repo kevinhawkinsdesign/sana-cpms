@@ -42,15 +42,20 @@ export function CommandPalette({
   const topNav = permsResolved
     ? visibleNavGroups(data).flatMap((g) => g.items).map((item) => ({ id: item.id, label: item.label, icon: item.icon, path: item.path }))
     : [];
-  // Deep-links into the Settings sections (Team, Roles, Tax…) so ⌘K still
-  // surfaces them now that they're sub-sections rather than top-level pages.
+  // Deep-links into the Settings & Admin sections (Team, Roles, Tax,
+  // Organizations…) so ⌘K still surfaces them now that they're sub-sections
+  // rather than top-level pages. requirePlatformAdmin sections (the folded-in
+  // Admin hub) are excluded for anyone but a platform admin, even if their
+  // perm string happens to overlap with a regular Settings section.
   const settingsNav = permsResolved
-    ? SETTINGS_SECTIONS.filter((s) => s.segment && has(s.perm)).map((s) => ({
-        id: `settings-${s.id}`,
-        label: `Settings · ${s.label}`,
-        icon: s.icon,
-        path: `/settings${s.segment ? `/${s.segment}` : ''}`,
-      }))
+    ? SETTINGS_SECTIONS
+        .filter((s) => s.segment && (!s.requirePlatformAdmin || data?.isPlatformAdmin) && has(s.perm))
+        .map((s) => ({
+          id: `settings-${s.id}`,
+          label: `Settings · ${s.label}`,
+          icon: s.icon ?? 'settings',
+          path: `/settings${s.segment ? `/${s.segment}` : ''}`,
+        }))
     : [];
   const navItems = [...topNav, ...settingsNav];
   const otherOrgs = (data?.orgs ?? []).filter((o) => o.id !== data?.activeOrgId);

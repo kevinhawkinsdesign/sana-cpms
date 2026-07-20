@@ -90,7 +90,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       {
         id: 'settings',
-        label: 'Settings',
+        label: 'Settings & Admin',
         icon: 'settings',
         path: '/settings',
         perm: 'manage_org_settings',
@@ -107,16 +107,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { id: 'admin-shop-orders', label: 'Shop Orders', icon: 'doc', path: '/admin/shop-orders', perm: 'view_customers' },
       { id: 'admin-vehicles-debt', label: 'Vehicles with Debt', icon: 'money', path: '/admin/vehicles-with-debt', perm: 'view_customers' },
       { id: 'admin-businesses', label: 'Businesses', icon: 'building', path: '/admin/businesses', perm: 'manage_fleets' },
-    ],
-  },
-  {
-    group: 'Platform Admin',
-    requirePlatformAdmin: true,
-    items: [
-      {
-        id: 'admin-hub', label: 'Admin', icon: 'shield', path: '/admin',
-        perm: 'manage_sub_orgs', anyPerm: ['manage_sub_orgs', 'manage_org_settings', 'manage_members', 'view_chargers'],
-      },
     ],
   },
   {
@@ -159,28 +149,43 @@ export function visibleNavGroups(data: OrgsData | undefined): NavGroup[] {
     .filter((g) => g.items.length > 0);
 }
 
-/** Sections inside the consolidated Settings area (/settings/*). Single source
- *  for the settings sub-nav, the ⌘K palette deep-links, and per-section guards.
- *  `segment` is appended to /settings ('' = the General index). */
-export interface SettingsSection {
-  id: string;
-  label: string;
-  group: 'Organization' | 'Access' | 'Finance';
-  segment: string;
-  perm: string;
-  icon: IconName;
-}
-
-export const SETTINGS_SECTIONS: SettingsSection[] = [
+/** Sections inside the consolidated Settings & Admin area (/settings/*).
+ *  Single source for the sub-nav, the ⌘K palette deep-links, and per-section
+ *  guards. `segment` is appended to /settings ('' = the General index).
+ *  The Platform Admin group folds in the previously-separate "Admin" hub
+ *  (Organizations, Countries, Users, Audit Log, Citrine Sync); those sections
+ *  set `requirePlatformAdmin` so a regular org admin whose perm string
+ *  happens to overlap (e.g. manage_org_settings) can't reach them. */
+export const SETTINGS_SECTIONS: ShellSection[] = [
   { id: 'general', label: 'General', group: 'Organization', segment: '', perm: 'manage_org_settings', icon: 'settings' },
   { id: 'billing', label: 'Billing & Plan', group: 'Organization', segment: 'billing', perm: 'manage_org_settings', icon: 'money' },
   { id: 'team', label: 'Team & Members', group: 'Access', segment: 'team', perm: 'manage_members', icon: 'people' },
   { id: 'roles', label: 'Roles & Permissions', group: 'Access', segment: 'roles', perm: 'manage_members', icon: 'key' },
   { id: 'tax', label: 'Tax & EBM', group: 'Finance', segment: 'tax', perm: 'manage_org_settings', icon: 'doc' },
+  {
+    id: 'padmin-organizations', label: 'Organizations', group: 'Platform Admin', segment: 'organizations',
+    perm: 'manage_sub_orgs', icon: 'building', requirePlatformAdmin: true,
+  },
+  {
+    id: 'padmin-countries', label: 'Countries', group: 'Platform Admin', segment: 'countries',
+    perm: 'manage_org_settings', icon: 'globe', requirePlatformAdmin: true,
+  },
+  {
+    id: 'padmin-users', label: 'Users', group: 'Platform Admin', segment: 'users',
+    perm: 'manage_members', icon: 'people', requirePlatformAdmin: true,
+  },
+  {
+    id: 'padmin-audit', label: 'Audit Log', group: 'Platform Admin', segment: 'audit-logs',
+    perm: 'manage_org_settings', icon: 'doc', requirePlatformAdmin: true,
+  },
+  {
+    id: 'padmin-citrine', label: 'Citrine Sync', group: 'Platform Admin', segment: 'citrine',
+    perm: 'view_chargers', icon: 'refresh', requirePlatformAdmin: true,
+  },
 ];
 
 /** Ordered group headings for the settings sub-nav. */
-export const SETTINGS_GROUPS: Array<SettingsSection['group']> = ['Organization', 'Access', 'Finance'];
+export const SETTINGS_GROUPS: string[] = ['Organization', 'Access', 'Finance', 'Platform Admin'];
 
 /** Finance + EBM (KAB-…): Revenue & Billing and Compliance (previously their
  *  own top-level "Business" sidebar group) plus the 10 previously-separate
@@ -202,21 +207,6 @@ export const EBM_SECTIONS: ShellSection[] = [
   { id: 'ebm-vsdc-init', label: 'VSDC Initialization', group: 'EBM Config', segment: 'vsdc-init', perm: 'manage_ebm' },
 ];
 export const EBM_GROUPS: string[] = ['Finance', 'EBM', 'EBM Config'];
-
-/** Platform Admin (KAB-162): the 5 previously-separate sidebar entries, now
- *  sub-nav sections under /console/admin. Distinct from Fleet, which keeps
- *  its own separate /admin/* pages untouched (see AdminSectionLayout). */
-export const PLATFORM_ADMIN_SECTIONS: ShellSection[] = [
-  { id: 'padmin-organizations', label: 'Organizations', group: 'Platform Admin', segment: 'organizations', perm: 'manage_sub_orgs' },
-  { id: 'padmin-countries', label: 'Countries', group: 'Platform Admin', segment: 'countries', perm: 'manage_org_settings' },
-  { id: 'padmin-users', label: 'Users', group: 'Platform Admin', segment: 'users', perm: 'manage_members' },
-  { id: 'padmin-audit', label: 'Audit Log', group: 'Platform Admin', segment: 'audit-logs', perm: 'manage_org_settings' },
-  { id: 'padmin-citrine', label: 'Citrine Sync', group: 'Platform Admin', segment: 'citrine', perm: 'view_chargers' },
-];
-export const PLATFORM_ADMIN_GROUPS: string[] = ['Platform Admin'];
-/** Leaf segments under /admin that belong to this merge — everything else
- *  under /admin (Fleet's pages) passes through the layout unchanged. */
-export const PLATFORM_ADMIN_SEGMENTS = new Set(PLATFORM_ADMIN_SECTIONS.map((s) => s.segment));
 
 /** Active-item test: overview matches the console index only; others match
  *  their subtree (e.g. /stations and /stations/ch-01). */

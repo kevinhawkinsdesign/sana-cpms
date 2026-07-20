@@ -1,8 +1,8 @@
 'use client';
 
-/** Settings → Roles & Permissions. Roles × permissions matrix. The Settings
- *  shell owns the header + sub-nav; RolesPermissions renders its own section
- *  header (with Save/Reset) and the matrix. */
+/** Settings → Roles & Permissions. Roles × permissions matrix.
+ *  RolesPermissions renders its own compact section header (with Save/Reset)
+ *  and the matrix, so this page adds no separate PageHead. */
 import React from 'react';
 import { RolesPermissions } from '@/components/console/roles/RolesPermissions';
 
