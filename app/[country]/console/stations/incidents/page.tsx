@@ -8,7 +8,7 @@
  *  (lib/mock/handlers/console.ts), so this is the one place to act on them.
  *  Gated behind `view_incidents`; actions further behind `manage_incidents`. */
 import React from 'react';
-import { Badge, Btn, Card, Icon, Select, SummaryStrip, Tabs } from '@/components/console/ui';
+import { Badge, Btn, Card, Icon, PageHead, Select, SummaryStrip, Tabs } from '@/components/console/ui';
 import { AccessDenied } from '@/components/console/AccessDenied';
 import { hasPerm, useOrgs } from '@/lib/console/orgs';
 import { useUrlState } from '@/lib/console/useUrlState';
@@ -52,7 +52,8 @@ export default function ConsoleIncidentsPage() {
   const totals = data?.totals;
 
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4">
+      <PageHead title="Incidents" sub="Every open, acknowledged, and resolved fault across stations and plugs" />
       {!totals ? (
         <span className="kc-skeleton block h-24" />
       ) : (

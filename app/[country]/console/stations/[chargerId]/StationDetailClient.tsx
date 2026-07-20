@@ -131,7 +131,7 @@ export default function ConsoleStationDetailPage() {
   // command surface (progressive load, like the CitrineOS UI).
   if (state.isError && !state.data) {
     return (
-      <div className="space-y-6 p-6">
+      <div className="space-y-6">
         <PageHead
           title="Charger not found"
           crumb={<Link href={`${base}/stations`} className="text-gray-400">Stations</Link>}
@@ -212,7 +212,7 @@ export default function ConsoleStationDetailPage() {
   );
 
   const recentSessions = (
-    <Card title="Recent sessions" action={<Link href={`${base}/sessions`} className="text-xs text-gray-400">View all</Link>}>
+    <Card title="Recent sessions" action={<Link href={`${base}/stations/sessions`} className="text-xs text-gray-400">View all</Link>}>
       {sessionRows.length === 0 ? (
         <div className="text-xs text-gray-400">No sessions on this charger yet.</div>
       ) : (
@@ -222,7 +222,7 @@ export default function ConsoleStationDetailPage() {
             return (
               <Link
                 key={s.id}
-                href={`${base}/sessions/${encodeURIComponent(s.sessionId)}`}
+                href={`${base}/stations/sessions/${encodeURIComponent(s.sessionId)}`}
                 className="flex items-center justify-between gap-2 border-b border-gray-100/50 py-2 text-xs last:border-0 dark:border-white/5"
               >
                 <span className="mono min-w-0 truncate text-gray-800 dark:text-white/90">{s.sessionId}</span>
@@ -267,7 +267,7 @@ export default function ConsoleStationDetailPage() {
   );
 
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4">
       <PageHead
         title={
           <span className="inline-flex items-center gap-2.5">
@@ -394,7 +394,7 @@ export default function ConsoleStationDetailPage() {
                   return (
                     <tr key={s.id}>
                       <td>
-                        <Link href={`${base}/sessions/${encodeURIComponent(s.sessionId)}`} className="mono text-gray-800 dark:text-white/90">
+                        <Link href={`${base}/stations/sessions/${encodeURIComponent(s.sessionId)}`} className="mono text-gray-800 dark:text-white/90">
                           {s.sessionId}
                         </Link>
                       </td>

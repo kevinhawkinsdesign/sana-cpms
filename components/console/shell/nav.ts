@@ -50,11 +50,11 @@ export const NAV_GROUPS: NavGroup[] = [
     group: 'Infrastructure',
     requireRole: ADMIN_ROLES,
     items: [
-      { id: 'stations', label: 'Stations', icon: 'station', path: '/stations', perm: 'view_chargers' },
-      { id: 'sessions', label: 'Sessions', icon: 'bolt', path: '/sessions', perm: 'view_sessions' },
-      { id: 'incidents', label: 'Incidents', icon: 'alert', path: '/incidents', perm: 'view_incidents' },
+      {
+        id: 'stations-hub', label: 'Infrastructure', icon: 'station', path: '/stations',
+        perm: 'view_chargers', anyPerm: ['view_chargers', 'view_sessions', 'view_incidents'],
+      },
       { id: 'tags', label: 'Tags', icon: 'tag', path: '/tags', perm: 'manage_tags' },
-      { id: 'tariffs', label: 'Tariffs & Rates', icon: 'tariff', path: '/tariffs', perm: 'manage_tariffs' },
     ],
   },
   {
@@ -145,6 +145,17 @@ export function visibleNavGroups(data: OrgsData | undefined): NavGroup[] {
     .filter((g) => g.items.length > 0);
 }
 
+/** Infrastructure: Stations, Sessions, and Incidents merged into one hub
+ *  under /console/stations (Stations' existing prefix — no page move needed
+ *  for it). Sessions and Incidents moved there from their old top-level
+ *  /sessions and /incidents paths. Stations itself is the '' segment. */
+export const INFRA_SECTIONS: ShellSection[] = [
+  { id: 'stations', label: 'Stations', group: 'Infrastructure', segment: '', perm: 'view_chargers' },
+  { id: 'sessions', label: 'Sessions', group: 'Infrastructure', segment: 'sessions', perm: 'view_sessions' },
+  { id: 'incidents', label: 'Incidents', group: 'Infrastructure', segment: 'incidents', perm: 'view_incidents' },
+];
+export const INFRA_GROUPS: string[] = ['Infrastructure'];
+
 /** Sections inside the consolidated Settings & Admin area (/settings/*).
  *  Single source for the sub-nav, the ⌘K palette deep-links, and per-section
  *  guards. `segment` is appended to /settings ('' = the General index).
@@ -191,6 +202,7 @@ export const SETTINGS_GROUPS: string[] = ['Organization', 'Access', 'Finance', '
 export const EBM_SECTIONS: ShellSection[] = [
   { id: 'ebm-revenue', label: 'Revenue & Billing', group: 'Finance', segment: 'revenue', perm: 'view_revenue' },
   { id: 'ebm-compliance', label: 'Compliance', group: 'Finance', segment: 'compliance', perm: 'view_ebm' },
+  { id: 'ebm-tariffs', label: 'Tariffs & Rates', group: 'Finance', segment: 'tariffs', perm: 'manage_tariffs' },
   { id: 'ebm-proforma', label: 'Proforma EBM', group: 'EBM', segment: 'proforma', perm: 'view_ebm' },
   { id: 'ebm-missing', label: 'Missing EBM', group: 'EBM', segment: 'missing', perm: 'view_ebm' },
   { id: 'ebm-failed', label: 'Failed EBM', group: 'EBM', segment: 'failed', perm: 'view_ebm' },
@@ -231,6 +243,7 @@ export const PEOPLE_GROUPS: string[] = ['People & Shifts'];
  *  regular (non-platform) org admin could reach cross-org fleet data. */
 export const FLEET_SECTIONS: ShellSection[] = [
   { id: 'admin-vehicles', label: 'Vehicles', group: 'Fleet', segment: 'vehicles', perm: 'manage_fleets', requirePlatformAdmin: true },
+  { id: 'admin-schedule', label: 'Charging Schedule', group: 'Fleet', segment: 'schedule', perm: 'manage_fleets', requirePlatformAdmin: true },
   { id: 'admin-shop-vehicles', label: 'Shop Vehicles', group: 'Fleet', segment: 'shop-vehicles', perm: 'manage_fleets', requirePlatformAdmin: true },
   { id: 'admin-shop-orders', label: 'Shop Orders', group: 'Fleet', segment: 'shop-orders', perm: 'view_customers', requirePlatformAdmin: true },
   { id: 'admin-vehicles-debt', label: 'Vehicles with Debt', group: 'Fleet', segment: 'vehicles-with-debt', perm: 'view_customers', requirePlatformAdmin: true },

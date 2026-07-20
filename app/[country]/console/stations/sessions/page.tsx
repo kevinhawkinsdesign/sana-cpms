@@ -266,7 +266,7 @@ export default function ConsoleSessionsPage() {
   const rangeLabel = DATE_RANGES.find((r) => r.id === range)?.label ?? 'All time';
 
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4">
       <PageHead title="Sessions" sub="Charging sessions, payments, and receipts" />
 
       <TableCard
@@ -352,7 +352,7 @@ export default function ConsoleSessionsPage() {
             <tbody>
               {data?.sessions.map((s) => {
                 const st = sessionStatusBadge(s.sessionStatus);
-                const href = `${base}/sessions/${encodeURIComponent(s.sessionId)}`;
+                const href = `${base}/stations/sessions/${encodeURIComponent(s.sessionId)}`;
                 return (
                   <tr key={s.id} {...rowNav(() => navigate(href))}>
                     <td>

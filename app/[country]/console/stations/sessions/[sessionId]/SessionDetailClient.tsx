@@ -507,7 +507,7 @@ function SessionDetailLoaded({
             {completed && !s.isPaid ? <Badge kind="warn">unpaid</Badge> : null}
           </span>
         }
-        crumb={<Link href={`${base}/sessions`} style={{ color: 'var(--text3)' }}>Sessions</Link>}
+        crumb={<Link href={`${base}/stations/sessions`} style={{ color: 'var(--text3)' }}>Sessions</Link>}
         back
         sub={
           live
@@ -644,7 +644,7 @@ export default function ConsoleSessionDetailPage() {
       <div style={{ padding: 'clamp(12px, 4vw, 24px)' }}>
         <PageHead
           title="Session not found"
-          crumb={<Link href={`${base}/sessions`} style={{ color: 'var(--text3)' }}>Sessions</Link>}
+          crumb={<Link href={`${base}/stations/sessions`} style={{ color: 'var(--text3)' }}>Sessions</Link>}
           back
         />
         <Card style={{ padding: 28, textAlign: 'center', fontSize: 13, color: 'var(--text3)' }}>

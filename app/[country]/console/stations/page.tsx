@@ -58,7 +58,7 @@ export default function ConsoleStationsPage() {
   }, [stations, search]);
 
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4">
       <PageHead
         title="Stations"
         sub={

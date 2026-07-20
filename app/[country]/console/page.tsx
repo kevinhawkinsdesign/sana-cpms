@@ -91,7 +91,7 @@ function LiveSessionsTable({ sessions, base }: { sessions: LiveSession[]; base: 
               {paginated.map((s) => (
                 <tr key={s.id}>
                   <td>
-                    <Link href={`${base}/sessions/${encodeURIComponent(s.sessionId)}`} className="mono text-gray-800 dark:text-white/90">
+                    <Link href={`${base}/stations/sessions/${encodeURIComponent(s.sessionId)}`} className="mono text-gray-800 dark:text-white/90">
                       {s.sessionId}
                     </Link>
                   </td>
@@ -429,7 +429,7 @@ export default function ConsoleOverviewPage() {
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-400">Awaiting payment</span>
             {unpaidCount ? (
-              <Link href={`${base}/sessions`} className="font-semibold text-amber-500">{unpaidCount} →</Link>
+              <Link href={`${base}/stations/sessions`} className="font-semibold text-amber-500">{unpaidCount} →</Link>
             ) : (
               <span className="mono">{unpaidCount ?? '—'}</span>
             )}
