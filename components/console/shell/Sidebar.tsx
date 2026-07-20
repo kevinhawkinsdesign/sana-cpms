@@ -94,8 +94,8 @@ export function Sidebar({
             ))}
           </div>
         )}
-        {groups.map((g) => (
-          <React.Fragment key={g.group ?? 'root'}>
+        {groups.map((g, i) => (
+          <React.Fragment key={g.group ?? `root-${i}`}>
             {g.group && g.items.length > 1 && !collapsed && (
               <div className="mb-2 mt-5 px-2 text-[10px] font-bold uppercase leading-5 tracking-[0.15em] text-[#5e7aa0]">
                 {g.group}

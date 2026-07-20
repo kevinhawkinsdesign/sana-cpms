@@ -47,7 +47,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [{ id: 'overview', label: 'Overview', icon: 'home', path: '', perm: 'view_dashboard' }],
   },
   {
-    group: 'Infrastructure',
+    group: null,
     requireRole: ADMIN_ROLES,
     items: [
       {
