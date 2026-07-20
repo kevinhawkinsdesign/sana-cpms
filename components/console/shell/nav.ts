@@ -85,20 +85,6 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    group: 'Organization',
-    requireRole: ADMIN_ROLES,
-    items: [
-      {
-        id: 'settings',
-        label: 'Settings & Admin',
-        icon: 'settings',
-        path: '/settings',
-        perm: 'manage_org_settings',
-        anyPerm: ['manage_org_settings', 'manage_members'],
-      },
-    ],
-  },
-  {
     group: 'Fleet',
     requirePlatformAdmin: true,
     items: [
@@ -119,6 +105,20 @@ export const NAV_GROUPS: NavGroup[] = [
       { id: 'me-charge', label: 'Start / End Session', icon: 'bolt', path: '/me/charge', perm: 'view_sessions' },
       { id: 'me-transfer', label: 'My Sessions', icon: 'refresh', path: '/me/sessions', perm: 'view_sessions' },
       { id: 'me-incidents', label: 'Incidents', icon: 'alert', path: '/me/incidents', perm: 'view_incidents' },
+    ],
+  },
+  {
+    group: 'Organization',
+    requireRole: ADMIN_ROLES,
+    items: [
+      {
+        id: 'settings',
+        label: 'Settings & Admin',
+        icon: 'settings',
+        path: '/settings',
+        perm: 'manage_org_settings',
+        anyPerm: ['manage_org_settings', 'manage_members'],
+      },
     ],
   },
 ];
