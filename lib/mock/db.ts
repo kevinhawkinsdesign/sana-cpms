@@ -29,6 +29,47 @@ const seed = clone(seedData) as {
   shopOrders: AnyObj[];
 };
 
+// The seed dataset's session timestamps are baked in at generation time, so
+// they drift into the past every day this static demo stays deployed —
+// eventually "today"/"this week" dashboard panels see zero matching sessions
+// and read as an empty, revenue-less product. Shift every ISO date string in
+// the seed forward by a constant offset (anchored to the newest session) so
+// the most recent seeded day always lines up with "today", no matter when
+// the page is actually loaded.
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
+
+function shiftDatesInPlace(value: AnyObj, offsetMs: number): void {
+  if (Array.isArray(value)) {
+    for (const item of value) if (item && typeof item === 'object') shiftDatesInPlace(item, offsetMs);
+    return;
+  }
+  for (const key of Object.keys(value)) {
+    const v = value[key];
+    if (typeof v === 'string' && ISO_DATE_RE.test(v)) {
+      value[key] = new Date(new Date(v).getTime() + offsetMs).toISOString();
+    } else if (v && typeof v === 'object') {
+      shiftDatesInPlace(v, offsetMs);
+    }
+  }
+}
+
+(function refreshSeedDates() {
+  let maxMs = -Infinity;
+  for (const s of seed.sessions) {
+    for (const field of [s.startTime, s.endTime]) {
+      if (typeof field === 'string' && ISO_DATE_RE.test(field)) {
+        const t = new Date(field).getTime();
+        if (t > maxMs) maxMs = t;
+      }
+    }
+  }
+  if (!Number.isFinite(maxMs)) return;
+  // Land the newest seeded session a couple of hours ago rather than exactly
+  // "now", so it reads as "in progress/just finished" rather than future-dated.
+  const offsetMs = Date.now() - maxMs - 2 * 3_600_000;
+  for (const key of Object.keys(seed)) shiftDatesInPlace((seed as AnyObj)[key], offsetMs);
+})();
+
 const orgIds = seed.organizations.map((o) => o.id);
 
 // ---------------- Demo login personas ----------------
